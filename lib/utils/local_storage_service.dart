@@ -8,6 +8,7 @@ class LocalStorageService {
   static String token = "TOKEN";
   static String userDetail = "USER_DETAIL";
   static String userId = "USER_ID";
+  static String collectId = "COLLECT_ID";
 
   static Future<void> putString(String key, String value) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
