@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:likya_app/utils/utils.dart';
+import 'package:likya_app/common/widgets/contributor_item.dart';
+import 'package:likya_app/presentation/contributors/add_contributors.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class DetailFundRaisingPage extends StatefulWidget {
@@ -48,6 +49,8 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                 collectContributorsTitle(),
                 const SizedBox(height: 15),
                 collectContributors(),
+                const SizedBox(height: 5),
+                addContributors(),
               ],
             ),
           ),
@@ -114,218 +117,40 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
   Padding collectContributors() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
+      child: ListView(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: Color(0xFF03544F),
-                child: Text(
-                  getInitials('AMEDEKPEDZI Yao Mawunyo'),
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    fontFamily: 'Righteous',
-                  ),
-                ),
-              ),
-              SizedBox(width: 10),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 248),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "AMEDEKPEDZI Yao Mawunyo",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      "25 000 FCFA",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  print('Icon tapped!');
-                  // Add your desired functionality here
-                },
-                child: Icon(
-                  Ionicons.chevron_forward_outline,
-                  color: Color(0xFF007F67),
-                  size: 30,
-                ),
-              ),
-            ],
+          contributorItem(
+            '1234',
+            context,
+            Ionicons.chevron_forward_outline,
+            'AMEDEKPEDZI Yao Mawunyo',
+            " 5000.0",
           ),
           Divider(color: Color(0xFFCCCCCC)),
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: Color(0xFF03544F),
-                child: Text(
-                  getInitials('AMEDEKPEDZI Yao Mawunyo'),
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    fontFamily: 'Righteous',
-                  ),
-                ),
-              ),
-              SizedBox(width: 10),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 248),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "AMEDEKPEDZI Yao Mawunyo",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      "25 000 FCFA",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  print('Icon tapped!');
-                  // Add your desired functionality here
-                },
-                child: Icon(
-                  Ionicons.chevron_forward_outline,
-                  color: Color(0xFF007F67),
-                  size: 30,
-                ),
-              ),
-            ],
+          contributorItem(
+            '1234',
+            context,
+            Ionicons.chevron_forward_outline,
+            'SENYO Komlan Brice',
+            "15000.0",
           ),
           Divider(color: Color(0xFFCCCCCC)),
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: Color(0xFF03544F),
-                child: Text(
-                  getInitials('AMEDEKPEDZI Yao Mawunyo'),
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    fontFamily: 'Righteous',
-                  ),
-                ),
-              ),
-              SizedBox(width: 10),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 248),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "AMEDEKPEDZI Yao Mawunyo",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      "25 000 FCFA",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  print('Icon tapped!');
-                  // Add your desired functionality here
-                },
-                child: Icon(
-                  Ionicons.chevron_forward_outline,
-                  color: Color(0xFF007F67),
-                  size: 30,
-                ),
-              ),
-            ],
+          contributorItem(
+            '1234',
+            context,
+            Ionicons.chevron_forward_outline,
+            'EKPO Wolanyo',
+            "10000.0",
           ),
           Divider(color: Color(0xFFCCCCCC)),
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: Color(0xFF03544F),
-                child: Text(
-                  getInitials('AMEDEKPEDZI Yao Mawunyo'),
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    fontFamily: 'Righteous',
-                  ),
-                ),
-              ),
-              SizedBox(width: 10),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 248),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "AMEDEKPEDZI Yao Mawunyo",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      "25 000 FCFA",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  print('Icon tapped!');
-                  // Add your desired functionality here
-                },
-                child: Icon(
-                  Ionicons.chevron_forward_outline,
-                  color: Color(0xFF007F67),
-                  size: 30,
-                ),
-              ),
-            ],
+          contributorItem(
+            '1234',
+            context,
+            Ionicons.chevron_forward_outline,
+            'AMOUZOU Kokou',
+            "25000.0",
           ),
           Divider(color: Color(0xFFCCCCCC)),
         ],
@@ -358,14 +183,14 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                     ],
                   ),
                   child: Icon(
-                    Ionicons.add_outline,
+                    Ionicons.warning_outline,
                     size: 28,
                     color: Color(0xFF2FA9A2),
                   ),
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  "Contributeurs",
+                  "Accès",
                   style: TextStyle(
                     color: Color(0xFF2FA9A2),
                     fontSize: 14,
@@ -477,6 +302,34 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
               ),
             ],
           )),
+    );
+  }
+
+  Padding addContributors() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddContributors()),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          backgroundColor: const Color(0xFF2FA9A2),
+        ),
+        child: Text(
+          'Ajouter un contributeur',
+          style: const TextStyle(
+            fontSize: 15,
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
     );
   }
 }
