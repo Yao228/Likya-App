@@ -415,6 +415,7 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(
             height: 75,
             child: ListView(
+              shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               children: [
                 carouselItem('10/50 Assistent', '2000'),
@@ -475,39 +476,42 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             const SizedBox(height: 8),
-            ListView(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                transactionItem(
-                  Ionicons.cart,
-                  "Achat en Pharmacie",
-                  "Lundi 6 Décembre à 20:13",
-                  "12 250 F",
-                ),
-                const Divider(color: Color(0xFFADB3BC), thickness: 1),
-                transactionItem(
-                  Ionicons.send,
-                  "Envois à Mairus",
-                  "Lundi 6 Décembre à 13:53",
-                  "-7 000 F",
-                ),
-                const Divider(color: Color(0xFFADB3BC), thickness: 1),
-                transactionItem(
-                  Ionicons.download_sharp,
-                  "Dépot",
-                  "Mardi 7 Décembre à 12:20",
-                  "3 000 F",
-                ),
-                const Divider(color: Color(0xFFADB3BC), thickness: 1),
-                transactionItem(
-                  Ionicons.download_sharp,
-                  "Dépot",
-                  "Mardi 7 Décembre à 12:20",
-                  "3 000 F",
-                ),
-                const Divider(color: Color(0xFFADB3BC), thickness: 1),
-              ],
+            SizedBox(
+              height: 180,
+              child: ListView(
+                shrinkWrap: true,
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [
+                  transactionItem(
+                    Ionicons.cart,
+                    "Achat en Pharmacie",
+                    "Lundi 6 Décembre à 20:13",
+                    "12 250 F",
+                  ),
+                  const Divider(color: Color(0xFFADB3BC), thickness: 1),
+                  transactionItem(
+                    Ionicons.send,
+                    "Envois à Mairus",
+                    "Lundi 6 Décembre à 13:53",
+                    "-7 000 F",
+                  ),
+                  const Divider(color: Color(0xFFADB3BC), thickness: 1),
+                  transactionItem(
+                    Ionicons.download_sharp,
+                    "Dépot",
+                    "Mardi 7 Décembre à 12:20",
+                    "3 000 F",
+                  ),
+                  const Divider(color: Color(0xFFADB3BC), thickness: 1),
+                  transactionItem(
+                    Ionicons.download_sharp,
+                    "Dépot",
+                    "Mardi 7 Décembre à 12:20",
+                    "3 000 F",
+                  ),
+                  const Divider(color: Color(0xFFADB3BC), thickness: 1),
+                ],
+              ),
             ),
           ],
         ),

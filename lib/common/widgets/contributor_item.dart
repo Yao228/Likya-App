@@ -39,8 +39,8 @@ Widget contributorItem(
                 Text(
                   contributorName,
                   style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
                     color: Color(0xFF336666),
                   ),
                 ),
@@ -70,7 +70,7 @@ Widget contributorItem(
         child: Icon(
           iconName,
           color: Color(0xFF007F67),
-          size: 30,
+          size: 18,
         ),
       ),
     ],

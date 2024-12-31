@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:likya_app/common/widgets/contributor_item.dart';
 import 'package:likya_app/presentation/contributors/add_contributors.dart';
@@ -37,21 +38,47 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
             ),
             child: Column(
               children: [
-                const SizedBox(height: 15),
-                targetAmount(),
                 const SizedBox(height: 10),
+                collectBox(),
                 collectButtons(),
                 const SizedBox(height: 10),
                 collectDesc(),
-                const SizedBox(height: 15),
-                collectProgress(),
                 const SizedBox(height: 20),
                 collectContributorsTitle(),
                 const SizedBox(height: 15),
                 collectContributors(),
                 const SizedBox(height: 5),
-                addContributors(),
               ],
+            ),
+          ),
+        ),
+      ),
+      bottomSheet: Container(
+        color: Colors.white,
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 5,
+        ),
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AddContributors()),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            backgroundColor: const Color(0xFF2FA9A2),
+          ),
+          child: Text(
+            'Ajouter un contributeur',
+            style: const TextStyle(
+              fontSize: 15,
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
@@ -82,13 +109,13 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
 
   Padding collectDesc() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Align(
         alignment: Alignment.center,
         child: Text(
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
           style: const TextStyle(
-            fontSize: 16,
+            fontSize: 15,
             fontWeight: FontWeight.w500,
           ),
           textAlign: TextAlign.center,
@@ -117,43 +144,61 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
   Padding collectContributors() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: ListView(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        children: [
-          contributorItem(
-            '1234',
-            context,
-            Ionicons.chevron_forward_outline,
-            'AMEDEKPEDZI Yao Mawunyo',
-            " 5000.0",
-          ),
-          Divider(color: Color(0xFFCCCCCC)),
-          contributorItem(
-            '1234',
-            context,
-            Ionicons.chevron_forward_outline,
-            'SENYO Komlan Brice',
-            "15000.0",
-          ),
-          Divider(color: Color(0xFFCCCCCC)),
-          contributorItem(
-            '1234',
-            context,
-            Ionicons.chevron_forward_outline,
-            'EKPO Wolanyo',
-            "10000.0",
-          ),
-          Divider(color: Color(0xFFCCCCCC)),
-          contributorItem(
-            '1234',
-            context,
-            Ionicons.chevron_forward_outline,
-            'AMOUZOU Kokou',
-            "25000.0",
-          ),
-          Divider(color: Color(0xFFCCCCCC)),
-        ],
+      child: SizedBox(
+        height: 180,
+        child: ListView(
+          shrinkWrap: true,
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: [
+            contributorItem(
+              '1234',
+              context,
+              Ionicons.chevron_forward_outline,
+              'AMEDEKPEDZI Yao Mawunyo',
+              " 5000.0",
+            ),
+            Divider(color: Colors.grey.shade200),
+            contributorItem(
+              '1234',
+              context,
+              Ionicons.chevron_forward_outline,
+              'SENYO Komlan Brice',
+              "15000.0",
+            ),
+            Divider(color: Colors.grey.shade200),
+            contributorItem(
+              '1234',
+              context,
+              Ionicons.chevron_forward_outline,
+              'EKPO Wolanyo',
+              "10000.0",
+            ),
+            Divider(color: Colors.grey.shade200),
+            contributorItem(
+              '1234',
+              context,
+              Ionicons.chevron_forward_outline,
+              'AMOUZOU Kokou',
+              "25000.0",
+            ),
+            Divider(color: Colors.grey.shade200),
+            contributorItem(
+              '1234',
+              context,
+              Ionicons.chevron_forward_outline,
+              'AMOUZOU Kokou',
+              "25000.0",
+            ),
+            Divider(color: Colors.grey.shade200),
+            contributorItem(
+              '1234',
+              context,
+              Ionicons.chevron_forward_outline,
+              'AMOUZOU Kokou',
+              "25000.0",
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -177,7 +222,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 5,
+                        spreadRadius: 2,
                         blurRadius: 7,
                       ),
                     ],
@@ -213,7 +258,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 5,
+                        spreadRadius: 2,
                         blurRadius: 7,
                       ),
                     ],
@@ -249,7 +294,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 5,
+                        spreadRadius: 2,
                         blurRadius: 7,
                       ),
                     ],
@@ -277,57 +322,159 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
     );
   }
 
-  Padding targetAmount() {
+  Padding collectBox() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-      child: Align(
-          alignment: Alignment.center,
-          child: Column(
-            children: [
-              Text(
-                "Pending",
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFFF4111F),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                "150 000 FCFA",
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-            ],
-          )),
-    );
-  }
-
-  Padding addContributors() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddContributors()),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF19A9A1),
+              Color(0xFF00BB98)
+            ], // Dégradé du rose à l'orange
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          backgroundColor: const Color(0xFF2FA9A2),
+          borderRadius: BorderRadius.circular(12), // Bordures arrondies
         ),
-        child: Text(
-          'Ajouter un contributeur',
-          style: const TextStyle(
-            fontSize: 15,
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
-          ),
+        padding: const EdgeInsets.all(15), // Padding interne pour le contenu
+        child: Column(
+          children: [
+            Text(
+              "Pending",
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFFF4111F),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Volume',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      "150 000 FCFA",
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Collecté',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      "100 000 FCFA",
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Validité',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          DateFormat('dd/MM/yy')
+                              .format(DateTime.parse('2024-12-30')),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(width: 2),
+                        Text('-'),
+                        SizedBox(width: 2),
+                        Text(
+                          DateFormat('dd/MM/yy')
+                              .format(DateTime.parse('2024-12-30')),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Privée",
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(width: 2),
+                    const Icon(
+                      Ionicons.eye_off_outline,
+                      size: 16,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 15),
+            LinearPercentIndicator(
+              width: 300,
+              animation: true,
+              lineHeight: 3,
+              animationDuration: 1000,
+              percent: 0.8,
+              center: Text(
+                "80.00%",
+                style: TextStyle(fontSize: 2),
+              ),
+              barRadius: Radius.circular(4),
+              backgroundColor: Color(0xFFF7FDFC),
+              progressColor: Color(0xFF3FCB67),
+            ),
+          ],
         ),
       ),
     );
