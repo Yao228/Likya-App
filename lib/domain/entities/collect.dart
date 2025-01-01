@@ -1,7 +1,7 @@
 class CollectEntity {
   final String id;
   final String title;
-  final int targetAmount;
+  final double targetAmount;
   final String description;
   final Object categoryIds;
   final bool access;

@@ -8,6 +8,7 @@ import 'package:likya_app/data/source/collect_api_service.dart';
 import 'package:likya_app/domain/repository/auth.dart';
 import 'package:likya_app/domain/repository/collect.dart';
 import 'package:likya_app/domain/usecases/collect.dart';
+import 'package:likya_app/domain/usecases/get_collect.dart';
 import 'package:likya_app/domain/usecases/get_collects.dart';
 import 'package:likya_app/domain/usecases/get_user.dart';
 import 'package:likya_app/domain/usecases/is_logged_in.dart';
@@ -52,4 +53,6 @@ void setupServiceLocator() {
   sl.registerSingleton<CollectUseCase>(CollectUseCase());
 
   sl.registerSingleton<GetCollectsUseCase>(GetCollectsUseCase());
+
+  sl.registerSingleton<GetCollectUseCase>(GetCollectUseCase());
 }

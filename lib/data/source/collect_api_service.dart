@@ -9,6 +9,7 @@ import 'package:likya_app/utils/local_storage_service.dart';
 abstract class CollectApiService {
   Future<Either> collect(CollectReqParams collectReq);
   Future<Either> getCollects();
+  Future<Either> getCollect();
 }
 
 class CollectApiServiceImpl extends CollectApiService {
@@ -48,6 +49,26 @@ class CollectApiServiceImpl extends CollectApiService {
           'created_by': userID,
           'sort': 'desc',
         },
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+      return Right(response);
+    } on DioException catch (e) {
+      return Left(e.response!.data['message_error']);
+    }
+  }
+
+  @override
+  Future<Either> getCollect() async {
+    try {
+      var token =
+          await LocalStorageService.getString(LocalStorageService.token);
+      var collectID =
+          await LocalStorageService.getString(LocalStorageService.collectId);
+
+      var response = await sl<DioClient>().get(
+        '${ApiUrls.collects}/$collectID',
         options: Options(
           headers: {'Authorization': 'Bearer $token'},
         ),

@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:likya_app/data/models/collect.dart';
+import 'package:likya_app/data/models/collect_list.dart';
 import 'package:likya_app/data/models/collect_req.dart';
 import 'package:likya_app/data/source/collect_api_service.dart';
 import 'package:likya_app/domain/repository/collect.dart';
@@ -21,10 +24,27 @@ class CollectRepositoryImpl extends CollectRepository {
       },
       (data) {
         Response response = data;
-        var collectModels = (response.data["items"] as List)
-            .map((item) => CollectModel.fromMap(item as Map<String, dynamic>))
+        var collectLists = (response.data["items"] as List)
+            .map((item) => CollectList.fromMap(item as Map<String, dynamic>))
             .toList();
-        return Right(collectModels);
+        return Right(collectLists);
+      },
+    );
+  }
+
+  @override
+  Future<Either> getCollect() async {
+    Either result = await sl<CollectApiService>().getCollect();
+    return result.fold(
+      (error) {
+        return Left(error);
+      },
+      (data) {
+        Response response = data;
+        Map<String, dynamic> collectMap = jsonDecode(response.data);
+        var collectModel = CollectModel.fromMap(collectMap);
+        var collectEntity = collectModel.toEntity();
+        return Right(collectEntity);
       },
     );
   }

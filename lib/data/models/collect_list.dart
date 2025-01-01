@@ -1,6 +1,4 @@
-import 'package:likya_app/domain/entities/collect.dart';
-
-class CollectModel {
+class CollectList {
   final String id;
   final String title;
   final double targetAmount;
@@ -17,7 +15,7 @@ class CollectModel {
   final String createdAt;
   final String updatedAt;
 
-  CollectModel({
+  CollectList({
     required this.id,
     required this.contributors,
     required this.status,
@@ -55,8 +53,8 @@ class CollectModel {
     };
   }
 
-  factory CollectModel.fromMap(Map<String, dynamic> map) {
-    return CollectModel(
+  factory CollectList.fromMap(Map<String, dynamic> map) {
+    return CollectList(
       id: map['_id'] as String,
       title: map['title'] as String,
       description: map['description'] as String,
@@ -72,28 +70,6 @@ class CollectModel {
       linkId: map['link_id'] as String,
       contributors: map['contributors'] as List<dynamic>? ?? [],
       status: map['status'] as String,
-    );
-  }
-}
-
-extension CollectXModel on CollectModel {
-  CollectEntity toEntity() {
-    return CollectEntity(
-      id: id,
-      contributors: contributors,
-      status: status,
-      linkId: linkId,
-      collectId: collectId,
-      createdBy: createdBy,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
-      title: title,
-      targetAmount: targetAmount,
-      description: description,
-      categoryIds: categoryIds,
-      access: access,
-      startDate: startDate,
-      endDate: endDate,
     );
   }
 }
