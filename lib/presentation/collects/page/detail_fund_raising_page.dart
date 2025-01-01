@@ -328,16 +328,13 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Color(0xFF19A9A1),
-              Color(0xFF00BB98)
-            ], // Dégradé du rose à l'orange
+            colors: [Color(0xFF19A9A1), Color(0xFF00BB98)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(12), // Bordures arrondies
+          borderRadius: BorderRadius.circular(12),
         ),
-        padding: const EdgeInsets.all(15), // Padding interne pour le contenu
+        padding: const EdgeInsets.all(15),
         child: Column(
           children: [
             Text(

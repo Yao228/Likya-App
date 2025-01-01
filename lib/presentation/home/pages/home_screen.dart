@@ -4,10 +4,12 @@ import 'package:ionicons/ionicons.dart';
 import 'package:likya_app/common/widgets/transaction_item.dart';
 import 'package:likya_app/common/widgets/carousel_item.dart';
 import 'package:likya_app/domain/entities/user.dart';
+import 'package:likya_app/presentation/auth/pages/auth_screen.dart';
 import 'package:likya_app/presentation/collects/page/create_fund_raising_page.dart';
 import 'package:likya_app/presentation/collects/page/list_fund_raising_page.dart';
 import 'package:likya_app/presentation/home/bloc/user_display_cubit.dart';
 import 'package:likya_app/presentation/home/bloc/user_display_state.dart';
+import 'package:likya_app/utils/local_storage_service.dart';
 import 'package:likya_app/utils/utils.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,6 +24,266 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        elevation: 0.7,
+        backgroundColor: Colors.white,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 15,
+            vertical: 30,
+          ),
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(height: 30),
+                Text(
+                  "Paramètres",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton.icon(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: const Color(0x26D1D5DB),
+                      alignment: Alignment.centerLeft,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                    onPressed: () {},
+                    icon: const Icon(
+                      Ionicons.person_outline,
+                      size: 28,
+                      color: Colors.black,
+                    ),
+                    label: const Text(
+                      'Profile',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton.icon(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: const Color(0x26D1D5DB),
+                      alignment: Alignment.centerLeft,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                    onPressed: () {},
+                    icon: const Icon(
+                      Ionicons.person_add_outline,
+                      size: 28,
+                      color: Colors.black,
+                    ),
+                    label: const Text(
+                      'Inviter un ami',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton.icon(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: const Color(0x26D1D5DB),
+                      alignment: Alignment.centerLeft,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                    onPressed: () {},
+                    icon: const Icon(
+                      Ionicons.headset_outline,
+                      size: 28,
+                      color: Colors.black,
+                    ),
+                    label: const Text(
+                      'Appeler le service client',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton.icon(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: const Color(0x26D1D5DB),
+                      alignment: Alignment.centerLeft,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                    onPressed: () {},
+                    icon: const Icon(
+                      Ionicons.add_outline,
+                      size: 28,
+                      color: Colors.black,
+                    ),
+                    label: const Text(
+                      'Pharmacies à proximités',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton.icon(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: const Color(0x26D1D5DB),
+                      alignment: Alignment.centerLeft,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                    onPressed: () {},
+                    icon: const Icon(
+                      Ionicons.business_outline,
+                      size: 28,
+                      color: Colors.black,
+                    ),
+                    label: const Text(
+                      'Hôpitaux à proximité',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton.icon(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: const Color(0x26D1D5DB),
+                      alignment: Alignment.centerLeft,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                    onPressed: () {},
+                    icon: const Icon(
+                      Ionicons.lock_closed_outline,
+                      size: 28,
+                      color: Colors.black,
+                    ),
+                    label: const Text(
+                      'Code secret',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton.icon(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.red,
+                      backgroundColor: const Color(0x1AE8464E),
+                      alignment: Alignment.centerLeft,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                    onPressed: () {
+                      LocalStorageService.deleteKey(LocalStorageService.token);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AuthPage()),
+                      );
+                    },
+                    icon: const Icon(
+                      Ionicons.log_out_outline,
+                      size: 28,
+                      color: Colors.red,
+                    ),
+                    label: const Text(
+                      'Se déconnecter',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      appBar: AppBar(
+        title: topHome(),
+        automaticallyImplyLeading: false, // Hides the drawer icon
+      ),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -32,8 +294,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             child: Column(
               children: [
-                topHome(),
-                const SizedBox(height: 2),
                 homeBanner(),
                 const SizedBox(height: 20),
                 homeButtons(),
@@ -69,7 +329,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     _status(state.userEntity),
                   ],
                 ),
-                _avatar(state.userEntity)
+                _avatar(
+                  state.userEntity,
+                  () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                )
               ],
             );
           }
@@ -102,17 +367,20 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _avatar(UserEntity user) {
-    return CircleAvatar(
-      radius: 20,
-      backgroundColor: Color(0xFF03544F),
-      child: Text(
-        getInitials(user.fullname ?? 'Unknown'),
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w700,
-          color: Colors.white,
-          fontFamily: 'Righteous',
+  Widget _avatar(UserEntity user, VoidCallback onAvatarTap) {
+    return GestureDetector(
+      onTap: onAvatarTap,
+      child: CircleAvatar(
+        radius: 20,
+        backgroundColor: Color(0xFF03544F),
+        child: Text(
+          getInitials(user.fullname ?? 'Unknown'),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+            fontFamily: 'Righteous',
+          ),
         ),
       ),
     );
