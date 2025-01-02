@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:likya_app/common/widgets/contributor_item.dart';
+import 'package:likya_app/presentation/collects/bloc/collect_display_cubit.dart';
+import 'package:likya_app/presentation/collects/bloc/collect_display_state.dart';
 import 'package:likya_app/presentation/contributors/add_contributors.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
@@ -29,29 +32,44 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
           ),
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 0,
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
-                collectBox(),
-                collectButtons(),
-                const SizedBox(height: 10),
-                collectDesc(),
-                const SizedBox(height: 20),
-                collectContributorsTitle(),
-                const SizedBox(height: 15),
-                collectContributors(),
-                const SizedBox(height: 5),
-              ],
-            ),
-          ),
-        ),
+      body: BlocProvider(
+        create: (context) => CollectDisplayCubit()..displayCollect(),
+        child: BlocBuilder<CollectDisplayCubit, CollectDisplayState>(
+            builder: (context, state) {
+          if (state is CollectLoading) {
+            return const CircularProgressIndicator();
+          }
+          if (state is CollectLoaded) {
+            SafeArea(
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 0,
+                  ),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      collectBox(),
+                      collectButtons(),
+                      const SizedBox(height: 10),
+                      collectDesc(),
+                      const SizedBox(height: 20),
+                      collectContributorsTitle(),
+                      const SizedBox(height: 15),
+                      collectContributors(),
+                      const SizedBox(height: 5),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+          if (state is LoadCollectFailure) {
+            return Text(state.errorMessage);
+          }
+          return Text('error');
+        }),
       ),
       bottomSheet: Container(
         color: Colors.white,

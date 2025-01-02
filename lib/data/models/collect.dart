@@ -5,15 +5,15 @@ class CollectModel {
   final String title;
   final double targetAmount;
   final String description;
-  final Object categoryIds;
+  final List<dynamic> categoryIds;
   final bool access;
   final String startDate;
   final String endDate;
-  final Object contributors;
+  final List<dynamic> contributors;
   final String status;
   final String linkId;
   final String collectId;
-  final String createdBy;
+  final List<dynamic> createdBy;
   final String createdAt;
   final String updatedAt;
 
@@ -67,7 +67,7 @@ class CollectModel {
       access: map['access'] as bool,
       startDate: map['start_date'] as String,
       endDate: map['end_date'] as String,
-      createdBy: map['created_by'] as String,
+      createdBy: map['created_by'] as List<dynamic>? ?? [],
       collectId: map['collect_id'] as String,
       linkId: map['link_id'] as String,
       contributors: map['contributors'] as List<dynamic>? ?? [],

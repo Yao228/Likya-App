@@ -11,7 +11,7 @@ class CollectEntity {
   final String status;
   final String linkId;
   final String collectId;
-  final String createdBy;
+  final Object createdBy;
   final String createdAt;
   final String updatedAt;
 
