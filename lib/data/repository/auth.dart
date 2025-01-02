@@ -79,4 +79,9 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<Either> passwordReset(PasswordResetParams passwordReset) async {
     return sl<AuthApiService>().passwordReset(passwordReset);
   }
+
+  @override
+  Future<Either> logout() async {
+    return sl<AuthApiService>().logout();
+  }
 }

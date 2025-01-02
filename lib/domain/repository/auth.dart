@@ -15,4 +15,5 @@ abstract class AuthRepository {
   Future<Either> getUser();
   Future<Either> passwordRequest(PasswordReqParams passwordReq);
   Future<Either> passwordReset(PasswordResetParams passwordReset);
+  Future<Either> logout();
 }

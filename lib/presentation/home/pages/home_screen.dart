@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:likya_app/common/bloc/logout/logout_display_cubit.dart';
+import 'package:likya_app/common/bloc/logout/logout_display_state.dart';
+import 'package:likya_app/common/widgets/button/logout_base_button.dart';
 import 'package:likya_app/common/widgets/transaction_item.dart';
 import 'package:likya_app/common/widgets/carousel_item.dart';
 import 'package:likya_app/domain/entities/user.dart';
+import 'package:likya_app/domain/usecases/logout.dart';
 import 'package:likya_app/presentation/auth/pages/auth_screen.dart';
 import 'package:likya_app/presentation/collects/page/create_fund_raising_page.dart';
 import 'package:likya_app/presentation/collects/page/list_fund_raising_page.dart';
 import 'package:likya_app/presentation/home/bloc/user_display_cubit.dart';
 import 'package:likya_app/presentation/home/bloc/user_display_state.dart';
+import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/local_storage_service.dart';
 import 'package:likya_app/utils/utils.dart';
 
@@ -240,37 +245,37 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: 15),
                 SizedBox(
                   width: double.infinity,
-                  child: TextButton.icon(
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.red,
-                      backgroundColor: const Color(0x1AE8464E),
-                      alignment: Alignment.centerLeft,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                    ),
-                    onPressed: () {
-                      LocalStorageService.deleteKey(LocalStorageService.token);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AuthPage()),
-                      );
-                    },
-                    icon: const Icon(
-                      Ionicons.log_out_outline,
-                      size: 28,
-                      color: Colors.red,
-                    ),
-                    label: const Text(
-                      'Se déconnecter',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                  child: BlocProvider(
+                    create: (context) => LogoutStateCubit(),
+                    child: BlocListener<LogoutStateCubit, LogoutState>(
+                      listener: (context, state) {
+                        if (state is LogoutSuccessState) {
+                          LocalStorageService.deleteKey(
+                              LocalStorageService.token);
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => AuthPage(),
+                            ),
+                          );
+                        }
+                        if (state is LogoutFailureState) {
+                          var snackBar =
+                              SnackBar(content: Text(state.errorMessage));
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+                      },
+                      child: Builder(
+                        builder: (context) {
+                          return LogoutBaseButton(
+                            iconName: Ionicons.log_out_outline,
+                            title: 'Se déconnecter',
+                            onPressed: () async {
+                              context.read<LogoutStateCubit>().excute(
+                                    usecase: sl<LogoutUseCase>(),
+                                  );
+                            },
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -370,18 +375,39 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _avatar(UserEntity user, VoidCallback onAvatarTap) {
     return GestureDetector(
       onTap: onAvatarTap,
-      child: CircleAvatar(
-        radius: 20,
-        backgroundColor: Color(0xFF03544F),
-        child: Text(
-          getInitials(user.fullname ?? 'Unknown'),
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-            fontFamily: 'Righteous',
+      child: Stack(
+        children: [
+          CircleAvatar(
+            radius: 20,
+            backgroundColor: Color(0xFF03544F),
+            child: Text(
+              getInitials(user.fullname ?? 'Unknown'),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+                fontFamily: 'Righteous',
+              ),
+            ),
           ),
-        ),
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: Container(
+              width: 15,
+              height: 15,
+              decoration: BoxDecoration(
+                color: Color(0xFF333333),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Ionicons.list_outline,
+                size: 12,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

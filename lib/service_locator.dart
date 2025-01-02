@@ -13,6 +13,7 @@ import 'package:likya_app/domain/usecases/get_collects.dart';
 import 'package:likya_app/domain/usecases/get_user.dart';
 import 'package:likya_app/domain/usecases/is_logged_in.dart';
 import 'package:likya_app/domain/usecases/login.dart';
+import 'package:likya_app/domain/usecases/logout.dart';
 import 'package:likya_app/domain/usecases/password_request.dart';
 import 'package:likya_app/domain/usecases/password_reset.dart';
 import 'package:likya_app/domain/usecases/resend_otp.dart';
@@ -55,4 +56,6 @@ void setupServiceLocator() {
   sl.registerSingleton<GetCollectsUseCase>(GetCollectsUseCase());
 
   sl.registerSingleton<GetCollectUseCase>(GetCollectUseCase());
+
+  sl.registerSingleton<LogoutUseCase>(LogoutUseCase());
 }

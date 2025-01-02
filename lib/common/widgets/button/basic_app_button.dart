@@ -51,25 +51,26 @@ class BasicAppButton extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 2),
       child: ElevatedButton(
-          onPressed: onPressed,
-          style: ElevatedButton.styleFrom(
-            minimumSize: Size(
-              width ?? MediaQuery.of(context).size.width,
-              height ?? 50,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            backgroundColor: const Color(0xFF2FA9A2),
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          minimumSize: Size(
+            width ?? MediaQuery.of(context).size.width,
+            height ?? 50,
           ),
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 15,
-              color: Colors.white,
-              fontWeight: FontWeight.w400,
-            ),
-          )),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          backgroundColor: const Color(0xFF2FA9A2),
+        ),
+        child: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 15,
+            color: Colors.white,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ),
     );
   }
 }
