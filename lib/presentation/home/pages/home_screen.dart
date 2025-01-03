@@ -13,6 +13,10 @@ import 'package:likya_app/presentation/collects/page/create_fund_raising_page.da
 import 'package:likya_app/presentation/collects/page/list_fund_raising_page.dart';
 import 'package:likya_app/presentation/home/bloc/user_display_cubit.dart';
 import 'package:likya_app/presentation/home/bloc/user_display_state.dart';
+import 'package:likya_app/presentation/setting/call_support.dart';
+import 'package:likya_app/presentation/setting/invite_friend.dart';
+import 'package:likya_app/presentation/setting/password_update.dart';
+import 'package:likya_app/presentation/setting/profil_detail.dart';
 import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/local_storage_service.dart';
 import 'package:likya_app/utils/utils.dart';
@@ -66,14 +70,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         vertical: 12,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ProfilDetail()),
+                      );
+                    },
                     icon: const Icon(
                       Ionicons.person_outline,
                       size: 28,
                       color: Colors.black,
                     ),
                     label: const Text(
-                      'Profile',
+                      'Profil',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
@@ -98,7 +107,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         vertical: 12,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => InviteFriend()),
+                      );
+                    },
                     icon: const Icon(
                       Ionicons.person_add_outline,
                       size: 28,
@@ -130,7 +144,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         vertical: 12,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => CallSupport()),
+                      );
+                    },
                     icon: const Icon(
                       Ionicons.headset_outline,
                       size: 28,
@@ -226,7 +245,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         vertical: 12,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PasswordUpdate()),
+                      );
+                    },
                     icon: const Icon(
                       Ionicons.lock_closed_outline,
                       size: 28,
