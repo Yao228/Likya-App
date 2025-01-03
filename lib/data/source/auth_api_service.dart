@@ -18,6 +18,7 @@ abstract class AuthApiService {
   Future<Either> login(LoginReqParams loginReq);
   Future<Either> passwordRequest(PasswordReqParams passwordReq);
   Future<Either> passwordReset(PasswordResetParams passwordReset);
+  Future<Either> getUser();
   Future<Either> logout();
 }
 
@@ -82,6 +83,23 @@ class AuthApiServiceImpl extends AuthApiService {
     try {
       var response = await sl<DioClient>()
           .post(ApiUrls.passwordReset, data: passwordReset.toMap());
+      return Right(response);
+    } on DioException catch (e) {
+      return Left(e.response!.data['message_error']);
+    }
+  }
+
+  @override
+  Future<Either> getUser() async {
+    try {
+      var token =
+          await LocalStorageService.getString(LocalStorageService.token);
+      var userId =
+          await LocalStorageService.getString(LocalStorageService.userId);
+      var response = await sl<DioClient>().get('${ApiUrls.users}/$userId',
+          options: Options(
+            headers: {'Authorization': 'Bearer $token'},
+          ));
       return Right(response);
     } on DioException catch (e) {
       return Left(e.response!.data['message_error']);

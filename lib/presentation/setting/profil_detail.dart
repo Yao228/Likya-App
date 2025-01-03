@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:likya_app/domain/entities/user.dart';
+import 'package:likya_app/presentation/home/bloc/user_display_cubit.dart';
+import 'package:likya_app/presentation/home/bloc/user_display_state.dart';
 import 'package:likya_app/presentation/setting/profil_update.dart';
 import 'package:likya_app/utils/utils.dart';
 
@@ -23,58 +27,69 @@ class _ProfilDetailState extends State<ProfilDetail> {
           ),
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              children: [
-                avatar(),
-                userName(),
-                SizedBox(height: 15),
-                userPhone(),
-                SizedBox(height: 15),
-                userEmail(),
-              ],
-            ),
-          ),
-        ),
-      ),
-      bottomSheet: Container(
-        color: Colors.white,
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 5,
-        ),
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfilUpdate()),
+      body: BlocProvider(
+        create: (context) => UserDisplayCubit()..displayUser(),
+        child: BlocBuilder<UserDisplayCubit, UserDisplayState>(
+            builder: (context, state) {
+          if (state is UserLoading) {
+            return const CircularProgressIndicator();
+          }
+          if (state is UserLoaded) {
+            return SafeArea(
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    children: [
+                      avatar(state.userEntity),
+                      userName(state.userEntity),
+                      SizedBox(height: 15),
+                      userPhone(state.userEntity),
+                      SizedBox(height: 15),
+                      userEmail(state.userEntity),
+                      SizedBox(height: 15),
+                      useStatus(state.userEntity),
+                    ],
+                  ),
+                ),
+              ),
             );
-          },
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            backgroundColor: const Color(0xFF2FA9A2),
-          ),
-          child: Text(
-            'Modifier',
-            style: const TextStyle(
-              fontSize: 15,
+          }
+          if (state is LoadUserFailure) {
+            return Text(state.errorMessage);
+          }
+          return Text('error');
+        }),
+      ),
+      bottomSheet: BlocProvider(
+        create: (context) => UserDisplayCubit()..displayUser(),
+        child: BlocBuilder<UserDisplayCubit, UserDisplayState>(
+            builder: (context, state) {
+          if (state is UserLoading) {
+            return const CircularProgressIndicator();
+          }
+          if (state is UserLoaded) {
+            return Container(
               color: Colors.white,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
+              width: 350,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 5,
+              ),
+              child: updateButton(state.userEntity),
+            );
+          }
+          if (state is LoadUserFailure) {
+            return Text(state.errorMessage);
+          }
+          return Text('error');
+        }),
       ),
       backgroundColor: Colors.white,
     );
   }
 
-  Padding avatar() {
+  Padding avatar(UserEntity user) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 90, vertical: 30),
       child: Center(
@@ -83,7 +98,7 @@ class _ProfilDetailState extends State<ProfilDetail> {
           radius: 50,
           backgroundColor: Color(0xFF03544F),
           child: Text(
-            getInitials('Mawunyo AMEDEKPEDZI'),
+            getInitials(user.fullname ?? 'Unknown'),
             style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.w700,
@@ -96,7 +111,7 @@ class _ProfilDetailState extends State<ProfilDetail> {
     );
   }
 
-  Padding userName() {
+  Padding userName(UserEntity user) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: SizedBox(
@@ -119,7 +134,7 @@ class _ProfilDetailState extends State<ProfilDetail> {
                     fontWeight: FontWeight.w500),
               ),
               Text(
-                'Kacou',
+                user.fullname ?? 'Unknown',
                 textAlign: TextAlign.left,
                 style: const TextStyle(
                     fontSize: 20,
@@ -133,7 +148,7 @@ class _ProfilDetailState extends State<ProfilDetail> {
     );
   }
 
-  Padding userPhone() {
+  Padding userPhone(UserEntity user) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: SizedBox(
@@ -156,7 +171,7 @@ class _ProfilDetailState extends State<ProfilDetail> {
                     fontWeight: FontWeight.w500),
               ),
               Text(
-                '07 67 98 67 34',
+                user.phonenumber,
                 textAlign: TextAlign.left,
                 style: const TextStyle(
                     fontSize: 20,
@@ -170,7 +185,7 @@ class _ProfilDetailState extends State<ProfilDetail> {
     );
   }
 
-  Padding userEmail() {
+  Padding userEmail(UserEntity user) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: SizedBox(
@@ -193,7 +208,7 @@ class _ProfilDetailState extends State<ProfilDetail> {
                     fontWeight: FontWeight.w500),
               ),
               Text(
-                'lindakacou@yahoo.fr',
+                user.email ?? 'Unknown',
                 textAlign: TextAlign.left,
                 style: const TextStyle(
                     fontSize: 20,
@@ -201,6 +216,79 @@ class _ProfilDetailState extends State<ProfilDetail> {
                     fontWeight: FontWeight.w700),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding useStatus(UserEntity user) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: SizedBox(
+        width: double.infinity,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Color(0x26D1D5DB),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Etat',
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                    fontSize: 13,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500),
+              ),
+              Text(
+                user.isActive ? 'Actif' : 'Inactif',
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                    fontSize: 20,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding updateButton(UserEntity user) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: ElevatedButton(
+        onPressed: () async {
+          Navigator.push(
+            // ignore: use_build_context_synchronously
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfilUpdate(
+                userId: user.id,
+                userName: user.fullname,
+                userPhone: user.phonenumber,
+                userEmail: user.email,
+              ),
+            ),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          backgroundColor: const Color(0xFF2FA9A2),
+        ),
+        child: Text(
+          'Modifier',
+          style: const TextStyle(
+            fontSize: 15,
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ),

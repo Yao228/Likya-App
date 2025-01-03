@@ -12,9 +12,25 @@ class _InviteFriendState extends State<InviteFriend> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Search Contacts"),
+        title: Text(
+          "Invité un ami",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
-      body: Center(),
+      body: Center(
+        child: Text(
+          "Invité un ami",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
     );
   }
 }

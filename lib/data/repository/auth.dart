@@ -55,19 +55,21 @@ class AuthRepositoryImpl extends AuthRepository {
 
   @override
   Future<Either<dynamic, dynamic>> getUser() async {
-    try {
-      String? userJson =
+    Either result = await sl<AuthApiService>().getUser();
+    return result.fold((error) {
+      return Left(error);
+    }, (data) {
+      Response response = data;
+      var userModel = UserModel.fromMap(response.data);
+      var userEntity = userModel.toEntity();
+      return Right(userEntity);
+    });
+    /*String? userJson =
           await LocalStorageService.getString(LocalStorageService.userDetail);
       if (userJson == null) {
         return Left("Utilisateur non trouvés");
       }
-      Map<String, dynamic> userMap = jsonDecode(userJson);
-      var userModel = UserModel.fromMap(userMap);
-      var userEntity = userModel.toEntity();
-      return Right(userEntity);
-    } catch (e) {
-      return Left("Erreur d'analyse des données utilisateur: ${e.toString()}");
-    }
+      Map<String, dynamic> userMap = jsonDecode(userJson);*/
   }
 
   @override

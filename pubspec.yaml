@@ -61,8 +61,7 @@ dependencies:
   percent_indicator: ^4.2.4
   loading_indicator: ^3.1.1
   url_launcher: ^6.3.1
-  contacts_service: ^0.6.3
-  permission_handler: ^11.3.1
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
