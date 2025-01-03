@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:ionicons/ionicons.dart';
 
 class CallSupport extends StatefulWidget {
@@ -50,7 +51,7 @@ class _CallSupportState extends State<CallSupport> {
       child: Text(
         'Bonjour, Comment pouvons-nous vous aider ?',
         style: TextStyle(
-          fontSize: 24,
+          fontSize: 22,
           fontWeight: FontWeight.bold,
         ),
         textAlign: TextAlign.center,
@@ -90,7 +91,10 @@ class _CallSupportState extends State<CallSupport> {
               vertical: 12,
             ),
           ),
-          onPressed: () {},
+          onPressed: () async {
+            FlutterPhoneDirectCaller.callNumber('002250777214886');
+            //launch('tel:002250777214886');
+          },
           icon: const Icon(
             Ionicons.call_outline,
             size: 28,
