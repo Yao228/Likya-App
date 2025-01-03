@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CallSupport extends StatefulWidget {
   const CallSupport({super.key});
@@ -10,6 +10,20 @@ class CallSupport extends StatefulWidget {
 }
 
 class _CallSupportState extends State<CallSupport> {
+  void _makePhoneCall() async {
+    final Uri url = Uri.parse('tel:002250777274886');
+    if (!await launchUrl(url)) {
+      throw 'Could not make the phone call';
+    }
+  }
+
+  void _makeWhatsAppCall(String phoneNumber) async {
+    final Uri whatsappUrl = Uri.parse('https://wa.me/$phoneNumber');
+    if (!await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication)) {
+      throw 'Could not launch WhatsApp';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,10 +105,7 @@ class _CallSupportState extends State<CallSupport> {
               vertical: 12,
             ),
           ),
-          onPressed: () async {
-            FlutterPhoneDirectCaller.callNumber('002250777214886');
-            //launch('tel:002250777214886');
-          },
+          onPressed: _makePhoneCall,
           icon: const Icon(
             Ionicons.call_outline,
             size: 28,
@@ -131,7 +142,9 @@ class _CallSupportState extends State<CallSupport> {
               vertical: 12,
             ),
           ),
-          onPressed: () {},
+          onPressed: () {
+            _makeWhatsAppCall('002250777274886');
+          },
           icon: const Icon(
             Ionicons.logo_whatsapp,
             size: 28,

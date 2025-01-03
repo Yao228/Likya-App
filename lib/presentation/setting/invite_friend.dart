@@ -10,6 +10,11 @@ class InviteFriend extends StatefulWidget {
 class _InviteFriendState extends State<InviteFriend> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Search Contacts"),
+      ),
+      body: Center(),
+    );
   }
 }
