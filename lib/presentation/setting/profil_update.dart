@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:likya_app/common/bloc/button/button_state.dart';
+import 'package:likya_app/common/bloc/button/button_state_cubit.dart';
+import 'package:likya_app/data/models/update_user_req.dart';
+import 'package:likya_app/domain/usecases/update_user.dart';
+import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/utils.dart';
 import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
 
 class ProfilUpdate extends StatefulWidget {
   final dynamic userId;
   final dynamic userName;
-  //final dynamic userPhone;
   final dynamic userEmail;
 
   const ProfilUpdate(
       {required this.userId,
       required this.userName,
-      //required this.userPhone,
       required this.userEmail,
       super.key});
 
@@ -21,6 +28,8 @@ class ProfilUpdate extends StatefulWidget {
 }
 
 class _ProfilUpdateState extends State<ProfilUpdate> {
+  bool _userUpdateSuccess = false;
+
   File? _image;
 
   final ImagePicker _picker = ImagePicker();
@@ -28,26 +37,29 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
   Future<void> _pickImage() async {
     final XFile? pickedFile =
         await _picker.pickImage(source: ImageSource.gallery);
+
     if (pickedFile != null) {
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName = pickedFile.name;
+      final savedImage =
+          await File(pickedFile.path).copy('${appDir.path}/$fileName');
+
       setState(() {
-        _image = File(pickedFile.path);
+        _image = savedImage;
       });
     }
   }
 
   final _formKey = GlobalKey<FormState>();
   final FocusNode _focusNode1 = FocusNode();
-  /*final FocusNode _focusNode2 = FocusNode();*/
   final FocusNode _focusNode3 = FocusNode();
   final name = TextEditingController();
-  /*final phone = TextEditingController();*/
   final email = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     name.text = widget.userName ?? '';
-    /*phone.text = widget.userPhone ?? '';*/
     email.text = widget.userEmail ?? '';
   }
 
@@ -88,42 +100,64 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
                   SizedBox(height: 15),
                   userName(),
                   SizedBox(height: 15),
-                  /*userPhone(),
-                  SizedBox(height: 15),*/
                   userEmail(),
+                  if (_userUpdateSuccess) updateUserSuccess(),
                 ],
               ),
             ),
           ),
         ),
       ),
-      bottomSheet: Container(
-        color: Colors.white,
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 5,
-        ),
-        child: ElevatedButton(
-          onPressed: () {
-            /*Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfilUpdate()),
-            );*/
+      bottomSheet: BlocProvider(
+        create: (context) => ButtonStateCubit(),
+        child: BlocListener<ButtonStateCubit, ButtonState>(
+          listener: (context, state) {
+            if (state is ButtonSuccessState) {
+              setState(() {
+                _userUpdateSuccess = true;
+              });
+            }
+            if (state is ButtonFailureState) {
+              var snackBar = SnackBar(content: Text(state.errorMessage));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
           },
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
+          child: Container(
+            color: Colors.white,
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 5,
             ),
-            backgroundColor: const Color(0xFF2FA9A2),
-          ),
-          child: Text(
-            'Mettre à jour',
-            style: const TextStyle(
-              fontSize: 15,
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-            ),
+            child: Builder(builder: (context) {
+              return ElevatedButton(
+                onPressed: () {
+                  context.read<ButtonStateCubit>().excute(
+                        usecase: sl<UpdateUserUseCase>(),
+                        params: UpdateUserReqParams(
+                            fullname: name.text,
+                            attributes: {
+                              "email": email.text,
+                              "avatar": _image
+                            }),
+                      );
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  backgroundColor: const Color(0xFF2FA9A2),
+                ),
+                child: Text(
+                  'Mettre à jour',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              );
+            }),
           ),
         ),
       ),
@@ -141,15 +175,18 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
             CircleAvatar(
               radius: 50,
               backgroundColor: Color(0xFF03544F),
-              child: Text(
-                getInitials(widget.userName),
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                  fontFamily: 'Righteous',
-                ),
-              ),
+              backgroundImage: _image != null ? FileImage(_image!) : null,
+              child: _image == null
+                  ? Text(
+                      getInitials(widget.userName),
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        fontFamily: 'Righteous',
+                      ),
+                    )
+                  : null,
             ),
           ],
         ),
@@ -189,41 +226,7 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
       ]),
     );
   }
-/*
-  Padding userPhone() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text(
-          'Numéro de téléphone',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        TextFormField(
-          style: const TextStyle(fontSize: 18, color: Colors.black),
-          keyboardType: TextInputType.number,
-          controller: phone,
-          focusNode: _focusNode2,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 8,
-            ),
-          ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Requis';
-            }
-            return null;
-          },
-        ),
-      ]),
-    );
-  }
-*/
+
   Padding userEmail() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -259,7 +262,6 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
     );
   }
 
-
   Padding uploadFile() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -273,6 +275,29 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
             fontWeight: FontWeight.w600,
           ),
         ),
+      ),
+    );
+  }
+
+  Padding updateUserSuccess() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Mise à jour du profil réussi',
+            style: TextStyle(
+              fontSize: 18,
+              color: Color(0xFF008000),
+            ),
+            textAlign: TextAlign.center,
+          ),
+          Icon(
+            Ionicons.checkmark,
+            color: Color(0xFF008000),
+          ),
+        ],
       ),
     );
   }

@@ -271,7 +271,6 @@ class _ProfilDetailState extends State<ProfilDetail> {
               builder: (context) => ProfilUpdate(
                 userId: user.id,
                 userName: user.fullname,
-                userPhone: user.phonenumber,
                 userEmail: user.email,
               ),
             ),

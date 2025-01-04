@@ -64,12 +64,6 @@ class AuthRepositoryImpl extends AuthRepository {
       var userEntity = userModel.toEntity();
       return Right(userEntity);
     });
-    /*String? userJson =
-          await LocalStorageService.getString(LocalStorageService.userDetail);
-      if (userJson == null) {
-        return Left("Utilisateur non trouvés");
-      }
-      Map<String, dynamic> userMap = jsonDecode(userJson);*/
   }
 
   @override
