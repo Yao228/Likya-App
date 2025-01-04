@@ -1,33 +1,29 @@
 class CollectEntity {
   final String id;
+  final Map<String, dynamic> userDict;
   final String title;
   final double targetAmount;
   final String description;
-  final Object categoryIds;
+  final List<dynamic> categories;
   final bool access;
   final String startDate;
   final String endDate;
-  final Object contributors;
+  final List<dynamic> contributors;
   final String status;
   final String linkId;
   final String collectId;
-  final Object createdBy;
-  final String createdAt;
-  final String updatedAt;
 
   CollectEntity({
     required this.id,
+    required this.userDict,
     required this.contributors,
     required this.status,
     required this.linkId,
     required this.collectId,
-    required this.createdBy,
-    required this.createdAt,
-    required this.updatedAt,
     required this.title,
     required this.targetAmount,
     required this.description,
-    required this.categoryIds,
+    required this.categories,
     required this.access,
     required this.startDate,
     required this.endDate,

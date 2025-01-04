@@ -64,11 +64,11 @@ class CollectApiServiceImpl extends CollectApiService {
     try {
       var token =
           await LocalStorageService.getString(LocalStorageService.token);
-      var collectID =
+      var collectId =
           await LocalStorageService.getString(LocalStorageService.collectId);
 
       var response = await sl<DioClient>().get(
-        '${ApiUrls.collects}/$collectID',
+        '${ApiUrls.collects}/$collectId',
         options: Options(
           headers: {'Authorization': 'Bearer $token'},
         ),

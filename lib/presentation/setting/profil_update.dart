@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,6 +13,7 @@ import 'package:likya_app/utils/utils.dart';
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class ProfilUpdate extends StatefulWidget {
   final dynamic userId;
@@ -29,6 +32,7 @@ class ProfilUpdate extends StatefulWidget {
 
 class _ProfilUpdateState extends State<ProfilUpdate> {
   bool _userUpdateSuccess = false;
+  bool _userUpdateLoading = false;
 
   File? _image;
 
@@ -101,7 +105,9 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
                   userName(),
                   SizedBox(height: 15),
                   userEmail(),
+                  SizedBox(height: 15),
                   if (_userUpdateSuccess) updateUserSuccess(),
+                  if (_userUpdateLoading) updateUserLoading(),
                 ],
               ),
             ),
@@ -112,11 +118,19 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
         create: (context) => ButtonStateCubit(),
         child: BlocListener<ButtonStateCubit, ButtonState>(
           listener: (context, state) {
+            if (state is ButtonLoadingState) {
+              setState(() {
+                _userUpdateSuccess = false;
+                _userUpdateLoading = true;
+              });
+            }
             if (state is ButtonSuccessState) {
               setState(() {
+                _userUpdateLoading = false;
                 _userUpdateSuccess = true;
               });
             }
+
             if (state is ButtonFailureState) {
               var snackBar = SnackBar(content: Text(state.errorMessage));
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -131,16 +145,42 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
             ),
             child: Builder(builder: (context) {
               return ElevatedButton(
-                onPressed: () {
-                  context.read<ButtonStateCubit>().excute(
-                        usecase: sl<UpdateUserUseCase>(),
-                        params: UpdateUserReqParams(
+                onPressed: () async {
+                  if (_image != null) {
+                    final uniqueFilename = const Uuid().v4();
+                    final fileExtension = _image!.path.split('.').last;
+                    final uniqueFilePath = '$uniqueFilename.$fileExtension';
+
+                    final bytes = await _image!.readAsBytes();
+
+                    final directory = await getApplicationDocumentsDirectory();
+                    final filePath = '${directory.path}/$uniqueFilePath';
+                    final file = File(filePath);
+                    await file.writeAsBytes(bytes);
+
+                    final base64Image = base64Encode(bytes);
+
+                    context.read<ButtonStateCubit>().excute(
+                          usecase: sl<UpdateUserUseCase>(),
+                          params: UpdateUserReqParams(
                             fullname: name.text,
                             attributes: {
                               "email": email.text,
-                              "avatar": _image
-                            }),
-                      );
+                              "avatar": filePath,
+                            },
+                          ),
+                        );
+                  } else {
+                    context.read<ButtonStateCubit>().excute(
+                          usecase: sl<UpdateUserUseCase>(),
+                          params: UpdateUserReqParams(
+                            fullname: name.text,
+                            attributes: {
+                              "email": email.text,
+                            },
+                          ),
+                        );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -287,6 +327,29 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
         children: [
           Text(
             'Mise à jour du profil réussi',
+            style: TextStyle(
+              fontSize: 18,
+              color: Color(0xFF008000),
+            ),
+            textAlign: TextAlign.center,
+          ),
+          Icon(
+            Ionicons.checkmark,
+            color: Color(0xFF008000),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Padding updateUserLoading() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Profil en cours de mise à jour',
             style: TextStyle(
               fontSize: 18,
               color: Color(0xFF008000),

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:likya_app/common/widgets/contributor_item.dart';
+import 'package:likya_app/domain/entities/collect.dart';
 import 'package:likya_app/presentation/collects/bloc/collect_display_cubit.dart';
 import 'package:likya_app/presentation/collects/bloc/collect_display_state.dart';
 import 'package:likya_app/presentation/contributors/add_contributors.dart';
@@ -19,6 +20,21 @@ class DetailFundRaisingPage extends StatefulWidget {
 }
 
 class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
+  String collectStatus(status) {
+    switch (status) {
+      case 'reject':
+        return 'Rejetée';
+      case 'validate':
+        return 'Validée';
+      case 'completed':
+        return 'Complètée';
+      case 'in progress':
+        return 'En cours';
+      default:
+        return 'En attente';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,44 +48,45 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
           ),
         ),
       ),
-      body: BlocProvider(
-        create: (context) => CollectDisplayCubit()..displayCollect(),
-        child: BlocBuilder<CollectDisplayCubit, CollectDisplayState>(
+      body: SafeArea(
+        child: BlocProvider(
+          create: (context) => CollectDisplayCubit()..displayCollect(),
+          child: BlocBuilder<CollectDisplayCubit, CollectDisplayState>(
             builder: (context, state) {
-          if (state is CollectLoading) {
-            return const CircularProgressIndicator();
-          }
-          if (state is CollectLoaded) {
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 0,
+              if (state is CollectLoading) {
+                return const CircularProgressIndicator();
+              }
+              if (state is CollectLoaded) {
+                return SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 0,
+                    ),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 10),
+                        collectBox(state.collectEntity),
+                        collectButtons(),
+                        const SizedBox(height: 10),
+                        collectDesc(state.collectEntity),
+                        const SizedBox(height: 20),
+                        collectContributorsTitle(),
+                        const SizedBox(height: 15),
+                        collectContributors(),
+                        const SizedBox(height: 5),
+                      ],
+                    ),
                   ),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 10),
-                      collectBox(),
-                      collectButtons(),
-                      const SizedBox(height: 10),
-                      collectDesc(),
-                      const SizedBox(height: 20),
-                      collectContributorsTitle(),
-                      const SizedBox(height: 15),
-                      collectContributors(),
-                      const SizedBox(height: 5),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }
-          if (state is LoadCollectFailure) {
-            return Text(state.errorMessage);
-          }
-          return Text('error');
-        }),
+                );
+              }
+              if (state is LoadCollectFailure) {
+                return Text(state.errorMessage);
+              }
+              return Text('Error');
+            },
+          ),
+        ),
       ),
       bottomSheet: Container(
         color: Colors.white,
@@ -125,13 +142,13 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
     );
   }
 
-  Padding collectDesc() {
+  Padding collectDesc(CollectEntity collect) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Align(
         alignment: Alignment.center,
         child: Text(
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+          collect.description,
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w500,
@@ -340,7 +357,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
     );
   }
 
-  Padding collectBox() {
+  Padding collectBox(CollectEntity collect) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Container(
@@ -356,11 +373,11 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
         child: Column(
           children: [
             Text(
-              "Pending",
+              collectStatus(collect.status),
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFFF4111F),
+                color: Colors.white,
               ),
               textAlign: TextAlign.center,
             ),
@@ -380,7 +397,9 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                       ),
                     ),
                     Text(
-                      "150 000 FCFA",
+                      NumberFormat.currency(
+                              locale: 'fr_FR', symbol: 'FCFA', decimalDigits: 0)
+                          .format(collect.targetAmount),
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w900,
@@ -431,7 +450,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                       children: [
                         Text(
                           DateFormat('dd/MM/yy')
-                              .format(DateTime.parse('2024-12-30')),
+                              .format(DateTime.parse(collect.startDate)),
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -442,7 +461,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                         SizedBox(width: 2),
                         Text(
                           DateFormat('dd/MM/yy')
-                              .format(DateTime.parse('2024-12-30')),
+                              .format(DateTime.parse(collect.endDate)),
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -456,7 +475,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Privée",
+                      collect.access ? 'Public' : 'Privé',
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w800,

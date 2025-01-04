@@ -41,8 +41,7 @@ class CollectRepositoryImpl extends CollectRepository {
       },
       (data) {
         Response response = data;
-        Map<String, dynamic> collectMap = jsonDecode(response.data);
-        var collectModel = CollectModel.fromMap(collectMap);
+        var collectModel = CollectModel.fromMap(response.data);
         var collectEntity = collectModel.toEntity();
         return Right(collectEntity);
       },

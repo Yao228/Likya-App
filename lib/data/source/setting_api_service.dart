@@ -19,7 +19,7 @@ class SettingApiServiceImpl extends SettingApiService {
       var userID =
           await LocalStorageService.getString(LocalStorageService.userId);
 
-      var response = await sl<DioClient>().put(
+      var response = await sl<DioClient>().patch(
         '${ApiUrls.users}/$userID',
         data: updateUserReq.toMap(),
         options: Options(

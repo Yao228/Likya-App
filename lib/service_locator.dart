@@ -6,6 +6,7 @@ import 'package:likya_app/data/repository/setting.dart';
 import 'package:likya_app/data/source/auth_api_service.dart';
 import 'package:likya_app/data/source/auth_local_service.dart';
 import 'package:likya_app/data/source/collect_api_service.dart';
+import 'package:likya_app/data/source/setting_api_service.dart';
 import 'package:likya_app/domain/repository/auth.dart';
 import 'package:likya_app/domain/repository/collect.dart';
 import 'package:likya_app/domain/repository/setting.dart';
@@ -31,6 +32,8 @@ void setupServiceLocator() {
   sl.registerSingleton<AuthApiService>(AuthApiServiceImpl());
 
   sl.registerSingleton<CollectApiService>(CollectApiServiceImpl());
+
+  sl.registerSingleton<SettingApiService>(SettingApiServiceImpl());
 
   sl.registerSingleton<AuthLocalService>(AuthLocalServiceImpl());
 
