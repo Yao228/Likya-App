@@ -161,8 +161,10 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
                     final file = File(filePath);
                     await file.writeAsBytes(bytes);
 
+                    // ignore: unused_local_variable
                     final base64Image = base64Encode(bytes);
 
+                    // ignore: use_build_context_synchronously
                     context.read<ButtonStateCubit>().excute(
                           usecase: sl<UpdateUserUseCase>(),
                           params: UpdateUserReqParams(
