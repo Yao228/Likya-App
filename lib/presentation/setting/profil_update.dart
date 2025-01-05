@@ -19,12 +19,15 @@ class ProfilUpdate extends StatefulWidget {
   final dynamic userId;
   final dynamic userName;
   final dynamic userEmail;
+  final dynamic userAvatar;
 
-  const ProfilUpdate(
-      {required this.userId,
-      required this.userName,
-      required this.userEmail,
-      super.key});
+  const ProfilUpdate({
+    required this.userId,
+    required this.userName,
+    required this.userEmail,
+    required this.userAvatar,
+    super.key,
+  });
 
   @override
   State<ProfilUpdate> createState() => _ProfilUpdateState();
@@ -209,25 +212,25 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 90, vertical: 30),
       child: Center(
-        // Added Center widget to center the avatar
         child: Column(
           children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundColor: Color(0xFF03544F),
-              backgroundImage: _image != null ? FileImage(_image!) : null,
-              child: _image == null
-                  ? Text(
-                      getInitials(widget.userName),
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                        fontFamily: 'Righteous',
-                      ),
-                    )
-                  : null,
-            ),
+            _image != null
+                ? CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Color(0xFF03544F),
+                    backgroundImage: FileImage(_image!),
+                  )
+                : userAvatar(widget.userName, widget.userAvatar, 50, 32),
+            if (_image == null)
+              Text(
+                getInitials(widget.userName),
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  fontFamily: 'Righteous',
+                ),
+              ),
           ],
         ),
       ),

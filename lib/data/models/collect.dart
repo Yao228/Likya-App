@@ -2,7 +2,7 @@ import 'package:likya_app/domain/entities/collect.dart';
 
 class CollectModel {
   final String id;
-  final Map<String, dynamic> userDict; // Changed type here
+  final Map<String, dynamic> userDict;
   final String title;
   final double targetAmount;
   final String description;
@@ -56,7 +56,7 @@ class CollectModel {
       title: map['title'] as String,
       description: map['description'] as String,
       targetAmount: map['target_amount'] as double,
-      categories: map['category_ids'] as List<dynamic>? ?? [],
+      categories: map['categories'] as List<dynamic>? ?? [],
       access: map['access'] as bool,
       startDate: map['start_date'] as String,
       endDate: map['end_date'] as String,

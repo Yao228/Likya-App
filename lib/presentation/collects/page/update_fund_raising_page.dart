@@ -3,20 +3,36 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:likya_app/common/bloc/button/button_state.dart';
 import 'package:likya_app/common/bloc/button/button_state_cubit.dart';
 import 'package:likya_app/common/widgets/button/basic_app_button.dart';
-import 'package:likya_app/data/models/add_collect_req.dart';
+import 'package:likya_app/data/models/update_collect_req.dart';
 import 'package:likya_app/data/source/api_service.dart';
-import 'package:likya_app/domain/usecases/add_collect.dart';
-import 'package:likya_app/presentation/collects/page/list_fund_raising_page.dart';
+import 'package:likya_app/domain/usecases/update_collect.dart';
+import 'package:likya_app/presentation/collects/page/detail_fund_raising_page.dart';
 import 'package:likya_app/service_locator.dart';
 
-class CreateFundRaisingPage extends StatefulWidget {
-  const CreateFundRaisingPage({super.key});
+class UpdateFundRaisingPage extends StatefulWidget {
+  final String id;
+  final String title;
+  final double amount;
+  final String start;
+  final String end;
+  final String categoryId;
+  final String description;
+
+  const UpdateFundRaisingPage(
+      {required this.id,
+      required this.title,
+      required this.amount,
+      required this.start,
+      required this.end,
+      required this.categoryId,
+      required this.description,
+      super.key});
 
   @override
-  State<CreateFundRaisingPage> createState() => _CreateFundRaisingPageState();
+  State<UpdateFundRaisingPage> createState() => _UpdateFundRaisingPageState();
 }
 
-class _CreateFundRaisingPageState extends State<CreateFundRaisingPage> {
+class _UpdateFundRaisingPageState extends State<UpdateFundRaisingPage> {
   final _formKey = GlobalKey<FormState>();
   final FocusNode _focusNode1 = FocusNode();
   final FocusNode _focusNode2 = FocusNode();
@@ -37,6 +53,12 @@ class _CreateFundRaisingPageState extends State<CreateFundRaisingPage> {
   void initState() {
     super.initState();
     fetchCategories();
+    title.text = widget.title;
+    targetAmount.text = widget.amount.toString();
+    description.text = widget.description;
+    dateStart.text = widget.start;
+    dateEnd.text = widget.end;
+    selectedCategoryId = widget.categoryId;
   }
 
   Future<void> fetchCategories() async {
@@ -95,8 +117,8 @@ class _CreateFundRaisingPageState extends State<CreateFundRaisingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Créer une cagnotte',
+        title: Text(
+          widget.title,
           style: TextStyle(
             color: Colors.black,
             fontSize: 18,
@@ -112,7 +134,10 @@ class _CreateFundRaisingPageState extends State<CreateFundRaisingPage> {
             if (state is ButtonSuccessState) {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (context) => ListFundRaisingPage(),
+                  builder: (context) => DetailFundRaisingPage(
+                    collectID: widget.id,
+                    title: widget.title,
+                  ),
                 ),
               );
             }
@@ -161,20 +186,17 @@ class _CreateFundRaisingPageState extends State<CreateFundRaisingPage> {
       child: Builder(
         builder: (context) {
           return BasicAppButton(
-            title: 'Suivant',
+            title: 'Modifier la cagnotte',
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 // ignore: use_build_context_synchronously
                 context.read<ButtonStateCubit>().excute(
-                    usecase: sl<AddCollectUseCase>(),
-                    params: AddCollectReqParams(
-                      title: title.text,
+                    usecase: sl<UpdateCollectUseCase>(),
+                    params: UpdateCollectReqParams(
                       targetAmount: int.parse(targetAmount.text),
-                      description: description.text,
+                      title: title.text,
                       categoryIds: [selectedCategoryId],
-                      access: true,
-                      startDate: dateStart.text,
-                      endDate: dateEnd.text,
+                      description: description.text,
                     ));
               } else {
                 // ignore: use_build_context_synchronously
@@ -262,7 +284,7 @@ class _CreateFundRaisingPageState extends State<CreateFundRaisingPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text(
+        Text(
           'Description',
           style: TextStyle(
             fontSize: 16,

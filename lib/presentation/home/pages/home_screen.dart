@@ -402,19 +402,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: onAvatarTap,
       child: Stack(
         children: [
-          CircleAvatar(
-            radius: 20,
-            backgroundColor: Color(0xFF03544F),
-            child: Text(
-              getInitials(user.fullname ?? 'Unknown'),
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-                fontFamily: 'Righteous',
-              ),
-            ),
-          ),
+          userAvatar(user.fullname, user.attributes["avatar"], 20, 20),
           Positioned(
             right: 0,
             bottom: 0,

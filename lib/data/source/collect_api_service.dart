@@ -2,19 +2,21 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:likya_app/core/constants/api_urls.dart';
 import 'package:likya_app/core/network/doi_client.dart';
-import 'package:likya_app/data/models/collect_req.dart';
+import 'package:likya_app/data/models/add_collect_req.dart';
+import 'package:likya_app/data/models/update_collect_req.dart';
 import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/local_storage_service.dart';
 
 abstract class CollectApiService {
-  Future<Either> collect(CollectReqParams collectReq);
+  Future<Either> addCollect(AddCollectReqParams collectReq);
+  Future<Either> updateCollect(UpdateCollectReqParams collectReq);
   Future<Either> getCollects();
   Future<Either> getCollect();
 }
 
 class CollectApiServiceImpl extends CollectApiService {
   @override
-  Future<Either> collect(CollectReqParams collectReq) async {
+  Future<Either> addCollect(AddCollectReqParams collectReq) async {
     try {
       var token =
           await LocalStorageService.getString(LocalStorageService.token);
@@ -25,6 +27,25 @@ class CollectApiServiceImpl extends CollectApiService {
           queryParameters: {
             'user_id': userID,
           },
+          data: collectReq.toMap(),
+          options: Options(headers: {
+            'Authorization': 'Bearer $token',
+          }));
+      return Right(response);
+    } on DioException catch (e) {
+      return Left(e.response!.data['message_error']);
+    }
+  }
+
+  @override
+  Future<Either> updateCollect(UpdateCollectReqParams collectReq) async {
+    try {
+      var token =
+          await LocalStorageService.getString(LocalStorageService.token);
+      var collectId =
+          await LocalStorageService.getString(LocalStorageService.collectId);
+
+      var response = await sl<DioClient>().put('${ApiUrls.collects}/$collectId',
           data: collectReq.toMap(),
           options: Options(headers: {
             'Authorization': 'Bearer $token',

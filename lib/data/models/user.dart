@@ -7,7 +7,7 @@ class UserModel {
   String? email;
   final Object role;
   final bool isActive;
-  final Object attributes;
+  Map<String, dynamic> attributes;
 
   UserModel({
     required this.id,
@@ -35,9 +35,9 @@ class UserModel {
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       id: map['_id'] as String,
-      fullname: map['fullname'] as String? ?? 'Non défini',
+      fullname: map['fullname'] as String? ?? '',
       phonenumber: map['phonenumber'] as String,
-      email: map['email'] as String? ?? 'Non défini',
+      email: map['email'] as String?,
       role: map['role'] ?? {},
       isActive: map['is_active'] as bool? ?? false,
       attributes: map['attributes'] as Map<String, dynamic>? ?? {},

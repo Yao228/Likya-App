@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:likya_app/presentation/collects/page/detail_fund_raising_page.dart';
 import 'package:likya_app/utils/local_storage_service.dart';
+import 'package:likya_app/utils/utils.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 Widget collectItem(
@@ -128,11 +129,11 @@ Widget collectItem(
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
                 Text(
-                  status,
+                  collectStatus(status),
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: status == 'Completed' ? Colors.green : Colors.red,
+                    color: statusColor(status),
                   ),
                 ),
               ],
@@ -144,8 +145,11 @@ Widget collectItem(
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => DetailFundRaisingPage(
-                          collectID: collectID, title: title)),
+                    builder: (context) => DetailFundRaisingPage(
+                      collectID: collectID,
+                      title: title,
+                    ),
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(

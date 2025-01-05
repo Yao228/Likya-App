@@ -5,7 +5,7 @@ class UserEntity {
   String? email;
   final Object role;
   final bool isActive;
-  final Object attributes;
+  Map<String, dynamic> attributes;
 
   UserEntity({
     required this.id,

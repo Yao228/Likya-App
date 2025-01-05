@@ -6,7 +6,9 @@ import 'package:likya_app/common/widgets/contributor_item.dart';
 import 'package:likya_app/domain/entities/collect.dart';
 import 'package:likya_app/presentation/collects/bloc/collect_display_cubit.dart';
 import 'package:likya_app/presentation/collects/bloc/collect_display_state.dart';
+import 'package:likya_app/presentation/collects/page/update_fund_raising_page.dart';
 import 'package:likya_app/presentation/contributors/add_contributors.dart';
+import 'package:likya_app/utils/utils.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class DetailFundRaisingPage extends StatefulWidget {
@@ -20,21 +22,6 @@ class DetailFundRaisingPage extends StatefulWidget {
 }
 
 class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
-  String collectStatus(status) {
-    switch (status) {
-      case 'reject':
-        return 'Rejetée';
-      case 'validate':
-        return 'Validée';
-      case 'completed':
-        return 'Complètée';
-      case 'in progress':
-        return 'En cours';
-      default:
-        return 'En attente';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,7 +54,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                       children: [
                         const SizedBox(height: 10),
                         collectBox(state.collectEntity),
-                        collectButtons(),
+                        collectButtons(state.collectEntity),
                         const SizedBox(height: 10),
                         collectDesc(state.collectEntity),
                         const SizedBox(height: 20),
@@ -238,7 +225,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
     );
   }
 
-  Padding collectButtons() {
+  Padding collectButtons(CollectEntity collect) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2),
       child: Row(
@@ -317,7 +304,22 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
             ),
           ),
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UpdateFundRaisingPage(
+                    id: collect.id,
+                    title: collect.title,
+                    amount: collect.targetAmount,
+                    start: collect.startDate,
+                    end: collect.endDate,
+                    categoryId: collect.categories[0]["_id"],
+                    description: collect.description,
+                  ),
+                ),
+              );
+            },
             child: Column(
               children: [
                 Container(
@@ -374,10 +376,10 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
           children: [
             Text(
               collectStatus(collect.status),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
-                color: Colors.white,
+                color: statusColor(collect.status),
               ),
               textAlign: TextAlign.center,
             ),

@@ -93,20 +93,7 @@ class _ProfilDetailState extends State<ProfilDetail> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 90, vertical: 30),
       child: Center(
-        // Added Center widget to center the avatar
-        child: CircleAvatar(
-          radius: 50,
-          backgroundColor: Color(0xFF03544F),
-          child: Text(
-            getInitials(user.fullname ?? 'Unknown'),
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              fontFamily: 'Righteous',
-            ),
-          ),
-        ),
+        child: userAvatar(user.fullname, user.attributes["avatar"], 50, 32),
       ),
     );
   }
@@ -208,7 +195,7 @@ class _ProfilDetailState extends State<ProfilDetail> {
                     fontWeight: FontWeight.w500),
               ),
               Text(
-                user.email ?? 'Unknown',
+                user.email ?? user.attributes['email'],
                 textAlign: TextAlign.left,
                 style: const TextStyle(
                     fontSize: 20,
@@ -271,7 +258,8 @@ class _ProfilDetailState extends State<ProfilDetail> {
               builder: (context) => ProfilUpdate(
                 userId: user.id,
                 userName: user.fullname,
-                userEmail: user.email,
+                userEmail: user.email ?? user.attributes['email'],
+                userAvatar: user.attributes["avatar"],
               ),
             ),
           );

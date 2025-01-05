@@ -10,7 +10,7 @@ import 'package:likya_app/data/source/setting_api_service.dart';
 import 'package:likya_app/domain/repository/auth.dart';
 import 'package:likya_app/domain/repository/collect.dart';
 import 'package:likya_app/domain/repository/setting.dart';
-import 'package:likya_app/domain/usecases/collect.dart';
+import 'package:likya_app/domain/usecases/add_collect.dart';
 import 'package:likya_app/domain/usecases/get_collect.dart';
 import 'package:likya_app/domain/usecases/get_collects.dart';
 import 'package:likya_app/domain/usecases/get_user.dart';
@@ -21,6 +21,7 @@ import 'package:likya_app/domain/usecases/password_request.dart';
 import 'package:likya_app/domain/usecases/password_reset.dart';
 import 'package:likya_app/domain/usecases/resend_otp.dart';
 import 'package:likya_app/domain/usecases/signup.dart';
+import 'package:likya_app/domain/usecases/update_collect.dart';
 import 'package:likya_app/domain/usecases/update_user.dart';
 import 'package:likya_app/domain/usecases/verify_otp.dart';
 
@@ -59,7 +60,9 @@ void setupServiceLocator() {
 
   sl.registerSingleton<PasswordResetUseCase>(PasswordResetUseCase());
 
-  sl.registerSingleton<CollectUseCase>(CollectUseCase());
+  sl.registerSingleton<AddCollectUseCase>(AddCollectUseCase());
+
+  sl.registerSingleton<UpdateCollectUseCase>(UpdateCollectUseCase());
 
   sl.registerSingleton<GetCollectsUseCase>(GetCollectsUseCase());
 
