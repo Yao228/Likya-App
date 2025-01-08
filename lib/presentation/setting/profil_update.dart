@@ -6,8 +6,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:likya_app/common/bloc/button/button_state.dart';
 import 'package:likya_app/common/bloc/button/button_state_cubit.dart';
+import 'package:likya_app/common/widgets/button/basic_app_button.dart';
 import 'package:likya_app/data/models/update_user_req.dart';
 import 'package:likya_app/domain/usecases/update_user.dart';
+import 'package:likya_app/presentation/setting/profil_detail.dart';
 import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/utils.dart';
 import 'dart:io';
@@ -132,6 +134,12 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
                 _userUpdateLoading = false;
                 _userUpdateSuccess = true;
               });
+
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => ProfilDetail(),
+                ),
+              );
             }
 
             if (state is ButtonFailureState) {
@@ -147,7 +155,8 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
               vertical: 5,
             ),
             child: Builder(builder: (context) {
-              return ElevatedButton(
+              return BasicAppButton(
+                title: 'Mettre à jour le profil',
                 onPressed: () async {
                   if (_image != null) {
                     final uniqueFilename = const Uuid().v4();
@@ -163,7 +172,6 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
 
                     // ignore: unused_local_variable
                     final base64Image = base64Encode(bytes);
-
                     // ignore: use_build_context_synchronously
                     context.read<ButtonStateCubit>().excute(
                           usecase: sl<UpdateUserUseCase>(),
@@ -187,20 +195,6 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
                         );
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  backgroundColor: const Color(0xFF2FA9A2),
-                ),
-                child: Text(
-                  'Mettre à jour',
-                  style: const TextStyle(
-                    fontSize: 15,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
               );
             }),
           ),
@@ -362,7 +356,7 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
             textAlign: TextAlign.center,
           ),
           Icon(
-            Ionicons.checkmark,
+            Ionicons.ellipsis_horizontal_outline,
             color: Color(0xFF008000),
           ),
         ],

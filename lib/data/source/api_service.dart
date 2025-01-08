@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:likya_app/core/constants/api_urls.dart';
+import 'package:likya_app/utils/local_storage_service.dart';
 
 class ApiService {
   Dio dio = Dio();
@@ -39,5 +40,46 @@ class ApiService {
       return Error;
     }
     return null;
+  }
+
+  Future<List<Map<String, dynamic>>?> getContributors() async {
+    try {
+      var token =
+          await LocalStorageService.getString(LocalStorageService.token);
+      var role =
+          await LocalStorageService.getString(LocalStorageService.userRole);
+
+      Response response = await dio.get(
+        ApiUrls.users,
+        queryParameters: {
+          'active': true,
+          'sort': 'desc',
+        },
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        var data = response.data;
+        if (data != null && data["items"] is List) {
+          // Filtrer les utilisateurs par rôle et mapper les résultats
+          return (data["items"] as List)
+              .where((item) => item["role"] == role)
+              .map((item) => {
+                    "_id": item["_id"],
+                    "name": item["fullname"],
+                  })
+              .toList();
+        }
+      }
+
+      // Retourner null si aucune donnée valide n'a été trouvée
+      return null;
+    } catch (e) {
+      // Retourner une exception ou gérer l'erreur selon les besoins
+      print("Error fetching users: $e");
+      return null;
+    }
   }
 }

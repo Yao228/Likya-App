@@ -14,6 +14,11 @@ String getInitials(String name) {
   }
 }
 
+String truncateString(String text) {
+  const int maxLength = 9;
+  return text.length > maxLength ? '${text.substring(0, maxLength)}...' : text;
+}
+
 String collectStatus(status) {
   switch (status) {
     case 'reject':

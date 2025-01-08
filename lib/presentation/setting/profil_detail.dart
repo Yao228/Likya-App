@@ -124,7 +124,7 @@ class _ProfilDetailState extends State<ProfilDetail> {
                 user.fullname ?? 'Unknown',
                 textAlign: TextAlign.left,
                 style: const TextStyle(
-                    fontSize: 20,
+                    fontSize: 18,
                     color: Colors.black,
                     fontWeight: FontWeight.w700),
               ),
@@ -161,7 +161,7 @@ class _ProfilDetailState extends State<ProfilDetail> {
                 user.phonenumber,
                 textAlign: TextAlign.left,
                 style: const TextStyle(
-                    fontSize: 20,
+                    fontSize: 18,
                     color: Colors.black,
                     fontWeight: FontWeight.w700),
               ),
@@ -198,7 +198,7 @@ class _ProfilDetailState extends State<ProfilDetail> {
                 user.email ?? user.attributes['email'],
                 textAlign: TextAlign.left,
                 style: const TextStyle(
-                    fontSize: 20,
+                    fontSize: 18,
                     color: Colors.black,
                     fontWeight: FontWeight.w700),
               ),
@@ -235,7 +235,7 @@ class _ProfilDetailState extends State<ProfilDetail> {
                 user.isActive ? 'Actif' : 'Inactif',
                 textAlign: TextAlign.left,
                 style: const TextStyle(
-                    fontSize: 20,
+                    fontSize: 18,
                     color: Colors.black,
                     fontWeight: FontWeight.w700),
               ),

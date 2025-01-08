@@ -11,8 +11,10 @@ import 'package:likya_app/domain/repository/auth.dart';
 import 'package:likya_app/domain/repository/collect.dart';
 import 'package:likya_app/domain/repository/setting.dart';
 import 'package:likya_app/domain/usecases/add_collect.dart';
+import 'package:likya_app/domain/usecases/add_collects_contributors.dart';
 import 'package:likya_app/domain/usecases/get_collect.dart';
 import 'package:likya_app/domain/usecases/get_collects.dart';
+import 'package:likya_app/domain/usecases/get_contributors.dart';
 import 'package:likya_app/domain/usecases/get_user.dart';
 import 'package:likya_app/domain/usecases/is_logged_in.dart';
 import 'package:likya_app/domain/usecases/login.dart';
@@ -71,4 +73,9 @@ void setupServiceLocator() {
   sl.registerSingleton<LogoutUseCase>(LogoutUseCase());
 
   sl.registerSingleton<UpdateUserUseCase>(UpdateUserUseCase());
+
+  sl.registerSingleton<AddCollectsContributorsUseCase>(
+      AddCollectsContributorsUseCase());
+
+  sl.registerSingleton<GetContributorsUseCase>(GetContributorsUseCase());
 }

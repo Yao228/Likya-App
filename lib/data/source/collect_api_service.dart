@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:likya_app/core/constants/api_urls.dart';
 import 'package:likya_app/core/network/doi_client.dart';
 import 'package:likya_app/data/models/add_collect_req.dart';
+import 'package:likya_app/data/models/collects_contributors_req.dart';
 import 'package:likya_app/data/models/update_collect_req.dart';
 import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/local_storage_service.dart';
@@ -12,6 +13,8 @@ abstract class CollectApiService {
   Future<Either> updateCollect(UpdateCollectReqParams collectReq);
   Future<Either> getCollects();
   Future<Either> getCollect();
+  Future<Either> addContributors(CollectsContributorsReqParams contributorsReq);
+  Future<Either> getContributors();
 }
 
 class CollectApiServiceImpl extends CollectApiService {
@@ -94,6 +97,46 @@ class CollectApiServiceImpl extends CollectApiService {
           headers: {'Authorization': 'Bearer $token'},
         ),
       );
+      return Right(response);
+    } on DioException catch (e) {
+      return Left(e.response!.data['message_error']);
+    }
+  }
+
+  @override
+  Future<Either> addContributors(
+      CollectsContributorsReqParams contributorsReq) async {
+    try {
+      var token =
+          await LocalStorageService.getString(LocalStorageService.token);
+      var collectId =
+          await LocalStorageService.getString(LocalStorageService.collectId);
+
+      var response = await sl<DioClient>()
+          .post('${ApiUrls.collects}/$collectId/contributors',
+              data: contributorsReq.toMap(),
+              options: Options(headers: {
+                'Authorization': 'Bearer $token',
+              }));
+      return Right(response);
+    } on DioException catch (e) {
+      return Left(e.response!.data['message_error']);
+    }
+  }
+
+  @override
+  Future<Either> getContributors() async {
+    try {
+      var token =
+          await LocalStorageService.getString(LocalStorageService.token);
+      var collectId =
+          await LocalStorageService.getString(LocalStorageService.collectId);
+
+      var response = await sl<DioClient>()
+          .get('${ApiUrls.collects}/$collectId/contributors',
+              options: Options(headers: {
+                'Authorization': 'Bearer $token',
+              }));
       return Right(response);
     } on DioException catch (e) {
       return Left(e.response!.data['message_error']);

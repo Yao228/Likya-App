@@ -13,8 +13,6 @@ class UpdateFundRaisingPage extends StatefulWidget {
   final String id;
   final String title;
   final double amount;
-  final String start;
-  final String end;
   final String categoryId;
   final String description;
 
@@ -22,8 +20,6 @@ class UpdateFundRaisingPage extends StatefulWidget {
       {required this.id,
       required this.title,
       required this.amount,
-      required this.start,
-      required this.end,
       required this.categoryId,
       required this.description,
       super.key});
@@ -37,14 +33,10 @@ class _UpdateFundRaisingPageState extends State<UpdateFundRaisingPage> {
   final FocusNode _focusNode1 = FocusNode();
   final FocusNode _focusNode2 = FocusNode();
   final FocusNode _focusNode3 = FocusNode();
-  final FocusNode _focusNode4 = FocusNode();
-  final FocusNode _focusNode5 = FocusNode();
 
   final title = TextEditingController();
   final targetAmount = TextEditingController();
   final description = TextEditingController();
-  final dateStart = TextEditingController();
-  final dateEnd = TextEditingController();
 
   List<Map<String, dynamic>>? categories;
   String? selectedCategoryId;
@@ -54,10 +46,8 @@ class _UpdateFundRaisingPageState extends State<UpdateFundRaisingPage> {
     super.initState();
     fetchCategories();
     title.text = widget.title;
-    targetAmount.text = widget.amount.toString();
+    targetAmount.text = widget.amount.toStringAsFixed(0);
     description.text = widget.description;
-    dateStart.text = widget.start;
-    dateEnd.text = widget.end;
     selectedCategoryId = widget.categoryId;
   }
 
@@ -77,40 +67,6 @@ class _UpdateFundRaisingPageState extends State<UpdateFundRaisingPage> {
     _focusNode1.dispose();
     _focusNode2.dispose();
     _focusNode3.dispose();
-    _focusNode4.dispose();
-    _focusNode5.dispose();
-  }
-
-  Future<void> _selectStartDate(BuildContext context) async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-      locale: const Locale('fr', ''),
-    );
-
-    if (pickedDate != null) {
-      setState(() {
-        dateStart.text = "${pickedDate.toLocal()}".split(' ')[0];
-      });
-    }
-  }
-
-  Future<void> _selectEndDate(BuildContext context) async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-      locale: const Locale('fr', ''),
-    );
-
-    if (pickedDate != null) {
-      setState(() {
-        dateEnd.text = "${pickedDate.toLocal()}".split(' ')[0];
-      });
-    }
   }
 
   @override
@@ -161,8 +117,6 @@ class _UpdateFundRaisingPageState extends State<UpdateFundRaisingPage> {
                       titlefild(),
                       const SizedBox(height: 10),
                       amountfild(),
-                      const SizedBox(height: 10),
-                      datesfild(),
                       const SizedBox(height: 10),
                       categoriesField(),
                       const SizedBox(height: 10),
@@ -310,85 +264,6 @@ class _UpdateFundRaisingPageState extends State<UpdateFundRaisingPage> {
           },
         ),
       ]),
-    );
-  }
-
-  Padding datesfild() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Row(
-        crossAxisAlignment:
-            CrossAxisAlignment.start, // Assure un bon alignement vertical
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Début',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: dateStart,
-                  focusNode: _focusNode4,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "Choisir la date",
-                    suffixIcon: Icon(Icons.calendar_today),
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 8,
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Requis';
-                    }
-                    return null;
-                  },
-                  readOnly: true,
-                  onTap: () => _selectStartDate(context),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 16.0),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Fin',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: dateEnd,
-                  focusNode: _focusNode5,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "Choisir la date",
-                    suffixIcon: Icon(Icons.calendar_today),
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 8,
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Requis';
-                    }
-                    return null;
-                  },
-                  readOnly: true,
-                  onTap: () => _selectEndDate(context),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 

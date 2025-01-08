@@ -3,6 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:likya_app/data/models/collect.dart';
 import 'package:likya_app/data/models/collect_list.dart';
 import 'package:likya_app/data/models/add_collect_req.dart';
+import 'package:likya_app/data/models/collects_contributors_req.dart';
+import 'package:likya_app/data/models/contributors_list.dart';
 import 'package:likya_app/data/models/update_collect_req.dart';
 import 'package:likya_app/data/source/collect_api_service.dart';
 import 'package:likya_app/domain/repository/collect.dart';
@@ -48,6 +50,30 @@ class CollectRepositoryImpl extends CollectRepository {
         var collectModel = CollectModel.fromMap(response.data);
         var collectEntity = collectModel.toEntity();
         return Right(collectEntity);
+      },
+    );
+  }
+
+  @override
+  Future<Either> addContributors(
+      CollectsContributorsReqParams contributorsReq) async {
+    return sl<CollectApiService>().addContributors(contributorsReq);
+  }
+
+  @override
+  Future<Either> getContributors() async {
+    Either result = await sl<CollectApiService>().getContributors();
+    return result.fold(
+      (error) {
+        return Left(error);
+      },
+      (data) {
+        Response response = data;
+        var contributorsLists = (response.data["items"] as List)
+            .map((item) =>
+                ContributorsList.fromMap(item as Map<String, dynamic>))
+            .toList();
+        return Right(contributorsLists);
       },
     );
   }

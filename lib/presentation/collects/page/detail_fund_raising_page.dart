@@ -86,7 +86,12 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AddContributors()),
+              MaterialPageRoute(
+                builder: (context) => AddContributors(
+                  collectID: widget.collectID,
+                  title: widget.title,
+                ),
+              ),
             );
           },
           style: ElevatedButton.styleFrom(
@@ -312,8 +317,6 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                     id: collect.id,
                     title: collect.title,
                     amount: collect.targetAmount,
-                    start: collect.startDate,
-                    end: collect.endDate,
                     categoryId: collect.categories[0]["_id"],
                     description: collect.description,
                   ),

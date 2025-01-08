@@ -354,6 +354,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _fullname(state.userEntity),
                     _status(state.userEntity),
@@ -379,7 +380,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _fullname(UserEntity user) {
     return Text(
-      user.fullname ?? 'Unknown',
+      truncateString(user.fullname ?? 'Unknown'),
       style: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.w700,
@@ -393,7 +394,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return Text(
       user.isActive ? 'Actif' : 'Inactif',
       style: TextStyle(
-          fontSize: 13, fontWeight: FontWeight.w400, color: Color(0xFFADB3BC)),
+        fontSize: 13,
+        fontWeight: FontWeight.w400,
+        color: Color(0xFFADB3BC),
+      ),
+      textAlign: TextAlign.start,
     );
   }
 

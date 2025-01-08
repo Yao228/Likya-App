@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:likya_app/data/models/add_collect_req.dart';
+import 'package:likya_app/data/models/collects_contributors_req.dart';
 import 'package:likya_app/data/models/update_collect_req.dart';
 
 abstract class CollectRepository {
@@ -7,4 +8,6 @@ abstract class CollectRepository {
   Future<Either> updateCollect(UpdateCollectReqParams collectReq);
   Future<Either> getCollects();
   Future<Either> getCollect();
+  Future<Either> addContributors(CollectsContributorsReqParams contributorsReq);
+  Future<Either> getContributors();
 }

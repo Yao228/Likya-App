@@ -28,6 +28,7 @@ class LogoutBaseButton extends StatelessWidget {
 
   Widget _loading(BuildContext context) {
     return TextButton.icon(
+      onPressed: null,
       style: TextButton.styleFrom(
         foregroundColor: Colors.grey,
         backgroundColor: Color(0xFFCCCCCC),
@@ -40,15 +41,29 @@ class LogoutBaseButton extends StatelessWidget {
           vertical: 12,
         ),
       ),
-      onPressed: null,
-      icon: Icon(iconName, size: 28, color: Colors.black45),
-      label: Text(
-        title,
-        style: TextStyle(
-          color: Colors.black45,
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        ),
+      icon: Icon(
+        iconName,
+        size: 28,
+        color: Colors.black45,
+      ),
+      label: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              color: Colors.black45,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(
+              width: 8), // Space between the text and the loading indicator
+          CircularProgressIndicator(
+            color: Colors.white,
+            strokeWidth: 2,
+          ),
+        ],
       ),
     );
   }
