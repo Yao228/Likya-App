@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_field/intl_phone_number_field.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:likya_app/data/source/api_service.dart';
 import 'package:likya_app/presentation/auth/pages/auth_screen.dart';
 import 'package:likya_app/presentation/auth/pages/login/password_screen.dart';
+import 'package:likya_app/utils/utils.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,6 +15,8 @@ class LoginScreen extends StatefulWidget {
 
 @override
 class _LoginScreenState extends State<LoginScreen> {
+  bool _loading = false;
+
   var dialCode = "";
   final _formKey = GlobalKey<FormState>();
   final FocusNode _focusNode1 = FocusNode();
@@ -27,15 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
     phone.dispose();
     _focusNode1.dispose();
-  }
-
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      final phonenumber = '$dialCode${phone.text.trim()}';
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => PasswordScreen(phonenumber: phonenumber),
-      ));
-    }
   }
 
   @override
@@ -85,18 +80,61 @@ class _LoginScreenState extends State<LoginScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: ElevatedButton(
-        onPressed: _submitForm,
+        onPressed: () async {
+          if (phone.text.isNotEmpty) {
+            setState(() {
+              _loading = true;
+            });
+            final phonenumber = '$dialCode${phone.text.trim()}';
+            Map<String, dynamic>? result = await ApiService()
+                .findPhonenumber(formatPhoneNumber(phonenumber));
+            print(result);
+            if (result != null && result['phonenumber'] != null) {
+              // ignore: use_build_context_synchronously
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => PasswordScreen(
+                    fullname: result['fullname'] ?? "Nom inconnu",
+                    phonenumber: phonenumber,
+                    avatar: result['avatar']),
+              ));
+            } else {
+              // ignore: use_build_context_synchronously
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                      "Une erreur est survenue, veullez vérifier votre numéro."),
+                ),
+              );
+            }
+          } else {
+            setState(() {
+              _loading = false;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Vous devez saisir le numéro de téléphone."),
+              ),
+            );
+          }
+          setState(() {
+            _loading = false;
+          });
+        },
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
           ),
-          backgroundColor: const Color(0xFF2FA9A2),
-          minimumSize: const Size(double.infinity, 40),
+          backgroundColor: _loading ? Colors.grey : const Color(0xFF2FA9A2),
+          minimumSize: const Size(double.infinity, 50),
         ),
-        child: const Text(
-          'Se connecter',
-          style: TextStyle(fontSize: 15, color: Colors.white),
-        ),
+        child: _loading
+            ? const CircularProgressIndicator(
+                color: Colors.white,
+              )
+            : const Text(
+                'Se connecter',
+                style: TextStyle(fontSize: 15, color: Colors.white),
+              ),
       ),
     );
   }
@@ -155,18 +193,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 fontWeight: FontWeight.w500),
           ),
           countryConfig: CountryConfig(
-              decoration: BoxDecoration(
-                border: Border.all(width: 1, color: const Color(0xFF3f4046)),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              noFlag: true,
-              textStyle: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600)),
+            decoration: BoxDecoration(
+              border: Border.all(width: 1, color: const Color(0xFF3f4046)),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            noFlag: true,
+            textStyle: const TextStyle(
+                color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+          ),
           validator: (number) {
             if (number.number.isEmpty) {
-              return "requis";
+              setState(() {
+                _loading = false;
+              });
             }
             return null;
           },

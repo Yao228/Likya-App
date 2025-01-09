@@ -77,9 +77,28 @@ class ApiService {
       // Retourner null si aucune donnée valide n'a été trouvée
       return null;
     } catch (e) {
-      // Retourner une exception ou gérer l'erreur selon les besoins
       print("Error fetching users: $e");
       return null;
     }
+  }
+
+  Future<Map<String, dynamic>?> findPhonenumber(String phonenumber) async {
+    try {
+      Response response = await Dio().get(
+        ApiUrls.findPhonenumber,
+        queryParameters: {
+          'phonenumber': phonenumber,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        print("Unexpected status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching phone number details: $e");
+    }
+    return null;
   }
 }

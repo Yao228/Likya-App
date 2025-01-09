@@ -11,10 +11,15 @@ import 'package:likya_app/presentation/auth/pages/login/login_screen.dart';
 import 'package:likya_app/presentation/auth/pages/password-reset/password_request.dart';
 import 'package:likya_app/presentation/navigation_menu.dart';
 import 'package:likya_app/service_locator.dart';
+import 'package:likya_app/utils/utils.dart';
 
+// ignore: must_be_immutable
 class PasswordScreen extends StatefulWidget {
-  const PasswordScreen({required this.phonenumber, super.key});
+  PasswordScreen(
+      {this.fullname, required this.phonenumber, this.avatar, super.key});
   final String phonenumber;
+  String? fullname;
+  String? avatar;
 
   @override
   State<PasswordScreen> createState() => _PasswordScreenState();
@@ -114,14 +119,14 @@ class _PasswordScreenState extends State<PasswordScreen> {
         },
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 60),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
             child: Form(
               key: _formKey,
               child: Column(
                 children: [
                   formTitle(),
                   const SizedBox(height: 10),
-                  signupImage(),
+                  avatar(),
                   const SizedBox(height: 20),
                   phoneNumber(),
                   const SizedBox(height: 20),
@@ -187,10 +192,10 @@ class _PasswordScreenState extends State<PasswordScreen> {
   }
 
   Padding formTitle() {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: Text(
-        'Connectez-vous',
+        'Bienvenue ${widget.fullname}',
         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         textAlign: TextAlign.center,
       ),
@@ -219,10 +224,12 @@ class _PasswordScreenState extends State<PasswordScreen> {
     );
   }
 
-  Padding signupImage() {
+  Padding avatar() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 90),
-      child: Image.asset("assets/images/avatar.png"),
+      padding: EdgeInsets.symmetric(horizontal: 90, vertical: 30),
+      child: Center(
+        child: userAvatar(widget.fullname, widget.avatar, 50, 32),
+      ),
     );
   }
 

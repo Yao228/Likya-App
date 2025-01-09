@@ -6,7 +6,6 @@ import 'package:likya_app/common/bloc/button/button_state.dart';
 import 'package:likya_app/common/bloc/button/button_state_cubit.dart';
 import 'package:likya_app/common/widgets/button/basic_app_button.dart';
 import 'package:likya_app/data/models/collects_contributors_req.dart';
-import 'package:likya_app/data/source/api_service.dart';
 import 'package:likya_app/domain/usecases/add_collects_contributors.dart';
 import 'package:likya_app/presentation/collects/page/detail_fund_raising_page.dart';
 import 'package:likya_app/service_locator.dart';
@@ -43,7 +42,6 @@ class _AddContributorsState extends State<AddContributors> {
 
   Future<void> _askPermissions() async {
     PermissionStatus permissionStatus = await _getContactPermission();
-    print("$permissionStatus");
     if (permissionStatus == PermissionStatus.granted) {
       fetchContributors();
     } else {

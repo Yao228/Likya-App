@@ -67,3 +67,10 @@ Widget userAvatar(userName, imgPatch, double radius, double fontSize) {
         : null,
   );
 }
+
+String formatPhoneNumber(String phoneNumber) {
+  if (phoneNumber.startsWith('+')) {
+    return phoneNumber.substring(1);
+  }
+  return phoneNumber;
+}

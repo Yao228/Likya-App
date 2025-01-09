@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:likya_app/data/models/find_phonenumber.dart';
 import 'package:likya_app/data/models/login_req_params.dart';
 import 'package:likya_app/data/models/password_req_params.dart';
 import 'package:likya_app/data/models/password_reset.dart';
@@ -12,7 +11,6 @@ import 'package:likya_app/data/models/user.dart';
 import 'package:likya_app/data/models/verifyotp_req_params.dart';
 import 'package:likya_app/data/source/auth_api_service.dart';
 import 'package:likya_app/data/source/auth_local_service.dart';
-import 'package:likya_app/domain/entities/find_phonenumber.dart';
 import 'package:likya_app/domain/repository/auth.dart';
 import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/local_storage_service.dart';
@@ -81,18 +79,5 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<Either> logout() async {
     return sl<AuthApiService>().logout();
-  }
-
-  @override
-  Future<Either> findPhonenumber(String phoneNumber) async {
-    Either result = await sl<AuthApiService>().findPhonenumber(phoneNumber);
-    return result.fold((error) {
-      return Left(error);
-    }, (data) {
-      Response response = data;
-      var findPhonenumberModel = FindPhonenumberModel.fromMap(response.data);
-      var findPhonenumberEntity = findPhonenumberModel.toEntity();
-      return Right(findPhonenumberEntity);
-    });
   }
 }

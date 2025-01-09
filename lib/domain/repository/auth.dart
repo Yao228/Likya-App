@@ -15,6 +15,5 @@ abstract class AuthRepository {
   Future<Either> getUser();
   Future<Either> passwordRequest(PasswordReqParams passwordReq);
   Future<Either> passwordReset(PasswordResetParams passwordReset);
-  Future<Either> findPhonenumber(String phoneNumber);
   Future<Either> logout();
 }
