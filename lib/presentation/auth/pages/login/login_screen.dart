@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_field/intl_phone_number_field.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:likya_app/presentation/auth/pages/auth_screen.dart';
 import 'package:likya_app/presentation/auth/pages/login/password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -39,6 +41,17 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Ionicons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AuthPage()),
+            );
+          },
+        ),
+      ),
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: SafeArea(

@@ -7,6 +7,7 @@ import 'package:likya_app/common/bloc/button/button_state_cubit.dart';
 import 'package:likya_app/common/widgets/button/text_base_button.dart';
 import 'package:likya_app/data/models/login_req_params.dart';
 import 'package:likya_app/domain/usecases/login.dart';
+import 'package:likya_app/presentation/auth/pages/login/login_screen.dart';
 import 'package:likya_app/presentation/auth/pages/password-reset/password_request.dart';
 import 'package:likya_app/presentation/navigation_menu.dart';
 import 'package:likya_app/service_locator.dart';
@@ -71,6 +72,17 @@ class _PasswordScreenState extends State<PasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Ionicons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LoginScreen()),
+            );
+          },
+        ),
+      ),
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: BlocListener<ButtonStateCubit, ButtonState>(

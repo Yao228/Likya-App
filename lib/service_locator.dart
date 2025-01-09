@@ -12,6 +12,7 @@ import 'package:likya_app/domain/repository/collect.dart';
 import 'package:likya_app/domain/repository/setting.dart';
 import 'package:likya_app/domain/usecases/add_collect.dart';
 import 'package:likya_app/domain/usecases/add_collects_contributors.dart';
+import 'package:likya_app/domain/usecases/find_phonenumber.dart';
 import 'package:likya_app/domain/usecases/get_collect.dart';
 import 'package:likya_app/domain/usecases/get_collects.dart';
 import 'package:likya_app/domain/usecases/get_contributors.dart';
@@ -78,4 +79,6 @@ void setupServiceLocator() {
       AddCollectsContributorsUseCase());
 
   sl.registerSingleton<GetContributorsUseCase>(GetContributorsUseCase());
+
+  sl.registerSingleton<FindPhonenumberUseCase>(FindPhonenumberUseCase());
 }

@@ -4,6 +4,7 @@ class ApiUrls {
   static const login = '${baseURL}login';
   static const verifyOTP = '${baseURL}verify-otp';
   static const resendOtp = '${baseURL}resend-otp';
+  static const findPhonenumber = '${baseURL}find-phonenumber';
   static const passwordRequest = '${baseURL}request-password-reset';
   static const passwordReset = '${baseURL}reset-password-completed';
   static const roles = '${baseURL}roles';

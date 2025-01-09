@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:likya_app/common/bloc/button/button_state.dart';
 import 'package:likya_app/common/bloc/button/button_state_cubit.dart';
 import 'package:likya_app/common/widgets/button/basic_app_button.dart';
 import 'package:likya_app/data/models/signup_req_params.dart';
 import 'package:likya_app/domain/usecases/signup.dart';
+import 'package:likya_app/presentation/auth/pages/signup/signup_screen.dart';
 import 'package:likya_app/presentation/auth/pages/signup/verify_screen.dart';
 import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/local_storage_service.dart';
@@ -58,6 +60,17 @@ class _CodeScreenState extends State<CodeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Ionicons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SignupScreen()),
+            );
+          },
+        ),
+      ),
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: BlocProvider(

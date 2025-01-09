@@ -18,6 +18,7 @@ abstract class AuthApiService {
   Future<Either> login(LoginReqParams loginReq);
   Future<Either> passwordRequest(PasswordReqParams passwordReq);
   Future<Either> passwordReset(PasswordResetParams passwordReset);
+  Future<Either> findPhonenumber(String phoneNumber);
   Future<Either> getUser();
   Future<Either> logout();
 }
@@ -116,6 +117,21 @@ class AuthApiServiceImpl extends AuthApiService {
         options: Options(
           headers: {'Authorization': 'Bearer $token'},
         ),
+      );
+      return Right(response);
+    } on DioException catch (e) {
+      return Left(e.response!.data['message_error']);
+    }
+  }
+
+  @override
+  Future<Either> findPhonenumber(String phoneNumber) async {
+    try {
+      var response = await sl<DioClient>().get(
+        ApiUrls.findPhonenumber,
+        queryParameters: {
+          'phonenumber': phoneNumber,
+        },
       );
       return Right(response);
     } on DioException catch (e) {

@@ -17,7 +17,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   String? userRole = await ApiService().getRole();
   LocalStorageService.putString(LocalStorageService.userRole, userRole!);
-
+  //LocalStorageService.deleteKey(LocalStorageService.token);
   final prefs = await SharedPreferences.getInstance();
   final showAuthPage = prefs.getBool('showAuthPage') ?? false;
 

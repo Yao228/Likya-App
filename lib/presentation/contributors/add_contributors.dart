@@ -1,3 +1,4 @@
+import 'package:fast_contacts/fast_contacts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ionicons/ionicons.dart';
@@ -9,6 +10,7 @@ import 'package:likya_app/data/source/api_service.dart';
 import 'package:likya_app/domain/usecases/add_collects_contributors.dart';
 import 'package:likya_app/presentation/collects/page/detail_fund_raising_page.dart';
 import 'package:likya_app/service_locator.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AddContributors extends StatefulWidget {
   final dynamic collectID;
@@ -34,24 +36,58 @@ class _AddContributorsState extends State<AddContributors> {
   @override
   void initState() {
     super.initState();
+    _askPermissions();
     fetchContributors();
     searchController.addListener(_filterContributors);
+  }
+
+  Future<void> _askPermissions() async {
+    PermissionStatus permissionStatus = await _getContactPermission();
+    print("$permissionStatus");
+    if (permissionStatus == PermissionStatus.granted) {
+      fetchContributors();
+    } else {
+      _handleInvalidPermissions(permissionStatus);
+    }
+  }
+
+  Future<PermissionStatus> _getContactPermission() async {
+    PermissionStatus permission = await Permission.contacts.status;
+    if (permission != PermissionStatus.granted &&
+        permission != PermissionStatus.permanentlyDenied) {
+      PermissionStatus permissionStatus = await Permission.contacts.request();
+      return permissionStatus;
+    } else {
+      return permission;
+    }
+  }
+
+  void _handleInvalidPermissions(PermissionStatus permissionStatus) {
+    if (permissionStatus == PermissionStatus.denied) {
+      final snackBar = SnackBar(content: Text('Access to contact data denied'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else if (permissionStatus == PermissionStatus.permanentlyDenied) {
+      final snackBar =
+          SnackBar(content: Text('Contact data not available on device'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  Future<void> fetchContributors() async {
+    List<Contact> fetchedContributors = await FastContacts.getAllContacts();
+    setState(() {
+      contributors =
+          fetchedContributors?.map<Map<String, dynamic>>((contributor) {
+        return {"contact": contributor, "isSelected": false};
+      }).toList();
+      filteredContributors = List<Map<String, dynamic>>.from(contributors!);
+    });
   }
 
   @override
   void dispose() {
     searchController.dispose();
     super.dispose();
-  }
-
-  Future<void> fetchContributors() async {
-    final fetchedContributors = await ApiService().getContributors();
-    setState(() {
-      contributors = fetchedContributors?.map((contributor) {
-        return {...contributor, "isSelected": false};
-      }).toList();
-      filteredContributors = List.from(contributors!);
-    });
   }
 
   void _filterContributors() {
@@ -258,35 +294,33 @@ class _AddContributorsState extends State<AddContributors> {
               ],
             ),
           // Affichage conditionnel de la liste
-          searchController.text.length <= 3
-              ? const Text("Tapez plus de 3 caractères pour rechercher.")
-              : filteredContributors.isEmpty
-                  ? const Text("Aucun contributeur trouvé.")
-                  : ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: filteredContributors.length,
-                      itemBuilder: (context, index) {
-                        final contributor = filteredContributors[index];
-                        return CheckboxListTile(
-                          title: Text(contributor["name"]),
-                          value: contributor["isSelected"] ?? false,
-                          onChanged: (isSelected) {
-                            setState(
-                              () {
-                                contributor["isSelected"] = isSelected;
-                                final originalIndex = contributors!.indexWhere(
-                                    (c) => c["_id"] == contributor["_id"]);
-                                if (originalIndex != -1) {
-                                  contributors![originalIndex]["isSelected"] =
-                                      isSelected;
-                                }
-                              },
-                            );
+          filteredContributors.isEmpty
+              ? const Text("Aucun contributeur trouvé.")
+              : ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: filteredContributors.length,
+                  itemBuilder: (context, index) {
+                    final contributor = filteredContributors[index];
+                    return CheckboxListTile(
+                      title: Text(contributor["name"]),
+                      value: contributor["isSelected"] ?? false,
+                      onChanged: (isSelected) {
+                        setState(
+                          () {
+                            contributor["isSelected"] = isSelected;
+                            final originalIndex = contributors!.indexWhere(
+                                (c) => c["_id"] == contributor["_id"]);
+                            if (originalIndex != -1) {
+                              contributors![originalIndex]["isSelected"] =
+                                  isSelected;
+                            }
                           },
                         );
                       },
-                    ),
+                    );
+                  },
+                ),
         ],
       ),
     );
