@@ -61,6 +61,22 @@ class CollectRepositoryImpl extends CollectRepository {
   }
 
   @override
+  Future<Either> collectAccess(bool access) async {
+    Either result = await sl<CollectApiService>().collectAccess(access);
+    return result.fold(
+      (error) {
+        return Left(error);
+      },
+      (data) {
+        Response response = data;
+        var collectModel = CollectModel.fromMap(response.data);
+        var collectEntity = collectModel.toEntity();
+        return Right(collectEntity);
+      },
+    );
+  }
+
+  @override
   Future<Either> getContributors() async {
     Either result = await sl<CollectApiService>().getContributors();
     return result.fold(

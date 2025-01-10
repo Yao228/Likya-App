@@ -12,5 +12,6 @@ class ApiUrls {
   static const users = '${baseURL}users';
   static const ping = '$baseURL@ping';
   static const collects = '${baseURL}collects';
+  static const contributes = '${baseURL}contributes';
   static const logout = '${baseURL}logout';
 }

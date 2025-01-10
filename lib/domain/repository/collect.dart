@@ -10,4 +10,5 @@ abstract class CollectRepository {
   Future<Either> getCollect();
   Future<Either> addContributors(CollectsContributorsReqParams contributorsReq);
   Future<Either> getContributors();
+  Future<Either> collectAccess(bool access);
 }

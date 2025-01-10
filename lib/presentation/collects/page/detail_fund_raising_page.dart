@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:likya_app/common/bloc/button/button_state.dart';
+import 'package:likya_app/common/bloc/button/button_state_cubit.dart';
+import 'package:likya_app/common/widgets/button/text_base_button.dart';
 import 'package:likya_app/common/widgets/contributor_item.dart';
 import 'package:likya_app/domain/entities/collect.dart';
+import 'package:likya_app/domain/usecases/collect_access.dart';
 import 'package:likya_app/presentation/collects/bloc/collect_display_cubit.dart';
 import 'package:likya_app/presentation/collects/bloc/collect_display_state.dart';
 import 'package:likya_app/presentation/collects/page/update_fund_raising_page.dart';
+import 'package:likya_app/presentation/contributions/page/contributions_page.dart';
 import 'package:likya_app/presentation/contributors/add_contributors.dart';
+import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/utils.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
@@ -237,7 +243,55 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text(
+                      "Changer l'accès",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    content: const Text(
+                      "Confirmer pour changer l'accès à votre cagnotte.",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text(
+                          "Fermer",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                      TextBaseButton(
+                        onPressed: () async {
+                          bool access = collect.access;
+                          context.read<ButtonStateCubit>().excute(
+                                usecase: sl<CollectAccessUseCase>(),
+                                params: !access,
+                              );
+                          //Navigator.of(context).pop();
+                        },
+                        title: "Confirmer",
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
             child: Column(
               children: [
                 Container(
@@ -245,7 +299,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                   height: 48,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.1),
@@ -254,7 +308,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                       ),
                     ],
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Ionicons.warning_outline,
                     size: 28,
                     color: Color(0xFF2FA9A2),
@@ -273,7 +327,14 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
             ),
           ),
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ContributionsPage(collectId: collect.id),
+                ),
+              );
+            },
             child: Column(
               children: [
                 Container(
@@ -298,7 +359,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  "Contribuer",
+                  "Contributions",
                   style: TextStyle(
                     color: Color(0xFF2FA9A2),
                     fontSize: 14,
@@ -477,25 +538,61 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                     ),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      collect.access ? 'Public' : 'Privé',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                      ),
-                      textAlign: TextAlign.center,
+                BlocProvider(
+                  create: (context) => ButtonStateCubit(),
+                  child: BlocListener<ButtonStateCubit, ButtonState>(
+                    listener: (context, state) {
+                      if (state is ButtonSuccessState) {
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              collect.access ? 'Publique' : 'Privée',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(width: 2),
+                            const Icon(
+                              Ionicons.eye_off_outline,
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                          ],
+                        );
+                      }
+                      if (state is ButtonFailureState) {
+                        var snackBar =
+                            SnackBar(content: Text(state.errorMessage));
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          collect.access ? 'Publique' : 'Privée',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(width: 2),
+                        Icon(
+                          collect.access
+                              ? Ionicons.eye_outline
+                              : Ionicons.eye_off_outline,
+                          size: 16,
+                          color: Colors.white,
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 2),
-                    const Icon(
-                      Ionicons.eye_off_outline,
-                      size: 16,
-                      color: Colors.white,
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),

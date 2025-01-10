@@ -2,16 +2,20 @@ import 'package:get_it/get_it.dart';
 import 'package:likya_app/core/network/doi_client.dart';
 import 'package:likya_app/data/repository/auth.dart';
 import 'package:likya_app/data/repository/collect.dart';
+import 'package:likya_app/data/repository/contribution.dart';
 import 'package:likya_app/data/repository/setting.dart';
+import 'package:likya_app/data/source/api_contribution_service.dart';
 import 'package:likya_app/data/source/auth_api_service.dart';
 import 'package:likya_app/data/source/auth_local_service.dart';
 import 'package:likya_app/data/source/collect_api_service.dart';
 import 'package:likya_app/data/source/setting_api_service.dart';
 import 'package:likya_app/domain/repository/auth.dart';
 import 'package:likya_app/domain/repository/collect.dart';
+import 'package:likya_app/domain/repository/contribution.dart';
 import 'package:likya_app/domain/repository/setting.dart';
 import 'package:likya_app/domain/usecases/add_collect.dart';
 import 'package:likya_app/domain/usecases/add_collects_contributors.dart';
+import 'package:likya_app/domain/usecases/collect_access.dart';
 import 'package:likya_app/domain/usecases/get_collect.dart';
 import 'package:likya_app/domain/usecases/get_collects.dart';
 import 'package:likya_app/domain/usecases/get_contributors.dart';
@@ -40,11 +44,15 @@ void setupServiceLocator() {
 
   sl.registerSingleton<AuthLocalService>(AuthLocalServiceImpl());
 
+  sl.registerSingleton<ContributionApiService>(ContributionApiServiceImpl());
+
   sl.registerSingleton<AuthRepository>(AuthRepositoryImpl());
 
   sl.registerSingleton<CollectRepository>(CollectRepositoryImpl());
 
   sl.registerSingleton<SettingRepository>(SettingRepositoryImpl());
+
+  sl.registerSingleton<ContributionRepository>(ContributionRepositoryImpl());
 
   sl.registerSingleton<SignupUseCase>(SignupUseCase());
 
@@ -76,6 +84,10 @@ void setupServiceLocator() {
 
   sl.registerSingleton<AddCollectsContributorsUseCase>(
       AddCollectsContributorsUseCase());
+
+  sl.registerSingleton<GetContributorsUseCase>(GetContributorsUseCase());
+
+  sl.registerSingleton<CollectAccessUseCase>(CollectAccessUseCase());
 
   sl.registerSingleton<GetContributorsUseCase>(GetContributorsUseCase());
 }

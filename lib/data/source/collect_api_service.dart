@@ -15,6 +15,7 @@ abstract class CollectApiService {
   Future<Either> getCollect();
   Future<Either> addContributors(CollectsContributorsReqParams contributorsReq);
   Future<Either> getContributors();
+  Future<Either> collectAccess(bool access);
 }
 
 class CollectApiServiceImpl extends CollectApiService {
@@ -134,6 +135,25 @@ class CollectApiServiceImpl extends CollectApiService {
 
       var response = await sl<DioClient>()
           .get('${ApiUrls.collects}/$collectId/contributors',
+              options: Options(headers: {
+                'Authorization': 'Bearer $token',
+              }));
+      return Right(response);
+    } on DioException catch (e) {
+      return Left(e.response!.data['message_error']);
+    }
+  }
+
+  @override
+  Future<Either> collectAccess(bool access) async {
+    try {
+      var token =
+          await LocalStorageService.getString(LocalStorageService.token);
+      var collectId =
+          await LocalStorageService.getString(LocalStorageService.collectId);
+
+      var response = await sl<DioClient>()
+          .patch('${ApiUrls.collects}/$collectId/access?access=$access',
               options: Options(headers: {
                 'Authorization': 'Bearer $token',
               }));
