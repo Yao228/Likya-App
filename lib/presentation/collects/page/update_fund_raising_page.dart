@@ -8,6 +8,7 @@ import 'package:likya_app/data/source/api_service.dart';
 import 'package:likya_app/domain/usecases/update_collect.dart';
 import 'package:likya_app/presentation/collects/page/detail_fund_raising_page.dart';
 import 'package:likya_app/service_locator.dart';
+import 'package:likya_app/utils/utils.dart';
 
 class UpdateFundRaisingPage extends StatefulWidget {
   final String id;
@@ -15,6 +16,7 @@ class UpdateFundRaisingPage extends StatefulWidget {
   final double amount;
   final String categoryId;
   final String description;
+  final String status;
 
   const UpdateFundRaisingPage(
       {required this.id,
@@ -22,6 +24,7 @@ class UpdateFundRaisingPage extends StatefulWidget {
       required this.amount,
       required this.categoryId,
       required this.description,
+      required this.status,
       super.key});
 
   @override
@@ -41,6 +44,8 @@ class _UpdateFundRaisingPageState extends State<UpdateFundRaisingPage> {
   List<Map<String, dynamic>>? categories;
   String? selectedCategoryId;
 
+  bool _collectStatus = false;
+
   @override
   void initState() {
     super.initState();
@@ -49,6 +54,12 @@ class _UpdateFundRaisingPageState extends State<UpdateFundRaisingPage> {
     targetAmount.text = widget.amount.toStringAsFixed(0);
     description.text = widget.description;
     selectedCategoryId = widget.categoryId;
+
+    if (collectStatus(widget.status) == "Validée") {
+      setState(() {
+        _collectStatus = true;
+      });
+    }
   }
 
   Future<void> fetchCategories() async {
@@ -140,23 +151,34 @@ class _UpdateFundRaisingPageState extends State<UpdateFundRaisingPage> {
       child: Builder(
         builder: (context) {
           return BasicAppButton(
-            title: 'Modifier la cagnotte',
+            title: _collectStatus ? 'Cagnotte activée' : 'Modifier la cagnotte',
             onPressed: () async {
-              if (_formKey.currentState!.validate()) {
-                // ignore: use_build_context_synchronously
-                context.read<ButtonStateCubit>().excute(
-                    usecase: sl<UpdateCollectUseCase>(),
-                    params: UpdateCollectReqParams(
-                      targetAmount: int.parse(targetAmount.text),
-                      title: title.text,
-                      categoryIds: [selectedCategoryId],
-                      description: description.text,
-                    ));
+              if (!_collectStatus) {
+                if (_formKey.currentState!.validate()) {
+                  // ignore: use_build_context_synchronously
+                  context.read<ButtonStateCubit>().excute(
+                      usecase: sl<UpdateCollectUseCase>(),
+                      params: UpdateCollectReqParams(
+                        targetAmount: int.parse(targetAmount.text),
+                        title: title.text,
+                        categoryIds: [selectedCategoryId],
+                        description: description.text,
+                      ));
+                } else {
+                  // ignore: use_build_context_synchronously
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content:
+                          Text("Tous les champs sont recquis.$_collectStatus"),
+                    ),
+                  );
+                }
               } else {
                 // ignore: use_build_context_synchronously
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text("Tous les champs sont recquis."),
+                    content: Text(
+                        "Cette cagnotte est validée et ne peut plus être modifiée."),
                   ),
                 );
               }

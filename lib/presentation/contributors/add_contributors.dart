@@ -9,6 +9,7 @@ import 'package:likya_app/data/models/collects_contributors_req.dart';
 import 'package:likya_app/domain/usecases/add_collects_contributors.dart';
 import 'package:likya_app/presentation/collects/page/detail_fund_raising_page.dart';
 import 'package:likya_app/service_locator.dart';
+import 'package:likya_app/utils/utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AddContributors extends StatefulWidget {
@@ -42,10 +43,10 @@ class _AddContributorsState extends State<AddContributors> {
 
   Future<void> _askPermissions() async {
     PermissionStatus permissionStatus = await _getContactPermission();
-    if (permissionStatus == PermissionStatus.granted) {
-      fetchContributors();
-    } else {
+    if (permissionStatus != PermissionStatus.granted) {
       _handleInvalidPermissions(permissionStatus);
+    } else {
+      fetchContributors(); // Fetch contributors only after permissions are granted
     }
   }
 
@@ -71,15 +72,34 @@ class _AddContributorsState extends State<AddContributors> {
     }
   }
 
+  bool _isFetchingContributors = false;
+
   Future<void> fetchContributors() async {
-    List<Contact> fetchedContributors = await FastContacts.getAllContacts();
+    if (_isFetchingContributors) return; // Prevent re-entrance
     setState(() {
-      contributors =
-          fetchedContributors?.map<Map<String, dynamic>>((contributor) {
-        return {"contact": contributor, "isSelected": false};
-      }).toList();
-      filteredContributors = List<Map<String, dynamic>>.from(contributors!);
+      _isFetchingContributors = true;
     });
+
+    try {
+      List<Contact> fetchedContributors = await FastContacts.getAllContacts();
+      setState(() {
+        contributors =
+            fetchedContributors.map<Map<String, dynamic>>((contributor) {
+          return {"contact": contributor, "isSelected": false};
+        }).toList();
+        filteredContributors = List<Map<String, dynamic>>.from(contributors!);
+      });
+    } catch (e) {
+      // Handle the error gracefully
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch contacts: $e')),
+      );
+    } finally {
+      setState(() {
+        _isFetchingContributors = false;
+      });
+    }
   }
 
   @override
@@ -90,18 +110,26 @@ class _AddContributorsState extends State<AddContributors> {
 
   void _filterContributors() {
     final query = searchController.text.toLowerCase();
-    if (query.length > 2) {
+
+    if (query.isEmpty) {
       setState(() {
-        filteredContributors = contributors!
-            .where((contributor) =>
-                contributor["name"].toString().toLowerCase().contains(query))
-            .toList();
+        filteredContributors = List<Map<String, dynamic>>.from(contributors!);
       });
-    } else {
-      setState(() {
-        filteredContributors = [];
-      });
+      return;
     }
+
+    setState(() {
+      filteredContributors = contributors!.where((contributor) {
+        final contact = contributor["contact"];
+        final displayName =
+            contact?.structuredName?.displayName?.toLowerCase() ?? '';
+        final phoneNumber = contact?.phones?.isNotEmpty == true
+            ? contact.phones[0].number.toLowerCase()
+            : '';
+
+        return displayName.contains(query) || phoneNumber.contains(query);
+      }).toList();
+    });
   }
 
   @override
@@ -122,17 +150,7 @@ class _AddContributorsState extends State<AddContributors> {
         create: (context) => ButtonStateCubit(),
         child: BlocListener<ButtonStateCubit, ButtonState>(
           listener: (context, state) {
-            if (state is ButtonLoadingState) {
-              setState(() {
-                _addCollectsContributorsSuccess = false;
-                _addCollectsContributorsLoading = true;
-              });
-            }
             if (state is ButtonSuccessState) {
-              setState(() {
-                _addCollectsContributorsSuccess = true;
-                _addCollectsContributorsLoading = false;
-              });
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   builder: (context) => DetailFundRaisingPage(
@@ -148,28 +166,30 @@ class _AddContributorsState extends State<AddContributors> {
             }
           },
           child: SafeArea(
-            child: SingleChildScrollView(
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      contributorsField(),
-                      const SizedBox(height: 20),
-                      if (_addCollectsContributorsLoading)
-                        addCollectsContributorsLoading(),
-                      if (_addCollectsContributorsSuccess)
-                        addCollectsContributorsSuccess(),
-                      const SizedBox(height: 50),
-                      submit(context),
-                    ],
+            child: _isFetchingContributors
+                ? const Center(child: CircularProgressIndicator())
+                : SingleChildScrollView(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 20),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            contributorsField(),
+                            const SizedBox(height: 20),
+                            if (_addCollectsContributorsLoading)
+                              addCollectsContributorsLoading(),
+                            if (_addCollectsContributorsSuccess)
+                              addCollectsContributorsSuccess(),
+                            const SizedBox(height: 50),
+                            submit(context),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
           ),
         ),
       ),
@@ -193,16 +213,18 @@ class _AddContributorsState extends State<AddContributors> {
                 return;
               }
 
-              final selectedContributorIds = contributors!
+              final selectedContributorPhones = contributors!
                   .where((contributor) => contributor["isSelected"] == true)
-                  .map((contributor) => contributor["_id"])
+                  .expand((contributor) => contributor["contact"]
+                      .phones
+                      .map((phone) => phone.number))
                   .toList();
 
-              if (selectedContributorIds.isNotEmpty) {
+              if (selectedContributorPhones.isNotEmpty) {
                 context.read<ButtonStateCubit>().excute(
                       usecase: sl<AddCollectsContributorsUseCase>(),
                       params: CollectsContributorsReqParams(
-                        contributors: selectedContributorIds,
+                        contributors: selectedContributorPhones,
                       ),
                     );
               } else {
@@ -222,12 +244,12 @@ class _AddContributorsState extends State<AddContributors> {
 
   Padding contributorsField() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Recherche de contributeurs',
+            'Recherche de contacts',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -238,7 +260,7 @@ class _AddContributorsState extends State<AddContributors> {
           TextField(
             controller: searchController,
             decoration: const InputDecoration(
-              hintText: 'Rechercher un contributeur',
+              hintText: 'Rechercher un contact',
               border: OutlineInputBorder(),
               prefixIcon: Icon(Icons.search),
             ),
@@ -246,10 +268,18 @@ class _AddContributorsState extends State<AddContributors> {
               setState(() {
                 if (query.length > 3) {
                   filteredContributors = contributors!
-                      .where((contributor) => contributor["name"]
-                          .toString()
-                          .toLowerCase()
-                          .contains(query.toLowerCase()))
+                      .where((contributor) =>
+                          contributor["contact"]
+                              .structuredName
+                              .displayName
+                              .toString()
+                              .toLowerCase()
+                              .contains(query.toLowerCase()) ||
+                          contributor["contact"].phones.any((phone) => phone
+                              .number
+                              .toString()
+                              .toLowerCase()
+                              .contains(query.toLowerCase())))
                       .toList();
                 } else {
                   filteredContributors = [];
@@ -257,6 +287,7 @@ class _AddContributorsState extends State<AddContributors> {
               });
             },
           ),
+
           const SizedBox(height: 10),
           // Affichage des noms sélectionnés
           if (contributors != null &&
@@ -277,38 +308,65 @@ class _AddContributorsState extends State<AddContributors> {
                   spacing: 8.0,
                   children: contributors!
                       .where((contributor) => contributor["isSelected"] == true)
-                      .map((contributor) => Chip(
-                            label: Text(contributor["name"]),
-                            deleteIcon: const Icon(Icons.close),
-                            onDeleted: () {
-                              setState(() {
-                                contributor["isSelected"] = false;
-                              });
-                            },
-                          ))
-                      .toList(),
+                      .map((contributor) {
+                    final contact = contributor["contact"];
+                    final displayName =
+                        contact?.structuredName?.displayName ?? "Nom inconnu";
+                    return Chip(
+                      label: Text(
+                          displayName), // Display the selected contact's displayName
+                      deleteIcon: const Icon(Icons.close),
+                      onDeleted: () {
+                        setState(() {
+                          contributor["isSelected"] = false;
+                        });
+                      },
+                    );
+                  }).toList(),
                 ),
                 const SizedBox(height: 10),
               ],
             ),
           // Affichage conditionnel de la liste
           filteredContributors.isEmpty
-              ? const Text("Aucun contributeur trouvé.")
+              ? const Text("Aucun contact trouvé.")
               : ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: filteredContributors.length,
                   itemBuilder: (context, index) {
                     final contributor = filteredContributors[index];
+                    final contact = contributor["contact"];
+
+                    // Extract displayName and phone number safely
+                    final displayName =
+                        contact?.structuredName?.displayName ?? "Nom inconnu";
+                    final phoneNumber = contact?.phones?.isNotEmpty == true
+                        ? contact.phones[0].number
+                        : "Numéro inconnu";
+
                     return CheckboxListTile(
-                      title: Text(contributor["name"]),
+                      title: Text(
+                        displayName,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      subtitle: Text(
+                        phoneNumber,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                       value: contributor["isSelected"] ?? false,
                       onChanged: (isSelected) {
                         setState(
                           () {
                             contributor["isSelected"] = isSelected;
                             final originalIndex = contributors!.indexWhere(
-                                (c) => c["_id"] == contributor["_id"]);
+                                (c) => c["contact"].id == contact.id);
                             if (originalIndex != -1) {
                               contributors![originalIndex]["isSelected"] =
                                   isSelected;
@@ -316,6 +374,19 @@ class _AddContributorsState extends State<AddContributors> {
                           },
                         );
                       },
+                      secondary: CircleAvatar(
+                        radius: 24,
+                        backgroundColor: Color(0xFF99CCCC),
+                        child: Text(
+                          getInitials(displayName),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                            fontFamily: 'Righteous',
+                          ),
+                        ),
+                      ),
                     );
                   },
                 ),

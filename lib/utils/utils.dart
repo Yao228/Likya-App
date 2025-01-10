@@ -3,14 +3,25 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 String getInitials(String name) {
-  List<String> words = name.trim().split(' ');
+  // Vérifier si la chaîne est nulle ou vide
+  if (name.isEmpty || name.trim().isEmpty) {
+    return 'Nom Inconnu'; // Retourne "NI" (Nom Inconnu) par défaut
+  }
 
+  // Nettoyer les espaces inutiles
+  List<String> words =
+      name.trim().split(RegExp(r'\s+')); // Gère les espaces multiples
+
+  // Vérifier si chaque mot est non vide
+  words = words.where((word) => word.isNotEmpty).toList();
+
+  // Construire les initiales
   if (words.length >= 2) {
-    return words[0][0].toUpperCase() + words[1][0].toUpperCase();
+    return (words[0][0] + words[1][0]).toUpperCase();
   } else if (words.length == 1) {
     return words[0][0].toUpperCase();
   } else {
-    return '';
+    return 'Nom Inconnu'; // Aucun mot valide trouvé
   }
 }
 

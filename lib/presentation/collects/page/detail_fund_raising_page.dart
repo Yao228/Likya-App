@@ -98,11 +98,11 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            backgroundColor: const Color(0xFF2FA9A2),
+            backgroundColor: Color(0xFF2FA9A2),
           ),
           child: Text(
             'Ajouter un contributeur',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
               color: Colors.white,
               fontWeight: FontWeight.w500,
@@ -319,6 +319,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                     amount: collect.targetAmount,
                     categoryId: collect.categories[0]["_id"],
                     description: collect.description,
+                    status: collect.status,
                   ),
                 ),
               );
