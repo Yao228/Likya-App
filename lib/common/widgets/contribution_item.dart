@@ -3,12 +3,12 @@ import 'package:intl/intl.dart';
 import 'package:likya_app/presentation/contributors/datails_contributors.dart';
 import 'package:likya_app/utils/utils.dart';
 
-Widget contributorItem(
-  String contributorID,
+Widget contributionItem(
+  String contributionId,
   BuildContext context,
   IconData iconName,
   String contributorName,
-  String contributorAmount,
+  String amount,
 ) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -47,7 +47,7 @@ Widget contributorItem(
                 Text(
                   NumberFormat.currency(
                           locale: 'fr_FR', symbol: 'FCFA', decimalDigits: 0)
-                      .format(double.parse(contributorAmount)),
+                      .format(double.parse(amount)),
                   style: TextStyle(fontWeight: FontWeight.w500),
                 ),
               ],
@@ -61,7 +61,7 @@ Widget contributorItem(
             context,
             MaterialPageRoute(
               builder: (context) => DetailsContributors(
-                contributorID: contributorID,
+                contributionId: contributionId,
                 contributorName: contributorName,
               ),
             ),

@@ -6,16 +6,17 @@ import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/local_storage_service.dart';
 
 abstract class ContributionApiService {
-  Future<Either> getContributions(String collectId);
+  Future<Either> getContributions();
 }
 
 class ContributionApiServiceImpl extends ContributionApiService {
   @override
-  Future<Either> getContributions(String collectId) async {
+  Future<Either> getContributions() async {
     try {
       var token =
           await LocalStorageService.getString(LocalStorageService.token);
-
+      var collectId =
+          LocalStorageService.getString(LocalStorageService.collectId);
       var response = await sl<DioClient>().get(
         ApiUrls.contributes,
         queryParameters: {

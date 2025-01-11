@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class DetailsContributors extends StatefulWidget {
   const DetailsContributors({
-    required this.contributorID,
+    required this.contributionId,
     required this.contributorName,
     super.key,
   });
 
   final String contributorName;
-  final String contributorID;
+  final String contributionId;
 
   @override
   State<DetailsContributors> createState() => _DetailsContributorsState();

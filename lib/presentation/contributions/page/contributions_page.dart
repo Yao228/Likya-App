@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:likya_app/common/widgets/contribution_item.dart';
+import 'package:likya_app/presentation/contributions/bloc/contributions_display_cubit.dart';
+import 'package:likya_app/presentation/contributions/bloc/contributions_display_state.dart';
 
 class ContributionsPage extends StatefulWidget {
-  final dynamic collectId;
+  final String collectId;
 
   const ContributionsPage({required this.collectId, super.key});
 
@@ -24,6 +29,89 @@ class _ContributionsPageState extends State<ContributionsPage> {
         ),
       ),
       backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 0,
+            ),
+            child: Column(
+              children: [
+                searchForm(),
+                listContributions(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding searchForm() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+      child: TextFormField(
+        style: const TextStyle(fontSize: 18, color: Color(0xFF575757)),
+        decoration: InputDecoration(
+          suffixIcon:
+              const Icon(Ionicons.search_outline, color: Color(0xFFCCCCCC)),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Color(0xFF575757), width: 1),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 10,
+            horizontal: 8,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding listContributions() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 5,
+        vertical: 10,
+      ),
+      child: BlocProvider(
+        create: (context) =>
+            ContributionsDisplayCubit()..displayContributions(),
+        child:
+            BlocBuilder<ContributionsDisplayCubit, ContributionsDisplayState>(
+                builder: (context, state) {
+          if (state is ContributionsLoading) {
+            return const CircularProgressIndicator();
+          }
+          if (state is ContributionsLoaded) {
+            return Container(
+              padding: const EdgeInsets.all(0),
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: state.items.length,
+                itemBuilder: (context, index) {
+                  var contribution = state.items[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: contributionItem(
+                        contribution.contributionId,
+                        context,
+                        Ionicons.chevron_forward_outline,
+                        contribution.contributorName,
+                        contribution.amount),
+                  );
+                },
+              ),
+            );
+          }
+          if (state is LoadContributionsFailure) {
+            return Text(state.errorMessage);
+          }
+          return const Text('Une erreur inattendue est survenue.');
+        }),
+      ),
     );
   }
 }

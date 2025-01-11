@@ -6,6 +6,6 @@ import 'package:likya_app/service_locator.dart';
 class GetContributionsUseCase implements Usecase<Either, dynamic> {
   @override
   Future<Either> call({dynamic param}) async {
-    return sl<ContributionRepository>().getContributions(param);
+    return sl<ContributionRepository>().getContributions();
   }
 }

@@ -5,7 +5,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:likya_app/common/bloc/button/button_state.dart';
 import 'package:likya_app/common/bloc/button/button_state_cubit.dart';
 import 'package:likya_app/common/widgets/button/text_base_button.dart';
-import 'package:likya_app/common/widgets/contributor_item.dart';
+import 'package:likya_app/common/widgets/contribution_item.dart';
 import 'package:likya_app/domain/entities/collect.dart';
 import 'package:likya_app/domain/usecases/collect_access.dart';
 import 'package:likya_app/presentation/collects/bloc/collect_display_cubit.dart';
@@ -183,7 +183,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
           shrinkWrap: true,
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
-            contributorItem(
+            contributionItem(
               '1234',
               context,
               Ionicons.chevron_forward_outline,
@@ -191,7 +191,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
               " 5000.0",
             ),
             Divider(color: Colors.grey.shade200),
-            contributorItem(
+            contributionItem(
               '1234',
               context,
               Ionicons.chevron_forward_outline,
@@ -199,7 +199,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
               "15000.0",
             ),
             Divider(color: Colors.grey.shade200),
-            contributorItem(
+            contributionItem(
               '1234',
               context,
               Ionicons.chevron_forward_outline,
@@ -207,7 +207,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
               "10000.0",
             ),
             Divider(color: Colors.grey.shade200),
-            contributorItem(
+            contributionItem(
               '1234',
               context,
               Ionicons.chevron_forward_outline,
@@ -215,7 +215,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
               "25000.0",
             ),
             Divider(color: Colors.grey.shade200),
-            contributorItem(
+            contributionItem(
               '1234',
               context,
               Ionicons.chevron_forward_outline,
@@ -223,7 +223,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
               "25000.0",
             ),
             Divider(color: Colors.grey.shade200),
-            contributorItem(
+            contributionItem(
               '1234',
               context,
               Ionicons.chevron_forward_outline,
