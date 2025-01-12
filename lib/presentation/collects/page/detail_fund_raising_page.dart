@@ -6,6 +6,7 @@ import 'package:likya_app/common/bloc/button/button_state.dart';
 import 'package:likya_app/common/bloc/button/button_state_cubit.dart';
 import 'package:likya_app/common/widgets/button/text_base_button.dart';
 import 'package:likya_app/common/widgets/contribution_item.dart';
+import 'package:likya_app/data/source/api_service.dart';
 import 'package:likya_app/domain/entities/collect.dart';
 import 'package:likya_app/domain/usecases/collect_access.dart';
 import 'package:likya_app/presentation/collects/bloc/collect_display_cubit.dart';
@@ -514,13 +515,32 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                         color: Colors.white,
                       ),
                     ),
-                    Text(
-                      "100 000 FCFA",
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                      ),
+                    FutureBuilder<double>(
+                      future: ApiService().fetchAndSumAmounts(collect.id),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<double> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else if (snapshot.hasData) {
+                          return Text(
+                            NumberFormat.currency(
+                              locale: 'fr_FR',
+                              symbol: 'FCFA',
+                              decimalDigits: 0,
+                            ).format(snapshot.data),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                            ),
+                          );
+                        } else {
+                          return Text('Pas de données disponibles');
+                        }
+                      },
                     ),
                   ],
                 ),
@@ -625,19 +645,29 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
               ],
             ),
             SizedBox(height: 15),
-            LinearPercentIndicator(
-              width: 300,
-              animation: true,
-              lineHeight: 3,
-              animationDuration: 1000,
-              percent: 0.8,
-              center: Text(
-                "80.00%",
-                style: TextStyle(fontSize: 2),
-              ),
-              barRadius: Radius.circular(4),
-              backgroundColor: Color(0xFFF7FDFC),
-              progressColor: Color(0xFF3FCB67),
+            FutureBuilder<double>(
+              future:
+                  ApiService().collectPercent(collect.id, collect.targetAmount),
+              builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text('Cagnotte en cours de chargement ....');
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  return LinearPercentIndicator(
+                    width: 300,
+                    animation: true,
+                    lineHeight: 3,
+                    animationDuration: 1000,
+                    percent: snapshot.data ?? 0.0,
+                    barRadius: Radius.circular(4),
+                    backgroundColor: Color(0xFFF7FDFC),
+                    progressColor: Color(0xFF3FCB67),
+                  );
+                } else {
+                  return Text('Pas de données disponibles');
+                }
+              },
             ),
           ],
         ),

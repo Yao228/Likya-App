@@ -15,8 +15,7 @@ Widget collectItem(
   String startDate,
   String endDate,
   String status,
-  double percent,
-  String percentText,
+  double? percent,
 ) {
   return Container(
     padding: const EdgeInsets.symmetric(
@@ -173,15 +172,11 @@ Widget collectItem(
         LinearPercentIndicator(
           width: 300,
           animation: true,
-          lineHeight: 10,
+          lineHeight: 2,
           animationDuration: 1000,
-          percent: percent,
-          center: Text(
-            percentText,
-            style: TextStyle(fontSize: 8),
-          ),
+          percent: percent ?? 0,
           barRadius: Radius.circular(4),
-          backgroundColor: Color(0xFFFFFFFF),
+          backgroundColor: Color(0xFFCFCFCF),
           progressColor: Color(0xFF3FCB67),
         ),
       ],

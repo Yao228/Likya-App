@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:likya_app/common/widgets/collect_item.dart';
+import 'package:likya_app/data/source/api_service.dart';
 import 'package:likya_app/presentation/collects/bloc/collects_display_cubit.dart';
 import 'package:likya_app/presentation/collects/bloc/collects_display_state.dart';
 
@@ -13,6 +14,7 @@ class ListFundRaisingPage extends StatefulWidget {
 }
 
 class _ListFundRaisingPageState extends State<ListFundRaisingPage> {
+  double collectPercent = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,18 +72,33 @@ class _ListFundRaisingPageState extends State<ListFundRaisingPage> {
                   var collect = state.items[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5.0),
-                    child: collectItem(
-                      collect.id,
-                      context,
-                      Ionicons.archive_outline,
-                      collect.title,
-                      collect.description,
-                      collect.targetAmount.toString(),
-                      collect.startDate,
-                      collect.endDate,
-                      collect.status,
-                      0.1,
-                      '10%',
+                    child: FutureBuilder<double>(
+                      future: ApiService()
+                          .collectPercent(collect.id, collect.targetAmount),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<double> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Text('Cagnotte en cours de chargement ....');
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else if (snapshot.hasData) {
+                          return collectItem(
+                            collect.id,
+                            context,
+                            Ionicons.archive_outline,
+                            collect.title,
+                            collect.description,
+                            collect.targetAmount.toString(),
+                            collect.startDate,
+                            collect.endDate,
+                            collect.status,
+                            snapshot.data,
+                          );
+                        } else {
+                          return Text('Pas de données disponibles');
+                        }
+                      },
                     ),
                   );
                 },

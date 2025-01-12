@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:likya_app/presentation/contributors/datails_contributors.dart';
+import 'package:likya_app/presentation/contributions/page/contribution_page.dart';
 import 'package:likya_app/utils/utils.dart';
 
 Widget contributionItem(
@@ -60,7 +60,7 @@ Widget contributionItem(
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => DetailsContributors(
+              builder: (context) => ContributionPage(
                 contributionId: contributionId,
                 contributorName: contributorName,
               ),
