@@ -7,6 +7,7 @@ import 'package:likya_app/data/models/password_req_params.dart';
 import 'package:likya_app/data/models/password_reset.dart';
 import 'package:likya_app/data/models/resendotp_req_params.dart';
 import 'package:likya_app/data/models/signup_req_params.dart';
+import 'package:likya_app/data/models/update_password_req.dart';
 import 'package:likya_app/data/models/user.dart';
 import 'package:likya_app/data/models/verifyotp_req_params.dart';
 import 'package:likya_app/data/source/auth_api_service.dart';
@@ -79,5 +80,11 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<Either> logout() async {
     return sl<AuthApiService>().logout();
+  }
+
+  @override
+  Future<Either> updatePassword(
+      UpdatePasswordReqParams updatePasswordReq) async {
+    return sl<AuthApiService>().updatePassword(updatePasswordReq);
   }
 }

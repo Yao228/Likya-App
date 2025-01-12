@@ -30,6 +30,7 @@ import 'package:likya_app/domain/usecases/password_reset.dart';
 import 'package:likya_app/domain/usecases/resend_otp.dart';
 import 'package:likya_app/domain/usecases/signup.dart';
 import 'package:likya_app/domain/usecases/update_collect.dart';
+import 'package:likya_app/domain/usecases/update_password.dart';
 import 'package:likya_app/domain/usecases/update_user.dart';
 import 'package:likya_app/domain/usecases/verify_otp.dart';
 
@@ -98,4 +99,6 @@ void setupServiceLocator() {
   sl.registerSingleton<AddContributionUseCase>(AddContributionUseCase());
 
   sl.registerSingleton<GetContributionUseCase>(GetContributionUseCase());
+
+  sl.registerSingleton<UpdatePasswordUseCase>(UpdatePasswordUseCase());
 }

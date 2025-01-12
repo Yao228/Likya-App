@@ -650,7 +650,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                   ApiService().collectPercent(collect.id, collect.targetAmount),
               builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Text('Cagnotte en cours de chargement ....');
+                  return Text('...');
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else if (snapshot.hasData) {

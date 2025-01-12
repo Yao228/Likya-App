@@ -7,6 +7,7 @@ import 'package:likya_app/data/models/password_req_params.dart';
 import 'package:likya_app/data/models/password_reset.dart';
 import 'package:likya_app/data/models/resendotp_req_params.dart';
 import 'package:likya_app/data/models/signup_req_params.dart';
+import 'package:likya_app/data/models/update_password_req.dart';
 import 'package:likya_app/data/models/verifyotp_req_params.dart';
 import 'package:likya_app/utils/local_storage_service.dart';
 import '../../service_locator.dart';
@@ -20,6 +21,7 @@ abstract class AuthApiService {
   Future<Either> passwordReset(PasswordResetParams passwordReset);
   Future<Either> getUser();
   Future<Either> logout();
+  Future<Either> updatePassword(UpdatePasswordReqParams updatePasswordReq);
 }
 
 class AuthApiServiceImpl extends AuthApiService {
@@ -122,6 +124,23 @@ class AuthApiServiceImpl extends AuthApiService {
         options: Options(
           headers: {'Authorization': 'Bearer $token'},
         ),
+      );
+      return Right(response);
+    } on DioException catch (e) {
+      return Left(e.response!.data['message_error']);
+    }
+  }
+
+  @override
+  Future<Either> updatePassword(
+      UpdatePasswordReqParams updatePasswordReq) async {
+    try {
+      var userId =
+          await LocalStorageService.getString(LocalStorageService.userId);
+
+      var response = await sl<DioClient>().put(
+        '${ApiUrls.changePassword}/$userId',
+        data: updatePasswordReq.toMap(),
       );
       return Right(response);
     } on DioException catch (e) {

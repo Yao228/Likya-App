@@ -6,9 +6,12 @@ import 'package:likya_app/common/bloc/logout/logout_display_state.dart';
 import 'package:likya_app/common/widgets/button/logout_base_button.dart';
 import 'package:likya_app/common/widgets/transaction_item.dart';
 import 'package:likya_app/common/widgets/carousel_item.dart';
+import 'package:likya_app/data/source/api_service.dart';
 import 'package:likya_app/domain/entities/user.dart';
 import 'package:likya_app/domain/usecases/logout.dart';
 import 'package:likya_app/presentation/auth/pages/auth_screen.dart';
+import 'package:likya_app/presentation/collects/bloc/collects_display_cubit.dart';
+import 'package:likya_app/presentation/collects/bloc/collects_display_state.dart';
 import 'package:likya_app/presentation/collects/page/create_fund_raising_page.dart';
 import 'package:likya_app/presentation/collects/page/list_fund_raising_page.dart';
 import 'package:likya_app/presentation/home/bloc/user_display_cubit.dart';
@@ -724,17 +727,55 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           const SizedBox(height: 3),
-          SizedBox(
-            height: 75,
-            child: ListView(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              children: [
-                carouselItem('10/50 Assistent', '2000'),
-                carouselItem('10/50 Assistent', '500'),
-                carouselItem('10/50 Assistent', '5500'),
-              ],
-            ),
+          BlocProvider(
+            create: (context) => CollectsDisplayCubit()..displayCollects(),
+            child: BlocBuilder<CollectsDisplayCubit, CollectsDisplayState>(
+                builder: (context, state) {
+              if (state is CollectsLoading) {
+                return const CircularProgressIndicator();
+              }
+              if (state is CollectsLoaded) {
+                return SizedBox(
+                  height: 75,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: state.items.length,
+                    itemBuilder: (context, index) {
+                      var collect = state.items[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5.0),
+                        child: FutureBuilder<double>(
+                          future: ApiService()
+                              .collectPercent(collect.id, collect.targetAmount),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<double> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Text('En ours de chargement...');
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else if (snapshot.hasData) {
+                              return carouselItem(
+                                '${(snapshot.data! * 100)} % assistance',
+                                collect.targetAmount.toString(),
+                                collect.status,
+                              );
+                            } else {
+                              return Text('Pas de données disponibles');
+                            }
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                );
+              }
+              if (state is LoadCollectsFailure) {
+                return Text(state.errorMessage);
+              }
+              return const Text('Une erreur inattendue est survenue.');
+            }),
           ),
         ],
       ),

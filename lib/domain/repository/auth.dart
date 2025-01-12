@@ -4,6 +4,7 @@ import 'package:likya_app/data/models/password_req_params.dart';
 import 'package:likya_app/data/models/password_reset.dart';
 import 'package:likya_app/data/models/resendotp_req_params.dart';
 import 'package:likya_app/data/models/signup_req_params.dart';
+import 'package:likya_app/data/models/update_password_req.dart';
 import 'package:likya_app/data/models/verifyotp_req_params.dart';
 
 abstract class AuthRepository {
@@ -16,4 +17,5 @@ abstract class AuthRepository {
   Future<Either> passwordRequest(PasswordReqParams passwordReq);
   Future<Either> passwordReset(PasswordResetParams passwordReset);
   Future<Either> logout();
+  Future<Either> updatePassword(UpdatePasswordReqParams updatePasswordReq);
 }
