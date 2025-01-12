@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:likya_app/domain/usecases/get_Contributions.dart';
 import 'package:likya_app/presentation/contributions/bloc/contributions_display_state.dart';
 import 'package:likya_app/service_locator.dart';
+
+import '../../../domain/usecases/get_contributions.dart';
 
 class ContributionsDisplayCubit extends Cubit<ContributionsDisplayState> {
   ContributionsDisplayCubit() : super(ContributionsLoading());

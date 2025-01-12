@@ -82,9 +82,18 @@ class _ContributionsPageState extends State<ContributionsPage> {
             BlocBuilder<ContributionsDisplayCubit, ContributionsDisplayState>(
                 builder: (context, state) {
           if (state is ContributionsLoading) {
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           }
           if (state is ContributionsLoaded) {
+            if (state.items.isEmpty) {
+              // Display a message when the list is empty
+              return const Center(
+                child: Text(
+                  'Pas de contribution disponible.',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              );
+            }
             return Container(
               padding: const EdgeInsets.all(0),
               child: ListView.builder(
@@ -107,9 +116,16 @@ class _ContributionsPageState extends State<ContributionsPage> {
             );
           }
           if (state is LoadContributionsFailure) {
-            return Text(state.errorMessage);
+            return Center(
+              child: Text(
+                state.errorMessage,
+                style: const TextStyle(fontSize: 16, color: Colors.red),
+              ),
+            );
           }
-          return const Text('Une erreur inattendue est survenue.');
+          return const Center(
+            child: Text('Une erreur inattendue s\'est produite.'),
+          );
         }),
       ),
     );

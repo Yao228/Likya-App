@@ -4,7 +4,7 @@ import 'package:likya_app/data/repository/auth.dart';
 import 'package:likya_app/data/repository/collect.dart';
 import 'package:likya_app/data/repository/contribution.dart';
 import 'package:likya_app/data/repository/setting.dart';
-import 'package:likya_app/data/source/api_contribution_service.dart';
+import 'package:likya_app/data/source/contribution_api_service.dart';
 import 'package:likya_app/data/source/auth_api_service.dart';
 import 'package:likya_app/data/source/auth_local_service.dart';
 import 'package:likya_app/data/source/collect_api_service.dart';
@@ -15,10 +15,11 @@ import 'package:likya_app/domain/repository/contribution.dart';
 import 'package:likya_app/domain/repository/setting.dart';
 import 'package:likya_app/domain/usecases/add_collect.dart';
 import 'package:likya_app/domain/usecases/add_collects_contributors.dart';
+import 'package:likya_app/domain/usecases/add_contribution.dart';
 import 'package:likya_app/domain/usecases/collect_access.dart';
 import 'package:likya_app/domain/usecases/get_collect.dart';
 import 'package:likya_app/domain/usecases/get_collects.dart';
-import 'package:likya_app/domain/usecases/get_contributions.dart';
+import 'package:likya_app/domain/usecases/get_contribution.dart';
 import 'package:likya_app/domain/usecases/get_contributors.dart';
 import 'package:likya_app/domain/usecases/get_user.dart';
 import 'package:likya_app/domain/usecases/is_logged_in.dart';
@@ -31,6 +32,8 @@ import 'package:likya_app/domain/usecases/signup.dart';
 import 'package:likya_app/domain/usecases/update_collect.dart';
 import 'package:likya_app/domain/usecases/update_user.dart';
 import 'package:likya_app/domain/usecases/verify_otp.dart';
+
+import 'domain/usecases/get_contributions.dart';
 
 final sl = GetIt.instance;
 
@@ -83,7 +86,8 @@ void setupServiceLocator() {
 
   sl.registerSingleton<UpdateUserUseCase>(UpdateUserUseCase());
 
-  sl.registerSingleton<AddCollectsContributorsUseCase>(AddCollectsContributorsUseCase());
+  sl.registerSingleton<AddCollectsContributorsUseCase>(
+      AddCollectsContributorsUseCase());
 
   sl.registerSingleton<GetContributionsUseCase>(GetContributionsUseCase());
 
@@ -91,4 +95,7 @@ void setupServiceLocator() {
 
   sl.registerSingleton<CollectAccessUseCase>(CollectAccessUseCase());
 
+  sl.registerSingleton<AddContributionUseCase>(AddContributionUseCase());
+
+  sl.registerSingleton<GetContributionUseCase>(GetContributionUseCase());
 }

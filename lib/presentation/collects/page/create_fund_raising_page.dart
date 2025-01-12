@@ -161,7 +161,7 @@ class _CreateFundRaisingPageState extends State<CreateFundRaisingPage> {
       child: Builder(
         builder: (context) {
           return BasicAppButton(
-            title: 'Suivant',
+            title: 'Ajouter la cagnotte',
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 // ignore: use_build_context_synchronously

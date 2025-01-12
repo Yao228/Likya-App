@@ -11,6 +11,9 @@ import 'package:likya_app/domain/usecases/collect_access.dart';
 import 'package:likya_app/presentation/collects/bloc/collect_display_cubit.dart';
 import 'package:likya_app/presentation/collects/bloc/collect_display_state.dart';
 import 'package:likya_app/presentation/collects/page/update_fund_raising_page.dart';
+import 'package:likya_app/presentation/contributions/bloc/contributions_display_cubit.dart';
+import 'package:likya_app/presentation/contributions/bloc/contributions_display_state.dart';
+import 'package:likya_app/presentation/contributions/page/add_contribution_page.dart';
 import 'package:likya_app/presentation/contributions/page/contributions_page.dart';
 import 'package:likya_app/presentation/contributors/add_contributors.dart';
 import 'package:likya_app/service_locator.dart';
@@ -64,7 +67,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                         const SizedBox(height: 10),
                         collectDesc(state.collectEntity),
                         const SizedBox(height: 20),
-                        collectContributorsTitle(),
+                        collectContributorsTitle(state.collectEntity),
                         const SizedBox(height: 15),
                         collectContributors(),
                         const SizedBox(height: 5),
@@ -157,81 +160,104 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
     );
   }
 
-  Padding collectContributorsTitle() {
+  Padding collectContributorsTitle(CollectEntity collect) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Text(
-          "Liste des contributeurs.",
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "Les contributions",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+            ),
+            textAlign: TextAlign.start,
           ),
-          textAlign: TextAlign.center,
-        ),
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ContributionsPage(collectId: collect.id),
+                ),
+              );
+            },
+            child: Text(
+              "Afficher tous",
+              style: TextStyle(
+                color: Color(0xFF03544F),
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.start,
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Padding collectContributors() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: SizedBox(
-        height: 180,
-        child: ListView(
-          shrinkWrap: true,
-          physics: const AlwaysScrollableScrollPhysics(),
-          children: [
-            contributionItem(
-              '1234',
-              context,
-              Ionicons.chevron_forward_outline,
-              'AMEDEKPEDZI Yao Mawunyo',
-              " 5000.0",
-            ),
-            Divider(color: Colors.grey.shade200),
-            contributionItem(
-              '1234',
-              context,
-              Ionicons.chevron_forward_outline,
-              'SENYO Komlan Brice',
-              "15000.0",
-            ),
-            Divider(color: Colors.grey.shade200),
-            contributionItem(
-              '1234',
-              context,
-              Ionicons.chevron_forward_outline,
-              'EKPO Wolanyo',
-              "10000.0",
-            ),
-            Divider(color: Colors.grey.shade200),
-            contributionItem(
-              '1234',
-              context,
-              Ionicons.chevron_forward_outline,
-              'AMOUZOU Kokou',
-              "25000.0",
-            ),
-            Divider(color: Colors.grey.shade200),
-            contributionItem(
-              '1234',
-              context,
-              Ionicons.chevron_forward_outline,
-              'AMOUZOU Kokou',
-              "25000.0",
-            ),
-            Divider(color: Colors.grey.shade200),
-            contributionItem(
-              '1234',
-              context,
-              Ionicons.chevron_forward_outline,
-              'AMOUZOU Kokou',
-              "25000.0",
-            ),
-          ],
-        ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 5,
+        vertical: 10,
+      ),
+      child: BlocProvider(
+        create: (context) =>
+            ContributionsDisplayCubit()..displayContributions(),
+        child:
+            BlocBuilder<ContributionsDisplayCubit, ContributionsDisplayState>(
+                builder: (context, state) {
+          if (state is ContributionsLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state is ContributionsLoaded) {
+            if (state.items.isEmpty) {
+              // Display a message when the list is empty
+              return const Center(
+                child: Text(
+                  'Pas de contribution disponible.',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              );
+            }
+            return Container(
+              padding: const EdgeInsets.all(0),
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: state.items.length,
+                itemBuilder: (context, index) {
+                  var contribution = state.items[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: contributionItem(
+                        contribution.contributionId,
+                        context,
+                        Ionicons.chevron_forward_outline,
+                        contribution.contributorName,
+                        contribution.amount),
+                  );
+                },
+              ),
+            );
+          }
+          if (state is LoadContributionsFailure) {
+            return Center(
+              child: Text(
+                state.errorMessage,
+                style: const TextStyle(fontSize: 16, color: Colors.red),
+              ),
+            );
+          }
+          return const Center(
+            child: Text('Une erreur inattendue s\'est produite.'),
+          );
+        }),
       ),
     );
   }
@@ -330,8 +356,10 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
             onPressed: () {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (context) =>
-                      ContributionsPage(collectId: collect.id),
+                  builder: (context) => AddContributionPage(
+                    collectId: collect.id,
+                    title: collect.title,
+                  ),
                 ),
               );
             },
@@ -359,7 +387,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  "Contributions",
+                  "Contribuer",
                   style: TextStyle(
                     color: Color(0xFF2FA9A2),
                     fontSize: 14,
