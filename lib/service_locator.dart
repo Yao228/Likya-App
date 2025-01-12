@@ -4,24 +4,29 @@ import 'package:likya_app/data/repository/auth.dart';
 import 'package:likya_app/data/repository/collect.dart';
 import 'package:likya_app/data/repository/contribution.dart';
 import 'package:likya_app/data/repository/setting.dart';
+import 'package:likya_app/data/repository/wallet.dart';
 import 'package:likya_app/data/source/contribution_api_service.dart';
 import 'package:likya_app/data/source/auth_api_service.dart';
 import 'package:likya_app/data/source/auth_local_service.dart';
 import 'package:likya_app/data/source/collect_api_service.dart';
 import 'package:likya_app/data/source/setting_api_service.dart';
+import 'package:likya_app/data/source/wallet_api_service.dart';
 import 'package:likya_app/domain/repository/auth.dart';
 import 'package:likya_app/domain/repository/collect.dart';
 import 'package:likya_app/domain/repository/contribution.dart';
 import 'package:likya_app/domain/repository/setting.dart';
+import 'package:likya_app/domain/repository/wallet.dart';
 import 'package:likya_app/domain/usecases/add_collect.dart';
 import 'package:likya_app/domain/usecases/add_collects_contributors.dart';
 import 'package:likya_app/domain/usecases/add_contribution.dart';
+import 'package:likya_app/domain/usecases/add_wallet.dart';
 import 'package:likya_app/domain/usecases/collect_access.dart';
 import 'package:likya_app/domain/usecases/get_collect.dart';
 import 'package:likya_app/domain/usecases/get_collects.dart';
 import 'package:likya_app/domain/usecases/get_contribution.dart';
 import 'package:likya_app/domain/usecases/get_contributors.dart';
 import 'package:likya_app/domain/usecases/get_user.dart';
+import 'package:likya_app/domain/usecases/get_wallets.dart';
 import 'package:likya_app/domain/usecases/is_logged_in.dart';
 import 'package:likya_app/domain/usecases/login.dart';
 import 'package:likya_app/domain/usecases/logout.dart';
@@ -51,6 +56,8 @@ void setupServiceLocator() {
 
   sl.registerSingleton<ContributionApiService>(ContributionApiServiceImpl());
 
+  sl.registerSingleton<WalletApiService>(WalletApiServiceImpl());
+
   sl.registerSingleton<AuthRepository>(AuthRepositoryImpl());
 
   sl.registerSingleton<CollectRepository>(CollectRepositoryImpl());
@@ -58,6 +65,8 @@ void setupServiceLocator() {
   sl.registerSingleton<SettingRepository>(SettingRepositoryImpl());
 
   sl.registerSingleton<ContributionRepository>(ContributionRepositoryImpl());
+
+  sl.registerSingleton<WalletRepository>(WalletRepositoryImpl());
 
   sl.registerSingleton<SignupUseCase>(SignupUseCase());
 
@@ -101,4 +110,8 @@ void setupServiceLocator() {
   sl.registerSingleton<GetContributionUseCase>(GetContributionUseCase());
 
   sl.registerSingleton<UpdatePasswordUseCase>(UpdatePasswordUseCase());
+
+  sl.registerSingleton<AddWalletUseCase>(AddWalletUseCase());
+
+  sl.registerSingleton<GetWalletsUseCase>(GetWalletsUseCase());
 }

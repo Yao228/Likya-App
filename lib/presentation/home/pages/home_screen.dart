@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:likya_app/common/bloc/button/button_state.dart';
+import 'package:likya_app/common/bloc/button/button_state_cubit.dart';
 import 'package:likya_app/common/bloc/logout/logout_display_cubit.dart';
 import 'package:likya_app/common/bloc/logout/logout_display_state.dart';
 import 'package:likya_app/common/widgets/button/logout_base_button.dart';
+import 'package:likya_app/common/widgets/button/text_base_button.dart';
 import 'package:likya_app/common/widgets/transaction_item.dart';
 import 'package:likya_app/common/widgets/carousel_item.dart';
+import 'package:likya_app/common/widgets/wallet_item.dart';
+import 'package:likya_app/data/models/add_wallet_req.dart';
 import 'package:likya_app/data/source/api_service.dart';
 import 'package:likya_app/domain/entities/user.dart';
+import 'package:likya_app/domain/usecases/add_wallet.dart';
 import 'package:likya_app/domain/usecases/logout.dart';
 import 'package:likya_app/presentation/auth/pages/auth_screen.dart';
 import 'package:likya_app/presentation/collects/bloc/collects_display_cubit.dart';
@@ -20,6 +26,9 @@ import 'package:likya_app/presentation/setting/call_support.dart';
 import 'package:likya_app/presentation/setting/invite_friend.dart';
 import 'package:likya_app/presentation/setting/password_update.dart';
 import 'package:likya_app/presentation/setting/profil_detail.dart';
+import 'package:likya_app/presentation/wallets/bloc/wallets_display_cubit.dart';
+import 'package:likya_app/presentation/wallets/bloc/wallets_display_state.dart';
+import 'package:likya_app/presentation/wallets/page/wallets_page.dart';
 import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/local_storage_service.dart';
 import 'package:likya_app/utils/utils.dart';
@@ -327,6 +336,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             child: Column(
               children: [
+                const SizedBox(height: 20),
                 homeBanner(),
                 const SizedBox(height: 20),
                 homeButtons(),
@@ -440,70 +450,148 @@ class _HomeScreenState extends State<HomeScreen> {
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          Container(
-            width: 319,
-            height: 120,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              image: const DecorationImage(
-                image: AssetImage('assets/images/homebanner.jpg'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'Solde',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
+          BlocProvider(
+            create: (context) => WalletsDisplayCubit()..displayWallets(),
+            child: BlocBuilder<WalletsDisplayCubit, WalletsDisplayState>(
+                builder: (context, state) {
+              if (state is WalletsLoading) {
+                return const CircularProgressIndicator();
+              }
+              if (state is WalletsLoaded) {
+                if (state.items.isEmpty) {
+                  // Display a message when the list is empty
+                  return Container(
+                    //bool isPriceHidden = false,
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    width: 319,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.blueGrey,
+                    ),
+                    child: Center(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Ajoutez votre premier wallet.',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext dialogContext) {
+                                return BlocListener<ButtonStateCubit,
+                                    ButtonState>(
+                                  listener: (context, state) {
+                                    if (state is ButtonSuccessState) {
+                                      // Close dialog on success
+                                      Navigator.of(dialogContext).pop();
+                                    }
+                                    if (state is ButtonFailureState) {
+                                      // Show error message on failure
+                                      var snackBar = SnackBar(
+                                          content: Text(state.errorMessage));
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(snackBar);
+                                    }
+                                  },
+                                  child: AlertDialog(
+                                    title: const Text(
+                                      "Ajouter un Wallet",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    content: const Text(
+                                      "Confirmer pour ajouter votre Wallet.",
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          // Close the dialog when "Fermer" is pressed
+                                          Navigator.of(dialogContext).pop();
+                                        },
+                                        child: const Text(
+                                          "Fermer",
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                      TextBaseButton(
+                                        onPressed: () async {
+                                          // Move context usage before async call
+                                          var userId = await LocalStorageService
+                                              .getString(
+                                                  LocalStorageService.userId);
+                                          context
+                                              .read<ButtonStateCubit>()
+                                              .excute(
+                                                usecase: sl<AddWalletUseCase>(),
+                                                params: AddWalletReqParams(
+                                                  userId: userId.toString(),
+                                                ),
+                                              );
+                                        },
+                                        title: "Confirmer",
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: Icon(
+                            Ionicons.add_circle_outline,
+                            color: Colors.white,
+                            size: 32,
+                          ),
+                        ),
+                      ],
+                    )),
+                  );
+                }
+                return SizedBox(
+                  height: 75,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: state.items.length,
+                    itemBuilder: (context, index) {
+                      var wallet = state.items[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5.0),
+                        child: walletItem(
+                          context,
+                          wallet.balance,
+                          wallet.walletNumber,
+                          wallet.currency,
+                          wallet.status,
+                          false,
+                        ),
+                      );
+                    },
                   ),
-                ),
-                const SizedBox(height: 0),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        _isPriceHidden ? '******' : '1 850 225',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 32,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(width: 3),
-                      Text(
-                        _isPriceHidden ? '' : 'f',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _isPriceHidden = !_isPriceHidden;
-                          });
-                        },
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.all(5),
-                        ),
-                        child: Icon(
-                          _isPriceHidden ? Ionicons.eye : Ionicons.eye_off,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 5),
-              ],
-            ),
+                );
+              }
+              if (state is LoadWalletsFailure) {
+                return Text(state.errorMessage);
+              }
+              return const Text('Une erreur inattendue est survenue.');
+            }),
           ),
           Positioned(
             bottom: -25,
@@ -540,6 +628,47 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => WalletsPage()),
+              );
+            },
+            child: Column(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Ionicons.wallet_outline,
+                    size: 32,
+                    color: Color(0xFF2FA9A2),
+                  ),
+                ),
+                const SizedBox(height: 10), // Space between image and text
+                const Text(
+                  "Wallets",
+                  style: TextStyle(
+                    color: Color(0xFF2FA9A2),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
           TextButton(
             onPressed: () {},
             child: Column(
@@ -639,42 +768,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 10), // Space between image and text
                 const Text(
                   "Likya me",
-                  style: TextStyle(
-                    color: Color(0xFF2FA9A2),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          TextButton(
-            onPressed: () {},
-            child: Column(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Ionicons.options_outline,
-                    size: 32,
-                    color: Color(0xFF2FA9A2),
-                  ),
-                ),
-                const SizedBox(height: 10), // Space between image and text
-                const Text(
-                  "Services",
                   style: TextStyle(
                     color: Color(0xFF2FA9A2),
                     fontSize: 14,

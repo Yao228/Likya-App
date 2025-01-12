@@ -17,6 +17,7 @@ import 'package:likya_app/presentation/contributions/bloc/contributions_display_
 import 'package:likya_app/presentation/contributions/page/add_contribution_page.dart';
 import 'package:likya_app/presentation/contributions/page/contributions_page.dart';
 import 'package:likya_app/presentation/contributors/add_contributors.dart';
+import 'package:likya_app/presentation/setting/invite_friend.dart';
 import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/utils.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -271,6 +272,93 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
         children: [
           TextButton(
             onPressed: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => AddContributionPage(
+                    collectId: collect.id,
+                    title: collect.title,
+                  ),
+                ),
+              );
+            },
+            child: Column(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        spreadRadius: 2,
+                        blurRadius: 7,
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Ionicons.add_outline,
+                    size: 28,
+                    color: Color(0xFF2FA9A2),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  "Contribuer",
+                  style: TextStyle(
+                    color: Color(0xFF2FA9A2),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => InviteFriend(),
+                ),
+              );
+            },
+            child: Column(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        spreadRadius: 2,
+                        blurRadius: 7,
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Ionicons.arrow_redo_outline,
+                    size: 28,
+                    color: Color(0xFF2FA9A2),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  "Inviter",
+                  style: TextStyle(
+                    color: Color(0xFF2FA9A2),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: () {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -355,51 +443,6 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => AddContributionPage(
-                    collectId: collect.id,
-                    title: collect.title,
-                  ),
-                ),
-              );
-            },
-            child: Column(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 2,
-                        blurRadius: 7,
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Ionicons.arrow_redo_outline,
-                    size: 28,
-                    color: Color(0xFF2FA9A2),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  "Contribuer",
-                  style: TextStyle(
-                    color: Color(0xFF2FA9A2),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          TextButton(
-            onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -438,7 +481,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  "Mettre à jours",
+                  "Modifier",
                   style: TextStyle(
                     color: Color(0xFF2FA9A2),
                     fontSize: 14,

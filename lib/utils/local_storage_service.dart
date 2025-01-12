@@ -9,6 +9,9 @@ class LocalStorageService {
   static String userDetail = "USER_DETAIL";
   static String userId = "USER_ID";
   static String collectId = "COLLECT_ID";
+  static String contributionId = "CONTRIBUTION_ID";
+  static String walletId = "WALLET_ID";
+  static String transactionId = "TRANSACTION_ID";
 
   static Future<void> putString(String key, String value) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();

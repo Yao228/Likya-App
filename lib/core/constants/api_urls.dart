@@ -15,4 +15,5 @@ class ApiUrls {
   static const contributes = '${baseURL}contributes';
   static const logout = '${baseURL}logout';
   static const changePassword = '${baseURL}change-password';
+  static const wallets = '${baseURL}wallets';
 }
