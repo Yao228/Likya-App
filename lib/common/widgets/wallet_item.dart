@@ -3,7 +3,7 @@ import 'package:ionicons/ionicons.dart';
 
 Widget walletItem(
   BuildContext context,
-  String balance,
+  double balance,
   String walletNumber,
   String currency,
   String status,
@@ -11,12 +11,16 @@ Widget walletItem(
 ) {
   return Container(
     //bool isPriceHidden = false,
-    padding: const EdgeInsets.symmetric(horizontal: 15),
+    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
     width: 319,
     height: 150,
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(20),
       color: Colors.blueAccent,
+      image: const DecorationImage(
+        image: AssetImage('assets/images/homebanner.jpg'),
+        fit: BoxFit.cover,
+      ),
     ),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -26,7 +30,7 @@ Widget walletItem(
           'Solde',
           style: TextStyle(
             color: Colors.white,
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.w400,
           ),
         ),
@@ -39,10 +43,10 @@ Widget walletItem(
               Row(
                 children: [
                   Text(
-                    isPriceHidden ? '******' : balance,
+                    isPriceHidden ? '******' : balance.toString(),
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 32,
+                      fontSize: 28,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -51,7 +55,7 @@ Widget walletItem(
                     isPriceHidden ? '' : currency,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 28,
+                      fontSize: 20,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -82,7 +86,7 @@ Widget walletItem(
               'N° : $walletNumber',
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -91,7 +95,7 @@ Widget walletItem(
               status,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w700,
               ),
             ),

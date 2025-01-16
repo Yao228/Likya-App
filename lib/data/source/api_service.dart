@@ -77,6 +77,7 @@ class ApiService {
       // Retourner null si aucune donnée valide n'a été trouvée
       return null;
     } catch (e) {
+      // ignore: avoid_print
       print("Error fetching users: $e");
       return null;
     }
@@ -94,9 +95,11 @@ class ApiService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       } else {
+        // ignore: avoid_print
         print("Unexpected status code: ${response.statusCode}");
       }
     } catch (e) {
+      // ignore: avoid_print
       print("Error fetching phone number details: $e");
     }
     return null;
@@ -127,9 +130,11 @@ class ApiService {
           throw Exception('Aucun élément trouvé dans la réponse.');
         }
       } else {
+        // ignore: avoid_print
         print("Unexpected status code: ${response.statusCode}");
       }
     } catch (e) {
+      // ignore: avoid_print
       print("Error fetching phone number details: $e");
     }
     return 0.0;

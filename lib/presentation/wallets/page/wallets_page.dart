@@ -124,6 +124,7 @@ class _WalletsPageState extends State<WalletsPage> {
                             // Move context usage before async call
                             var userId = await LocalStorageService.getString(
                                 LocalStorageService.userId);
+                            // ignore: use_build_context_synchronously
                             context.read<ButtonStateCubit>().excute(
                                   usecase: sl<AddWalletUseCase>(),
                                   params: AddWalletReqParams(

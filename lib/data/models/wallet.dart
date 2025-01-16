@@ -1,4 +1,3 @@
-import 'package:likya_app/domain/entities/contribution.dart';
 import 'package:likya_app/domain/entities/wallet.dart';
 
 class WalletModel {

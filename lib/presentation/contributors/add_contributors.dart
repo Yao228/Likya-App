@@ -258,35 +258,35 @@ class _AddContributorsState extends State<AddContributors> {
               ],
             ),
           // Affichage conditionnel de la liste
-          searchController.text.length <= 3
-              ? const Text("Tapez plus de 3 caractères pour rechercher.")
-              : filteredContributors.isEmpty
-                  ? const Text("Aucun contributeur trouvé.")
-                  : ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: filteredContributors.length,
-                      itemBuilder: (context, index) {
-                        final contributor = filteredContributors[index];
-                        return CheckboxListTile(
-                          title: Text(contributor["name"]),
-                          value: contributor["isSelected"] ?? false,
-                          onChanged: (isSelected) {
-                            setState(
-                              () {
-                                contributor["isSelected"] = isSelected;
-                                final originalIndex = contributors!.indexWhere(
-                                    (c) => c["_id"] == contributor["_id"]);
-                                if (originalIndex != -1) {
-                                  contributors![originalIndex]["isSelected"] =
-                                      isSelected;
-                                }
-                              },
-                            );
-                          },
-                        );
+          filteredContributors.isEmpty
+              ? const Text("Aucun contributeur trouvé.")
+              : ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: filteredContributors.length,
+                  itemBuilder: (context, index) {
+                    final contributor = filteredContributors[index];
+                    return CheckboxListTile(
+                      title: Text(
+                          contributor["name"] ?? "Unknown"), // Handle null name
+                      value: contributor["isSelected"] ??
+                          false, // Default to false if null
+                      onChanged: (isSelected) {
+                        setState(() {
+                          contributor["isSelected"] = isSelected;
+                          final originalIndex = contributors?.indexWhere(
+                                (c) => c["_id"] == contributor["_id"],
+                              ) ??
+                              -1;
+                          if (originalIndex != -1) {
+                            contributors![originalIndex]["isSelected"] =
+                                isSelected;
+                          }
+                        });
                       },
-                    ),
+                    );
+                  },
+                ),
         ],
       ),
     );

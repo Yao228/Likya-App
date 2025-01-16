@@ -40,10 +40,19 @@ class _CreateFundRaisingPageState extends State<CreateFundRaisingPage> {
   }
 
   Future<void> fetchCategories() async {
-    final fetchedCategories = await ApiService().getCategories();
-    setState(() {
-      categories = fetchedCategories as List<Map<String, dynamic>>?;
-    });
+    try {
+      final fetchedCategories = await ApiService().getCategories();
+      if (fetchedCategories is List<Map<String, dynamic>>) {
+        setState(() {
+          categories = fetchedCategories;
+        });
+      } else {
+        throw TypeError();
+      }
+    } catch (e) {
+      // ignore: avoid_print
+      print("Error fetching categories: $e");
+    }
   }
 
   @override

@@ -1,6 +1,6 @@
 class WalletList {
   final String id;
-  final String balance;
+  final double balance;
   final String currency;
   final String walletNumber;
   final String status;
@@ -32,7 +32,7 @@ class WalletList {
   factory WalletList.fromMap(Map<String, dynamic> map) {
     return WalletList(
       id: map['_id'] as String,
-      balance: map['balance'] as String,
+      balance: map['balance'] as double,
       currency: map['currency'] as String,
       walletNumber: map['wallet_number'] as String,
       status: map['status'] as String,

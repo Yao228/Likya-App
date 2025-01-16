@@ -6,8 +6,8 @@ import 'package:likya_app/service_locator.dart';
 class ContributionDisplayCubit extends Cubit<ContributionDisplayState> {
   ContributionDisplayCubit() : super(ContributionLoading());
 
-  void displayContribution() async {
-    var result = await sl<GetContributionUseCase>().call();
+  void displayContribution(String contributionId) async {
+    var result = await sl<GetContributionUseCase>().call(param: contributionId);
     result.fold((error) {
       emit(LoadContributionFailure(errorMessage: error));
     }, (data) {

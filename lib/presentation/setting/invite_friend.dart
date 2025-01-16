@@ -66,7 +66,7 @@ class _InviteFriendState extends State<InviteFriend> {
     });
 
     try {
-      List<Contact> fetchedfriends = await FastContacts.getAllContacts() ?? [];
+      List<Contact> fetchedfriends = await FastContacts.getAllContacts();
       setState(() {
         friends = fetchedfriends.map<Map<String, dynamic>>((contributor) {
           return {"contact": contributor, "isSelected": false};
@@ -79,6 +79,7 @@ class _InviteFriendState extends State<InviteFriend> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to fetch contacts: $e')),
       );
+      // ignore: avoid_print
       print('Error fetching contacts: $e'); // Log the error for debugging
     } finally {
       setState(() {

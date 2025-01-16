@@ -48,7 +48,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
       ),
       body: SafeArea(
         child: BlocProvider(
-          create: (context) => CollectDisplayCubit()..displayCollect(),
+          create: (context) => CollectDisplayCubit()..displayCollect(widget.collectID),
           child: BlocBuilder<CollectDisplayCubit, CollectDisplayState>(
             builder: (context, state) {
               if (state is CollectLoading) {
@@ -361,8 +361,21 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
             onPressed: () {
               showDialog(
                 context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
+                builder: (BuildContext dialogContext) {
+                  return BlocListener<ButtonStateCubit, ButtonState>(
+                      listener: (context, state) {
+                    if (state is ButtonSuccessState) {
+                      // Close dialog on success
+                      Navigator.of(dialogContext).pop();
+                    }
+                    if (state is ButtonFailureState) {
+                      // Show error message on failure
+                      var snackBar =
+                      SnackBar(content: Text(state.errorMessage));
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+                  },
+                    child: AlertDialog(
                     title: const Text(
                       "Changer l'accès",
                       style: TextStyle(
@@ -380,7 +393,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                     actions: [
                       TextButton(
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          Navigator.of(dialogContext).pop();
                         },
                         child: const Text(
                           "Fermer",
@@ -403,6 +416,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                         title: "Confirmer",
                       ),
                     ],
+                  ),
                   );
                 },
               );

@@ -14,7 +14,6 @@ class ListFundRaisingPage extends StatefulWidget {
 }
 
 class _ListFundRaisingPageState extends State<ListFundRaisingPage> {
-  final TextEditingController _searchController = TextEditingController();
   double collectPercent = 0;
 
   @override

@@ -26,6 +26,7 @@ import 'package:likya_app/presentation/setting/call_support.dart';
 import 'package:likya_app/presentation/setting/invite_friend.dart';
 import 'package:likya_app/presentation/setting/password_update.dart';
 import 'package:likya_app/presentation/setting/profil_detail.dart';
+import 'package:likya_app/presentation/transactions/pages/transaction_page.dart';
 import 'package:likya_app/presentation/wallets/bloc/wallets_display_cubit.dart';
 import 'package:likya_app/presentation/wallets/bloc/wallets_display_state.dart';
 import 'package:likya_app/presentation/wallets/page/wallets_page.dart';
@@ -41,7 +42,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _isPriceHidden = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -331,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SingleChildScrollView(
           child: Container(
             padding: const EdgeInsets.symmetric(
-              horizontal: 10,
+              horizontal: 5,
               vertical: 0,
             ),
             child: Column(
@@ -537,6 +537,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           var userId = await LocalStorageService
                                               .getString(
                                                   LocalStorageService.userId);
+                                          // ignore: use_build_context_synchronously
                                           context
                                               .read<ButtonStateCubit>()
                                               .excute(
@@ -565,7 +566,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 }
                 return SizedBox(
-                  height: 75,
+                  width: 319,
+                  height: 170,
                   child: ListView.builder(
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
@@ -670,7 +672,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TransactionPage(method: 'transfer'),
+                ),
+              );
+            },
             child: Column(
               children: [
                 Container(
@@ -706,7 +715,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TransactionPage(method: 'payment'),
+                ),
+              );
+            },
             child: Column(
               children: [
                 Container(
@@ -742,7 +758,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TransactionPage(method: 'recharge'),
+                ),
+              );
+            },
             child: Column(
               children: [
                 Container(
@@ -880,10 +903,10 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 0),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white30,
+          color: Colors.white,
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
           ),
           boxShadow: [
             BoxShadow(

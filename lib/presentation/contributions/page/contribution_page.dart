@@ -34,7 +34,7 @@ class _ContributionPageState extends State<ContributionPage> {
       body: SafeArea(
         child: BlocProvider(
           create: (context) =>
-              ContributionDisplayCubit()..displayContribution(),
+              ContributionDisplayCubit()..displayContribution(widget.contributionId),
           child:
               BlocBuilder<ContributionDisplayCubit, ContributionDisplayState>(
             builder: (context, state) {

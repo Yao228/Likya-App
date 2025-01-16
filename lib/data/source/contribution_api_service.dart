@@ -9,7 +9,7 @@ import 'package:likya_app/utils/local_storage_service.dart';
 abstract class ContributionApiService {
   Future<Either> getContributions();
   Future<Either> addContribution(AddContributionReqParams contributionReq);
-  Future<Either> getContribution();
+  Future<Either> getContribution(String contributionId);
 }
 
 class ContributionApiServiceImpl extends ContributionApiService {
@@ -37,15 +37,13 @@ class ContributionApiServiceImpl extends ContributionApiService {
   }
 
   @override
-  Future<Either> getContribution() async {
+  Future<Either> getContribution(String contributionId) async {
     try {
       var token =
           await LocalStorageService.getString(LocalStorageService.token);
-      var collectId =
-          await LocalStorageService.getString(LocalStorageService.collectId);
 
       var response = await sl<DioClient>().get(
-        '${ApiUrls.contributes}/$collectId',
+        '${ApiUrls.contributes}/$contributionId',
         options: Options(
           headers: {'Authorization': 'Bearer $token'},
         ),

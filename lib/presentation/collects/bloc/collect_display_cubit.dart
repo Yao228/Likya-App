@@ -6,8 +6,8 @@ import 'package:likya_app/service_locator.dart';
 class CollectDisplayCubit extends Cubit<CollectDisplayState> {
   CollectDisplayCubit() : super(CollectLoading());
 
-  void displayCollect() async {
-    var result = await sl<GetCollectUseCase>().call();
+  void displayCollect(String collectId) async {
+    var result = await sl<GetCollectUseCase>().call(param: collectId);
     result.fold((error) {
       emit(LoadCollectFailure(errorMessage: error));
     }, (data) {

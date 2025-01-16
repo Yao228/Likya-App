@@ -39,8 +39,8 @@ class CollectRepositoryImpl extends CollectRepository {
   }
 
   @override
-  Future<Either> getCollect() async {
-    Either result = await sl<CollectApiService>().getCollect();
+  Future<Either> getCollect(String collectId) async {
+    Either result = await sl<CollectApiService>().getCollect(collectId);
     return result.fold(
       (error) {
         return Left(error);

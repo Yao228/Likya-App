@@ -15,8 +15,8 @@ class ContributionRepositoryImpl extends ContributionRepository {
   }
 
   @override
-  Future<Either> getContribution() async {
-    Either result = await sl<ContributionApiService>().getContribution();
+  Future<Either> getContribution(String contributionId) async {
+    Either result = await sl<ContributionApiService>().getContribution(contributionId);
     return result.fold(
       (error) {
         return Left(error);

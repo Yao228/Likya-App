@@ -88,6 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
             final phonenumber = '$dialCode${phone.text.trim()}';
             Map<String, dynamic>? result = await ApiService()
                 .findPhonenumber(formatPhoneNumber(phonenumber));
+            // ignore: avoid_print
             print(result);
             if (result != null && result['phonenumber'] != null) {
               // ignore: use_build_context_synchronously
