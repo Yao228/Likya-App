@@ -109,6 +109,10 @@ class _AddContributorsState extends State<AddContributors> {
               );
             }
             if (state is ButtonFailureState) {
+              setState(() {
+                _addCollectsContributorsSuccess = false;
+                _addCollectsContributorsLoading = false;
+              });
               var snackBar = SnackBar(content: Text(state.errorMessage));
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }

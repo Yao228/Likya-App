@@ -271,7 +271,7 @@ class _ProfilDetailState extends State<ProfilDetail> {
           backgroundColor: const Color(0xFF2FA9A2),
         ),
         child: Text(
-          'Modifier',
+          'Modifier le profil',
           style: const TextStyle(
             fontSize: 15,
             color: Colors.white,

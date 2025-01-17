@@ -3,7 +3,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:get/get.dart';
 import 'package:likya_app/presentation/home/pages/home_screen.dart';
 import 'package:likya_app/presentation/notification_screen.dart';
-import 'package:likya_app/presentation/setting_screen.dart';
+import 'package:likya_app/presentation/setting/setting_screen.dart';
 import 'package:likya_app/presentation/transaction_screen.dart';
 
 class NavigationMenu extends StatefulWidget {

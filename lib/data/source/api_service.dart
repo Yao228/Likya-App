@@ -46,6 +46,8 @@ class ApiService {
     try {
       var token =
           await LocalStorageService.getString(LocalStorageService.token);
+      var userId =
+          await LocalStorageService.getString(LocalStorageService.userId);
       var role =
           await LocalStorageService.getString(LocalStorageService.userRole);
 
@@ -66,6 +68,7 @@ class ApiService {
           // Filtrer les utilisateurs par rôle et mapper les résultats
           return (data["items"] as List)
               .where((item) => item["role"] == role)
+              .where((item) => item["_id"] != userId)
               .map((item) => {
                     "_id": item["_id"],
                     "name": item["fullname"],

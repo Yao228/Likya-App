@@ -72,6 +72,9 @@ class CollectApiServiceImpl extends CollectApiService {
         ApiUrls.collects,
         queryParameters: {
           'created_by': userID,
+          'contributors': {
+            '\$in': [userID]
+          },
           'sort': 'desc',
         },
         options: Options(
@@ -89,7 +92,7 @@ class CollectApiServiceImpl extends CollectApiService {
     try {
       var token =
           await LocalStorageService.getString(LocalStorageService.token);
-      
+
       var response = await sl<DioClient>().get(
         '${ApiUrls.collects}/$collectId',
         options: Options(

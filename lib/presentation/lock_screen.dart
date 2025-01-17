@@ -5,35 +5,24 @@ import 'package:likya_app/common/bloc/auth/auth_state_cubit.dart';
 import 'package:likya_app/common/bloc/button/button_state.dart';
 import 'package:likya_app/common/bloc/button/button_state_cubit.dart';
 import 'package:likya_app/common/widgets/button/text_base_button.dart';
-import 'package:likya_app/data/models/login_req_params.dart';
-import 'package:likya_app/domain/usecases/login.dart';
-import 'package:likya_app/presentation/auth/pages/login/login_screen.dart';
-import 'package:likya_app/presentation/auth/pages/password-reset/password_request.dart';
 import 'package:likya_app/presentation/navigation_menu.dart';
-import 'package:likya_app/service_locator.dart';
-import 'package:likya_app/utils/utils.dart';
 
-// ignore: must_be_immutable
-class PasswordScreen extends StatefulWidget {
-  PasswordScreen(
-      {this.fullname, required this.phonenumber, this.avatar, super.key});
-  final String phonenumber;
-  String? fullname;
-  String? avatar;
+class LockScreen extends StatefulWidget {
+  const LockScreen({super.key});
 
   @override
-  State<PasswordScreen> createState() => _PasswordScreenState();
+  State<LockScreen> createState() => _LockScreenState();
 }
 
-class _PasswordScreenState extends State<PasswordScreen> {
+class _LockScreenState extends State<LockScreen> {
   final _formKey = GlobalKey<FormState>();
   final List<TextEditingController> controllers =
       List.generate(4, (_) => TextEditingController());
   final List<FocusNode> focusNodes = List.generate(4, (_) => FocusNode());
 
   bool _autoLoginFailed = false;
-  bool _loginProgress = false;
-  bool _loginSuccess = false;
+  bool _validationProgress = false;
+  bool _validationSuccess = false;
 
   @override
   void dispose() {
@@ -46,7 +35,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
     super.dispose();
   }
 
-  void onChanged(String value, int index) {
+  /*void onChanged(String value, int index) {
     setState(() {
       if (value.isNotEmpty && index < focusNodes.length - 1) {
         FocusScope.of(context).requestFocus(focusNodes[index + 1]);
@@ -72,20 +61,19 @@ class _PasswordScreenState extends State<PasswordScreen> {
             ),
           );
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Ionicons.arrow_back),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => LoginScreen()),
-            );
-          },
+        title: Text(
+          'Vérifiervotre code',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
       resizeToAvoidBottomInset: false,
@@ -94,14 +82,14 @@ class _PasswordScreenState extends State<PasswordScreen> {
         listener: (context, state) {
           if (state is ButtonLoadingState) {
             setState(() {
-              _loginProgress = true;
+              _validationProgress = true;
             });
           }
           if (state is ButtonSuccessState) {
             (context) => AuthStateCubit()..appStarted();
             setState(() {
-              _loginProgress = false;
-              _loginSuccess = true;
+              _validationProgress = false;
+              _validationSuccess = true;
             });
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => NavigationMenu()),
@@ -109,7 +97,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
           }
           if (state is ButtonFailureState) {
             setState(() {
-              _loginProgress = false;
+              _validationProgress = false;
               _autoLoginFailed = true;
             });
             ScaffoldMessenger.of(context).showSnackBar(
@@ -125,19 +113,11 @@ class _PasswordScreenState extends State<PasswordScreen> {
               child: Column(
                 children: [
                   formTitle(),
-                  const SizedBox(height: 10),
-                  avatar(),
-                  const SizedBox(height: 20),
-                  phoneNumber(),
-                  const SizedBox(height: 20),
-                  formDesc(),
                   const SizedBox(height: 15),
                   codeInput(),
                   const SizedBox(height: 15),
-                  if (_autoLoginFailed) forgotPassword(),
-                  //if (_autoLoginFailed) signIn(context),
-                  if (_loginProgress) loginProgress(),
-                  if (_loginSuccess) loginSuccess(),
+                  if (_validationProgress) validationProgress(),
+                  if (_validationSuccess) validationSuccess(),
                 ],
               ),
             ),
@@ -161,7 +141,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
               obscureText: true,
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
-              onChanged: (value) => onChanged(value, index),
+              /*onChanged: (value) => onChanged(value, index),*/
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 contentPadding: EdgeInsets.symmetric(vertical: 10),
@@ -177,58 +157,13 @@ class _PasswordScreenState extends State<PasswordScreen> {
     );
   }
 
-  Padding forgotPassword() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: TextBaseButton(
-        title: 'Code secret oublié',
-        onPressed: () {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => PasswordRequest()),
-          );
-        },
-      ),
-    );
-  }
-
   Padding formTitle() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: Text(
-        'Bienvenue ${widget.fullname}',
+        'Entrez votre code secret ',
         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         textAlign: TextAlign.center,
-      ),
-    );
-  }
-
-  Padding phoneNumber() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Text(
-        widget.phonenumber,
-        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
-  Padding formDesc() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      child: Text(
-        'Veuillez entrer votre code secret',
-        style: TextStyle(fontSize: 16),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
-  Padding avatar() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 90, vertical: 30),
-      child: Center(
-        child: userAvatar(widget.fullname, widget.avatar, 50, 32),
       ),
     );
   }
@@ -243,12 +178,12 @@ class _PasswordScreenState extends State<PasswordScreen> {
             onPressed: () async {
               String code = controllers.map((c) => c.text).join();
               if (code.isNotEmpty) {
-                context.read<ButtonStateCubit>().excute(
+                /*context.read<ButtonStateCubit>().excute(
                     usecase: sl<LoginUseCase>(),
                     params: LoginReqParams(
                       password: code,
                       phonenumber: widget.phonenumber,
-                    ));
+                    ));*/
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -263,25 +198,25 @@ class _PasswordScreenState extends State<PasswordScreen> {
     );
   }
 
-  Padding loginProgress() {
+  Padding validationProgress() {
     return const Padding(
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: Text(
-        'Connection en cours...',
+        'Validation en cours...',
         style: TextStyle(fontSize: 15),
         textAlign: TextAlign.center,
       ),
     );
   }
 
-  Padding loginSuccess() {
+  Padding validationSuccess() {
     return const Padding(
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Connection réussie',
+            'Code validé',
             style: TextStyle(fontSize: 15),
             textAlign: TextAlign.center,
           ),

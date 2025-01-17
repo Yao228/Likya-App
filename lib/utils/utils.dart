@@ -85,3 +85,18 @@ String formatPhoneNumber(String phoneNumber) {
   }
   return phoneNumber;
 }
+
+String transactionTitle(String method) {
+  switch (method) {
+    case 'payment':
+      return 'paiement';
+    case 'recharge':
+      return 'dépôt';
+    case 'transfer':
+      return 'transfert';
+    case 'withdrawal':
+      return 'retrait';
+    default:
+      return '';
+  }
+}

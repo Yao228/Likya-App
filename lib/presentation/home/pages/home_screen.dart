@@ -29,7 +29,6 @@ import 'package:likya_app/presentation/setting/profil_detail.dart';
 import 'package:likya_app/presentation/transactions/pages/transaction_page.dart';
 import 'package:likya_app/presentation/wallets/bloc/wallets_display_cubit.dart';
 import 'package:likya_app/presentation/wallets/bloc/wallets_display_state.dart';
-import 'package:likya_app/presentation/wallets/page/wallets_page.dart';
 import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/local_storage_service.dart';
 import 'package:likya_app/utils/utils.dart';
@@ -336,7 +335,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             child: Column(
               children: [
-                const SizedBox(height: 20),
                 homeBanner(),
                 const SizedBox(height: 20),
                 homeButtons(),
@@ -634,7 +632,9 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => WalletsPage()),
+                MaterialPageRoute(
+                  builder: (context) => TransactionPage(method: 'recharge'),
+                ),
               );
             },
             child: Column(
@@ -654,57 +654,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   child: Icon(
-                    Ionicons.wallet_outline,
+                    Ionicons.add_outline,
                     size: 32,
                     color: Color(0xFF2FA9A2),
                   ),
                 ),
                 const SizedBox(height: 10), // Space between image and text
                 const Text(
-                  "Wallets",
-                  style: TextStyle(
-                    color: Color(0xFF2FA9A2),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TransactionPage(method: 'transfer'),
-                ),
-              );
-            },
-            child: Column(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Ionicons.sync_outline,
-                    size: 32,
-                    color: Color(0xFF2FA9A2),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  "Transfert",
+                  "Dépôt",
                   style: TextStyle(
                     color: Color(0xFF2FA9A2),
                     fontSize: 14,
@@ -762,7 +719,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => TransactionPage(method: 'recharge'),
+                  builder: (context) => TransactionPage(method: 'transfer'),
                 ),
               );
             },
@@ -784,6 +741,49 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: Icon(
                     Ionicons.paper_plane_outline,
+                    size: 32,
+                    color: Color(0xFF2FA9A2),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  "Transfert",
+                  style: TextStyle(
+                    color: Color(0xFF2FA9A2),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ListFundRaisingPage(),
+                ),
+              );
+            },
+            child: Column(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Ionicons.sync_outline,
                     size: 32,
                     color: Color(0xFF2FA9A2),
                   ),
@@ -1075,40 +1075,51 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   height: 87,
-                  child: Row(
-                    children: [
-                      Icon(
-                        Ionicons.add_circle_outline,
-                        size: 40,
-                        color: Color(0xFF2FA9A2),
-                      ),
-                      const SizedBox(width: 15),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Ajouter',
-                              style: TextStyle(
-                                color: Color(0xFF2FA9A2),
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              'Déposer de l\'argent sur votre compte Likya pour toutes vos prochaines transactions.',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              TransactionPage(method: 'recharge'),
                         ),
-                      ),
-                    ],
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Ionicons.add_circle_outline,
+                          size: 40,
+                          color: Color(0xFF2FA9A2),
+                        ),
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Ajouter',
+                                style: TextStyle(
+                                  color: Color(0xFF2FA9A2),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                'Déposer de l\'argent sur votre compte Likya pour toutes vos prochaines transactions.',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 15),
@@ -1121,40 +1132,51 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   height: 87,
-                  child: Row(
-                    children: [
-                      Icon(
-                        Ionicons.arrow_redo_outline,
-                        size: 40,
-                        color: Color(0xFF2FA9A2),
-                      ),
-                      const SizedBox(width: 15),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Envoyer',
-                              style: TextStyle(
-                                color: Color(0xFF2FA9A2),
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              'Transférer de l\'argent à vos proches pour toutes leurs dépenses liées à la santé.',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              TransactionPage(method: 'transfer'),
                         ),
-                      ),
-                    ],
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Ionicons.arrow_redo_outline,
+                          size: 40,
+                          color: Color(0xFF2FA9A2),
+                        ),
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Envoyer',
+                                style: TextStyle(
+                                  color: Color(0xFF2FA9A2),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                'Transférer de l\'argent à vos proches pour toutes leurs dépenses liées à la santé.',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
