@@ -195,7 +195,7 @@ class _ProfilDetailState extends State<ProfilDetail> {
                     fontWeight: FontWeight.w500),
               ),
               Text(
-                user.email ?? user.attributes['email'],
+                user.email ?? user.attributes['email'] ?? 'Unknown',
                 textAlign: TextAlign.left,
                 style: const TextStyle(
                     fontSize: 18,
@@ -256,7 +256,6 @@ class _ProfilDetailState extends State<ProfilDetail> {
             context,
             MaterialPageRoute(
               builder: (context) => ProfilUpdate(
-                userId: user.id,
                 userName: user.fullname,
                 userEmail: user.email ?? user.attributes['email'],
                 userAvatar: user.attributes["avatar"],

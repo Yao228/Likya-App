@@ -9,6 +9,7 @@ import 'package:likya_app/utils/local_storage_service.dart';
 abstract class TransactionApiService {
   Future<Either> addTransaction(
       TransactionReqParams transactionReq, String method);
+  Future<Either> getTransactions();
 }
 
 class TransactionApiServiceImpl extends TransactionApiService {
@@ -28,6 +29,27 @@ class TransactionApiServiceImpl extends TransactionApiService {
       return Right(response);
     } on DioException catch (e) {
       return Left(e.response!.data['message_error']);
+    }
+  }
+
+  @override
+  Future<Either> getTransactions() async {
+    try {
+      var token =
+          await LocalStorageService.getString(LocalStorageService.token);
+
+      var response = await sl<DioClient>().get(
+        ApiUrls.transactions,
+        queryParameters: {
+          'sort': 'desc',
+        },
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+      return Right(response);
+    } on DioException catch (e) {
+      return Left(e.response?.data['message_error'] ?? 'An error occurred');
     }
   }
 }

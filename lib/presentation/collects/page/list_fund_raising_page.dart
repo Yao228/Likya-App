@@ -5,6 +5,7 @@ import 'package:likya_app/common/widgets/collect_item.dart';
 import 'package:likya_app/data/source/api_service.dart';
 import 'package:likya_app/presentation/collects/bloc/collects_display_cubit.dart';
 import 'package:likya_app/presentation/collects/bloc/collects_display_state.dart';
+import 'package:likya_app/presentation/collects/page/create_fund_raising_page.dart';
 
 class ListFundRaisingPage extends StatefulWidget {
   const ListFundRaisingPage({super.key});
@@ -63,48 +64,87 @@ class _ListFundRaisingPageState extends State<ListFundRaisingPage> {
             return const CircularProgressIndicator();
           }
           if (state is CollectsLoaded) {
-            return Container(
-              padding: const EdgeInsets.all(0),
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: state.items.length,
-                itemBuilder: (context, index) {
-                  var collect = state.items[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5.0),
-                    child: FutureBuilder<double>(
-                      future: ApiService()
-                          .collectPercent(collect.id, collect.targetAmount),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<double> snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Text('Cagnotte en cours de chargement ....');
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else if (snapshot.hasData) {
-                          return collectItem(
-                            collect.id,
-                            context,
-                            Ionicons.archive_outline,
-                            collect.title,
-                            collect.description,
-                            collect.targetAmount.toString(),
-                            collect.startDate,
-                            collect.endDate,
-                            collect.status,
-                            snapshot.data,
-                          );
-                        } else {
-                          return Text('Pas de données disponibles');
-                        }
+            return state.items.isEmpty
+                ? Container(
+                    //bool isPriceHidden = false,
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    width: double.infinity,
+                    height: 80,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Ajoutez votre première cagnotte.',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CreateFundRaisingPage(),
+                                ),
+                              );
+                            },
+                            child: Icon(
+                              Ionicons.add_circle_outline,
+                              color: Colors.black,
+                              size: 32,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : Container(
+                    padding: const EdgeInsets.all(0),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: state.items.length,
+                      itemBuilder: (context, index) {
+                        var collect = state.items[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5.0),
+                          child: FutureBuilder<double>(
+                            future: ApiService().collectPercent(
+                                collect.id, collect.targetAmount),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<double> snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Text(
+                                    'Cagnotte en cours de chargement ....');
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else if (snapshot.hasData) {
+                                return collectItem(
+                                  collect.id,
+                                  context,
+                                  Ionicons.archive_outline,
+                                  collect.title,
+                                  collect.description,
+                                  collect.targetAmount.toString(),
+                                  collect.startDate,
+                                  collect.endDate,
+                                  collect.status,
+                                  snapshot.data,
+                                );
+                              } else {
+                                return Text('Pas de données disponibles');
+                              }
+                            },
+                          ),
+                        );
                       },
                     ),
                   );
-                },
-              ),
-            );
           }
           if (state is LoadCollectsFailure) {
             return Text(state.errorMessage);

@@ -42,16 +42,22 @@ class _CreateFundRaisingPageState extends State<CreateFundRaisingPage> {
   Future<void> fetchCategories() async {
     try {
       final fetchedCategories = await ApiService().getCategories();
+      // ignore: unnecessary_type_check
       if (fetchedCategories is List<Map<String, dynamic>>) {
         setState(() {
           categories = fetchedCategories;
         });
       } else {
-        throw TypeError();
+        var snackBar =
+            SnackBar(content: Text("Erreur lors du chargement des catégories"));
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     } catch (e) {
-      // ignore: avoid_print
-      print("Error fetching categories: $e");
+      var snackBar =
+          SnackBar(content: Text("Erreur lors du chargement des catégories"));
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 

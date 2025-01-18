@@ -29,6 +29,7 @@ import 'package:likya_app/domain/usecases/get_collect.dart';
 import 'package:likya_app/domain/usecases/get_collects.dart';
 import 'package:likya_app/domain/usecases/get_contribution.dart';
 import 'package:likya_app/domain/usecases/get_contributors.dart';
+import 'package:likya_app/domain/usecases/get_transactions.dart';
 import 'package:likya_app/domain/usecases/get_user.dart';
 import 'package:likya_app/domain/usecases/get_wallets.dart';
 import 'package:likya_app/domain/usecases/is_logged_in.dart';
@@ -124,4 +125,6 @@ void setupServiceLocator() {
   sl.registerSingleton<GetWalletsUseCase>(GetWalletsUseCase());
 
   sl.registerSingleton<AddTransactionUseCase>(AddTransactionUseCase());
+
+  sl.registerSingleton<GetTransactionsUseCase>(GetTransactionsUseCase());
 }

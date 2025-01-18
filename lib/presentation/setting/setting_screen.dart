@@ -95,7 +95,6 @@ class _SettingScreenState extends State<SettingScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ProfilUpdate(
-                      userId: user.id,
                       userName: user.fullname,
                       userEmail: user.email ?? user.attributes['email'],
                       userAvatar: user.attributes["avatar"],

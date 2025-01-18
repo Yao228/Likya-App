@@ -94,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
               // ignore: use_build_context_synchronously
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => PasswordScreen(
-                    fullname: result['fullname'] ?? "Nom inconnu",
+                    fullname: result['fullname'],
                     phonenumber: phonenumber,
                     avatar: result['avatar']),
               ));

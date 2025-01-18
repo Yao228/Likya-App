@@ -9,6 +9,7 @@ import 'package:likya_app/common/bloc/button/button_state_cubit.dart';
 import 'package:likya_app/common/widgets/button/basic_app_button.dart';
 import 'package:likya_app/data/models/update_user_req.dart';
 import 'package:likya_app/domain/usecases/update_user.dart';
+import 'package:likya_app/presentation/home/pages/home_screen.dart';
 import 'package:likya_app/presentation/setting/profil_detail.dart';
 import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/utils.dart';
@@ -18,13 +19,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 class ProfilUpdate extends StatefulWidget {
-  final dynamic userId;
   final dynamic userName;
   final dynamic userEmail;
   final dynamic userAvatar;
 
   const ProfilUpdate({
-    required this.userId,
     required this.userName,
     required this.userEmail,
     required this.userAvatar,
@@ -137,7 +136,7 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
 
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (context) => ProfilDetail(),
+                  builder: (context) => HomeScreen(),
                 ),
               );
             }
@@ -206,7 +205,7 @@ class _ProfilUpdateState extends State<ProfilUpdate> {
 
   Padding avatar() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 90, vertical: 30),
+      padding: EdgeInsets.symmetric(horizontal: 90, vertical: 10),
       child: Center(
         child: Column(
           children: [

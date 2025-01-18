@@ -65,16 +65,10 @@ class CollectApiServiceImpl extends CollectApiService {
     try {
       var token =
           await LocalStorageService.getString(LocalStorageService.token);
-      var userID =
-          await LocalStorageService.getString(LocalStorageService.userId);
 
       var response = await sl<DioClient>().get(
         ApiUrls.collects,
         queryParameters: {
-          'created_by': userID,
-          'contributors': {
-            '\$in': [userID]
-          },
           'sort': 'desc',
         },
         options: Options(
@@ -83,7 +77,7 @@ class CollectApiServiceImpl extends CollectApiService {
       );
       return Right(response);
     } on DioException catch (e) {
-      return Left(e.response!.data['message_error']);
+      return Left(e.response?.data['message_error'] ?? 'An error occurred');
     }
   }
 

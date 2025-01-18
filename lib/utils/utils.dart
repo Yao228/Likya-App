@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 String getInitials(String name) {
   // Vérifier si la chaîne est nulle ou vide
   if (name.isEmpty || name.trim().isEmpty) {
-    return 'Nom Inconnu'; // Retourne "NI" (Nom Inconnu) par défaut
+    return 'NI'; // Retourne "NI" (Nom Inconnu) par défaut
   }
 
   // Nettoyer les espaces inutiles
@@ -21,7 +21,7 @@ String getInitials(String name) {
   } else if (words.length == 1) {
     return words[0][0].toUpperCase();
   } else {
-    return 'Nom Inconnu'; // Aucun mot valide trouvé
+    return 'NI'; // Aucun mot valide trouvé
   }
 }
 

@@ -8,11 +8,15 @@ class CollectsDisplayCubit extends Cubit<CollectsDisplayState> {
 
   void displayCollects() async {
     var result = await sl<GetCollectsUseCase>().call();
-    result.fold((error) {
-      emit(LoadCollectsFailure(errorMessage: error));
-    }, (data) {
-      final items = data;
-      emit(CollectsLoaded(items: items));
-    });
+    if (isClosed) return;
+
+    result.fold(
+      (error) {
+        if (!isClosed) emit(LoadCollectsFailure(errorMessage: error));
+      },
+      (data) {
+        if (!isClosed) emit(CollectsLoaded(items: data));
+      },
+    );
   }
 }

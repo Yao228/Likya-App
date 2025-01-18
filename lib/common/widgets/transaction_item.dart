@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:likya_app/presentation/transactions/pages/transaction_detail.dart';
 
 Widget transactionItem(
-    IconData iconName, String title, String date, String amount) {
+  String transactionId,
+  BuildContext context,
+  IconData iconName,
+  String title,
+  String date,
+  String amount,
+) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -39,7 +47,7 @@ Widget transactionItem(
                 textAlign: TextAlign.end,
               ),
               Text(
-                date,
+                DateFormat('dd/MM/yy H:m:s').format(DateTime.parse(date)),
                 style: TextStyle(
                   color: Color(0xFFADB3BC),
                   fontSize: 10,
@@ -53,13 +61,32 @@ Widget transactionItem(
       ),
       const SizedBox(width: 30),
       Text(
-        amount,
+        NumberFormat.currency(locale: 'fr_FR', symbol: 'FCFA', decimalDigits: 0)
+            .format(double.parse(amount)),
         style: TextStyle(
           color: Colors.black,
           fontSize: 18,
           fontWeight: FontWeight.w700,
         ),
         textAlign: TextAlign.end,
+      ),
+      InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TransactionDetail(
+                transactionId: transactionId,
+                description: title,
+              ),
+            ),
+          );
+        },
+        child: Icon(
+          iconName,
+          color: Color(0xFF007F67),
+          size: 18,
+        ),
       ),
     ],
   );

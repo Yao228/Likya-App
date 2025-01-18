@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:likya_app/presentation/home/pages/home_screen.dart';
 import 'package:likya_app/presentation/notification_screen.dart';
 import 'package:likya_app/presentation/setting/setting_screen.dart';
-import 'package:likya_app/presentation/transaction_screen.dart';
+import 'package:likya_app/presentation/transactions/pages/transactions_page.dart';
 
 class NavigationMenu extends StatefulWidget {
   const NavigationMenu({super.key});
@@ -80,7 +80,7 @@ class NavigationController extends GetxController {
 
   final screens = const [
     HomeScreen(),
-    TransactionScreen(),
+    TransactionsPage(),
     NotificationScreen(),
     SettingScreen(),
   ];

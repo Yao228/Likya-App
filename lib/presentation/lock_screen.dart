@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:likya_app/common/bloc/auth/auth_state_cubit.dart';
-import 'package:likya_app/common/bloc/button/button_state.dart';
-import 'package:likya_app/common/bloc/button/button_state_cubit.dart';
 import 'package:likya_app/common/widgets/button/text_base_button.dart';
-import 'package:likya_app/presentation/navigation_menu.dart';
 
 class LockScreen extends StatefulWidget {
   const LockScreen({super.key});
@@ -20,7 +15,7 @@ class _LockScreenState extends State<LockScreen> {
       List.generate(4, (_) => TextEditingController());
   final List<FocusNode> focusNodes = List.generate(4, (_) => FocusNode());
 
-  bool _autoLoginFailed = false;
+  bool _codeValidationFailed = false;
   bool _validationProgress = false;
   bool _validationSuccess = false;
 
@@ -35,7 +30,7 @@ class _LockScreenState extends State<LockScreen> {
     super.dispose();
   }
 
-  /*void onChanged(String value, int index) {
+  void onChanged(String value, int index) {
     setState(() {
       if (value.isNotEmpty && index < focusNodes.length - 1) {
         FocusScope.of(context).requestFocus(focusNodes[index + 1]);
@@ -44,13 +39,13 @@ class _LockScreenState extends State<LockScreen> {
       }
 
       String code = controllers.map((c) => c.text).join();
-      if (code.length == 4) {
+      /*if (code.length == 4) {
         _autoLogin(code);
-      }
+      }*/
     });
   }
 
-  void _autoLogin(String code) {
+  /*void _autoLogin(String code) {
     if (code.isNotEmpty) {
       context.read<AuthStateCubit>().appStarted();
       context.read<ButtonStateCubit>().performAutoLogin(
@@ -68,7 +63,7 @@ class _LockScreenState extends State<LockScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Vérifiervotre code',
+          'Votre code secret',
           style: TextStyle(
             color: Colors.black,
             fontSize: 18,
@@ -76,50 +71,25 @@ class _LockScreenState extends State<LockScreen> {
           ),
         ),
       ),
-      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
-      body: BlocListener<ButtonStateCubit, ButtonState>(
-        listener: (context, state) {
-          if (state is ButtonLoadingState) {
-            setState(() {
-              _validationProgress = true;
-            });
-          }
-          if (state is ButtonSuccessState) {
-            (context) => AuthStateCubit()..appStarted();
-            setState(() {
-              _validationProgress = false;
-              _validationSuccess = true;
-            });
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => NavigationMenu()),
-            );
-          }
-          if (state is ButtonFailureState) {
-            setState(() {
-              _validationProgress = false;
-              _autoLoginFailed = true;
-            });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage)),
-            );
-          }
-        },
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  formTitle(),
-                  const SizedBox(height: 15),
-                  codeInput(),
-                  const SizedBox(height: 15),
-                  if (_validationProgress) validationProgress(),
-                  if (_validationSuccess) validationSuccess(),
-                ],
-              ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                formTitle(),
+                const SizedBox(height: 60),
+                codeInput(),
+                const SizedBox(height: 60),
+                cancel(),
+                const SizedBox(height: 15),
+                if (_validationProgress) validationProgress(),
+                if (_validationSuccess) validationSuccess(),
+              ],
             ),
           ),
         ),
@@ -141,7 +111,7 @@ class _LockScreenState extends State<LockScreen> {
               obscureText: true,
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
-              /*onChanged: (value) => onChanged(value, index),*/
+              onChanged: (value) => onChanged(value, index),
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 contentPadding: EdgeInsets.symmetric(vertical: 10),
@@ -161,8 +131,8 @@ class _LockScreenState extends State<LockScreen> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: Text(
-        'Entrez votre code secret ',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        'Veuillez entrer votre code secret',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         textAlign: TextAlign.center,
       ),
     );
@@ -194,6 +164,17 @@ class _LockScreenState extends State<LockScreen> {
             },
           );
         },
+      ),
+    );
+  }
+
+  Padding cancel() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: Text(
+        'Annuler',
+        style: TextStyle(fontSize: 15),
+        textAlign: TextAlign.center,
       ),
     );
   }

@@ -16,7 +16,7 @@ Widget walletItem(
     height: 150,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(20),
-      color: Colors.blueAccent,
+      color: Color(0xFF139E93),
       image: const DecorationImage(
         image: AssetImage('assets/images/homebanner.jpg'),
         fit: BoxFit.cover,

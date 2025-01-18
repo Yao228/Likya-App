@@ -248,7 +248,7 @@ class _AddContributorsState extends State<AddContributors> {
                   children: contributors!
                       .where((contributor) => contributor["isSelected"] == true)
                       .map((contributor) => Chip(
-                            label: Text(contributor["name"]),
+                            label: Text(contributor["name"] ?? "Inconnu"),
                             deleteIcon: const Icon(Icons.close),
                             onDeleted: () {
                               setState(() {

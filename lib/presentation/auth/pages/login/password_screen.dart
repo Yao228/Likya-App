@@ -10,6 +10,7 @@ import 'package:likya_app/domain/usecases/login.dart';
 import 'package:likya_app/presentation/auth/pages/login/login_screen.dart';
 import 'package:likya_app/presentation/auth/pages/password-reset/password_request.dart';
 import 'package:likya_app/presentation/navigation_menu.dart';
+import 'package:likya_app/presentation/setting/profil_update.dart';
 import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/utils.dart';
 
@@ -103,9 +104,22 @@ class _PasswordScreenState extends State<PasswordScreen> {
               _loginProgress = false;
               _loginSuccess = true;
             });
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => NavigationMenu()),
-            );
+            print(widget.fullname);
+            if (widget.fullname == '') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProfilUpdate(
+                          userName: widget.fullname,
+                          userEmail: '',
+                          userAvatar: '',
+                        )),
+              );
+            } else {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => NavigationMenu()),
+              );
+            }
           }
           if (state is ButtonFailureState) {
             setState(() {

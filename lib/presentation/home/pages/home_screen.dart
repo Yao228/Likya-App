@@ -26,7 +26,10 @@ import 'package:likya_app/presentation/setting/call_support.dart';
 import 'package:likya_app/presentation/setting/invite_friend.dart';
 import 'package:likya_app/presentation/setting/password_update.dart';
 import 'package:likya_app/presentation/setting/profil_detail.dart';
+import 'package:likya_app/presentation/transactions/bloc/transactions_display_cubit.dart';
+import 'package:likya_app/presentation/transactions/bloc/transactions_display_state.dart';
 import 'package:likya_app/presentation/transactions/pages/transaction_page.dart';
+import 'package:likya_app/presentation/transactions/pages/transactions_page.dart';
 import 'package:likya_app/presentation/wallets/bloc/wallets_display_cubit.dart';
 import 'package:likya_app/presentation/wallets/bloc/wallets_display_state.dart';
 import 'package:likya_app/service_locator.dart';
@@ -358,7 +361,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: BlocBuilder<UserDisplayCubit, UserDisplayState>(
             builder: (context, state) {
           if (state is UserLoading) {
-            return const CircularProgressIndicator();
+            return const LinearProgressIndicator();
           }
           if (state is UserLoaded) {
             return Row(
@@ -762,7 +765,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ListFundRaisingPage(),
+                  builder: (context) => CreateFundRaisingPage(),
                 ),
               );
             },
@@ -783,7 +786,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   child: Icon(
-                    Ionicons.sync_outline,
+                    Ionicons.help_outline,
                     size: 32,
                     color: Color(0xFF2FA9A2),
                   ),
@@ -851,41 +854,81 @@ class _HomeScreenState extends State<HomeScreen> {
                 return const CircularProgressIndicator();
               }
               if (state is CollectsLoaded) {
-                return SizedBox(
-                  height: 75,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: state.items.length,
-                    itemBuilder: (context, index) {
-                      var collect = state.items[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5.0),
-                        child: FutureBuilder<double>(
-                          future: ApiService()
-                              .collectPercent(collect.id, collect.targetAmount),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<double> snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Text('En ours de chargement...');
-                            } else if (snapshot.hasError) {
-                              return Text('Error: ${snapshot.error}');
-                            } else if (snapshot.hasData) {
-                              return carouselItem(
-                                '${(snapshot.data! * 100)} % assistance',
-                                collect.targetAmount.toString(),
-                                collect.status,
-                              );
-                            } else {
-                              return Text('Pas de données disponibles');
-                            }
+                return state.items.isEmpty
+                    ? Container(
+                        //bool isPriceHidden = false,
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        width: double.infinity,
+                        height: 80,
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Ajoutez votre première cagnotte.',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          CreateFundRaisingPage(),
+                                    ),
+                                  );
+                                },
+                                child: Icon(
+                                  Ionicons.add_circle_outline,
+                                  color: Colors.black,
+                                  size: 32,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : SizedBox(
+                        height: 75,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: state.items.length,
+                          itemBuilder: (context, index) {
+                            var collect = state.items[index];
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 5.0),
+                              child: FutureBuilder<double>(
+                                future: ApiService().collectPercent(
+                                    collect.id, collect.targetAmount),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<double> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Text('En ours de chargement...');
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  } else if (snapshot.hasData) {
+                                    return carouselItem(
+                                      '${(snapshot.data! * 100)} % assistance',
+                                      collect.targetAmount.toString(),
+                                      collect.status,
+                                    );
+                                  } else {
+                                    return Text('Pas de données disponibles');
+                                  }
+                                },
+                              ),
+                            );
                           },
                         ),
                       );
-                    },
-                  ),
-                );
               }
               if (state is LoadCollectsFailure) {
                 return Text(state.errorMessage);
@@ -933,54 +976,79 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   textAlign: TextAlign.start,
                 ),
-                Text(
-                  "Afficher tous",
-                  style: TextStyle(
-                    color: Color(0xFF03544F),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TransactionsPage()),
+                    );
+                  },
+                  child: Text(
+                    "Afficher tous",
+                    style: TextStyle(
+                      color: Color(0xFF03544F),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.start,
                   ),
-                  textAlign: TextAlign.start,
                 ),
               ],
             ),
             const SizedBox(height: 8),
-            SizedBox(
-              height: 180,
-              child: ListView(
-                shrinkWrap: true,
-                physics: const AlwaysScrollableScrollPhysics(),
-                children: [
-                  transactionItem(
-                    Ionicons.cart,
-                    "Achat en Pharmacie",
-                    "Lundi 6 Décembre à 20:13",
-                    "12 250 F",
-                  ),
-                  const Divider(color: Color(0xFFADB3BC), thickness: 1),
-                  transactionItem(
-                    Ionicons.send,
-                    "Envois à Mairus",
-                    "Lundi 6 Décembre à 13:53",
-                    "-7 000 F",
-                  ),
-                  const Divider(color: Color(0xFFADB3BC), thickness: 1),
-                  transactionItem(
-                    Ionicons.download_sharp,
-                    "Dépot",
-                    "Mardi 7 Décembre à 12:20",
-                    "3 000 F",
-                  ),
-                  const Divider(color: Color(0xFFADB3BC), thickness: 1),
-                  transactionItem(
-                    Ionicons.download_sharp,
-                    "Dépot",
-                    "Mardi 7 Décembre à 12:20",
-                    "3 000 F",
-                  ),
-                  const Divider(color: Color(0xFFADB3BC), thickness: 1),
-                ],
-              ),
+            BlocProvider(
+              create: (context) =>
+                  TransactionsDisplayCubit()..displayTransactions(),
+              child: BlocBuilder<TransactionsDisplayCubit,
+                  TransactionsDisplayState>(builder: (context, state) {
+                if (state is TransactionsLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state is TransactionsLoaded) {
+                  return state.items.isEmpty
+                      ? Center(
+                          child: Text(
+                            'Pas de transaction disponible.',
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                          ),
+                        )
+                      : SizedBox(
+                          height: 180,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: state.items.length,
+                            itemBuilder: (context, index) {
+                              var transaction = state.items[index];
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 5.0),
+                                child: transactionItem(
+                                  transaction.id,
+                                  context,
+                                  Ionicons.send,
+                                  transaction.description,
+                                  transaction.timestamp,
+                                  transaction.amount,
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                }
+                if (state is LoadTransactionsFailure) {
+                  return Center(
+                    child: Text(
+                      state.errorMessage,
+                      style: const TextStyle(fontSize: 16, color: Colors.red),
+                    ),
+                  );
+                }
+                return const Center(
+                  child: Text('Une erreur inattendue s\'est produite.'),
+                );
+              }),
             ),
           ],
         ),

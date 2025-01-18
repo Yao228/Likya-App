@@ -9,6 +9,7 @@ import 'package:likya_app/data/models/update_collect_req.dart';
 import 'package:likya_app/data/source/collect_api_service.dart';
 import 'package:likya_app/domain/repository/collect.dart';
 import 'package:likya_app/service_locator.dart';
+import 'package:likya_app/utils/local_storage_service.dart';
 
 class CollectRepositoryImpl extends CollectRepository {
   @override
@@ -23,6 +24,8 @@ class CollectRepositoryImpl extends CollectRepository {
 
   @override
   Future<Either> getCollects() async {
+    var userId =
+        await LocalStorageService.getString(LocalStorageService.userId);
     Either result = await sl<CollectApiService>().getCollects();
     return result.fold(
       (error) {
@@ -30,9 +33,19 @@ class CollectRepositoryImpl extends CollectRepository {
       },
       (data) {
         Response response = data;
+
+        // Parse the list of collections from the API response
         var collectLists = (response.data["items"] as List)
             .map((item) => CollectList.fromMap(item as Map<String, dynamic>))
-            .toList();
+            .where((collect) {
+          // Ensure contributors is a List<String> before checking `contains`
+          if (collect.contributors is List<String>) {
+            return collect.createdBy == userId ||
+                (collect.contributors as List<String>).contains(userId);
+          }
+          return collect.createdBy == userId;
+        }).toList();
+
         return Right(collectLists);
       },
     );

@@ -22,7 +22,7 @@ class ApiService {
     return null;
   }
 
-  Future<Object?> getCategories() async {
+  Future<List<Map<String, dynamic>>> getCategories() async {
     try {
       Response response = await dio.get(ApiUrls.categories);
       if (response.statusCode == 200) {
@@ -35,11 +35,9 @@ class ApiService {
         }).toList();
       }
     } catch (e) {
-      // ignore: non_constant_identifier_names
-      var Error = "Error fetching categories: $e";
-      return Error;
+      print("Error fetching categories: $e");
     }
-    return null;
+    return [];
   }
 
   Future<List<Map<String, dynamic>>?> getContributors() async {

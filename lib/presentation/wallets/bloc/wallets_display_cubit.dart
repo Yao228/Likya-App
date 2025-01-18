@@ -8,6 +8,8 @@ class WalletsDisplayCubit extends Cubit<WalletsDisplayState> {
 
   void displayWallets() async {
     var result = await sl<GetWalletsUseCase>().call();
+    if (isClosed) return;
+
     result.fold((error) {
       emit(LoadWalletsFailure(errorMessage: error));
     }, (data) {

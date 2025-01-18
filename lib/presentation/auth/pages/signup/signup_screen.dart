@@ -86,7 +86,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 firstNamefild(),
                 const SizedBox(height: 15),
                 phoneField(),
-                const SizedBox(height: 100),
+                const SizedBox(height: 50),
                 signUp(),
               ],
             ),
