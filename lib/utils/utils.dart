@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:likya_app/utils/local_storage_service.dart';
 
 String getInitials(String name) {
   // Vérifier si la chaîne est nulle ou vide
@@ -99,4 +100,11 @@ String transactionTitle(String method) {
     default:
       return '';
   }
+}
+
+Future<bool> checkCollectOwner(String collectId) {
+  return LocalStorageService.getString(LocalStorageService.userId)
+      .then((userId) {
+    return userId == collectId;
+  });
 }

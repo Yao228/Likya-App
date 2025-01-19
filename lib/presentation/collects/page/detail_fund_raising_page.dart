@@ -17,6 +17,7 @@ import 'package:likya_app/presentation/contributions/bloc/contributions_display_
 import 'package:likya_app/presentation/contributions/page/add_contribution_page.dart';
 import 'package:likya_app/presentation/contributions/page/contributions_page.dart';
 import 'package:likya_app/presentation/contributors/add_contributors.dart';
+import 'package:likya_app/presentation/contributors/list_contributors.dart';
 import 'package:likya_app/presentation/setting/invite_friend.dart';
 import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/utils.dart';
@@ -48,7 +49,8 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
       ),
       body: SafeArea(
         child: BlocProvider(
-          create: (context) => CollectDisplayCubit()..displayCollect(widget.collectID),
+          create: (context) =>
+              CollectDisplayCubit()..displayCollect(widget.collectID),
           child: BlocBuilder<CollectDisplayCubit, CollectDisplayState>(
             builder: (context, state) {
               if (state is CollectLoading) {
@@ -267,245 +269,316 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
   Padding collectButtons(CollectEntity collect) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => AddContributionPage(
-                    collectId: collect.id,
-                    title: collect.title,
-                  ),
-                ),
-              );
-            },
-            child: Column(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 2,
-                        blurRadius: 7,
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Ionicons.add_outline,
-                    size: 28,
-                    color: Color(0xFF2FA9A2),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  "Contribuer",
-                  style: TextStyle(
-                    color: Color(0xFF2FA9A2),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => InviteFriend(),
-                ),
-              );
-            },
-            child: Column(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 2,
-                        blurRadius: 7,
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Ionicons.arrow_redo_outline,
-                    size: 28,
-                    color: Color(0xFF2FA9A2),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  "Inviter",
-                  style: TextStyle(
-                    color: Color(0xFF2FA9A2),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext dialogContext) {
-                  return BlocListener<ButtonStateCubit, ButtonState>(
-                      listener: (context, state) {
-                    if (state is ButtonSuccessState) {
-                      // Close dialog on success
-                      Navigator.of(dialogContext).pop();
-                    }
-                    if (state is ButtonFailureState) {
-                      // Show error message on failure
-                      var snackBar =
-                      SnackBar(content: Text(state.errorMessage));
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    }
-                  },
-                    child: AlertDialog(
-                    title: const Text(
-                      "Changer l'accès",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    content: const Text(
-                      "Confirmer pour changer l'accès à votre cagnotte.",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(dialogContext).pop();
-                        },
-                        child: const Text(
-                          "Fermer",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey,
+      child: FutureBuilder<bool>(
+        future: checkCollectOwner(collect.userDict['_id']),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            bool isOwner = snapshot.data ?? false;
+            if (isOwner) {
+              return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => ListContributors(
+                              collectId: collect.id,
+                            ),
                           ),
-                        ),
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.1),
+                                  spreadRadius: 2,
+                                  blurRadius: 7,
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              Ionicons.people_outline,
+                              size: 28,
+                              color: Color(0xFF2FA9A2),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            "Contributeurs",
+                            style: TextStyle(
+                              color: Color(0xFF2FA9A2),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
-                      TextBaseButton(
-                        onPressed: () async {
-                          bool access = collect.access;
-                          context.read<ButtonStateCubit>().excute(
-                                usecase: sl<CollectAccessUseCase>(),
-                                params: !access,
-                              );
-                          //Navigator.of(context).pop();
-                        },
-                        title: "Confirmer",
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => InviteFriend(),
+                          ),
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.1),
+                                  spreadRadius: 2,
+                                  blurRadius: 7,
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              Ionicons.arrow_redo_outline,
+                              size: 28,
+                              color: Color(0xFF2FA9A2),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            "Inviter",
+                            style: TextStyle(
+                              color: Color(0xFF2FA9A2),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  );
-                },
-              );
-            },
-            child: Column(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 2,
-                        blurRadius: 7,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext dialogContext) {
+                            return BlocListener<ButtonStateCubit, ButtonState>(
+                              listener: (context, state) {
+                                if (state is ButtonSuccessState) {
+                                  // Close dialog on success
+                                  Navigator.of(dialogContext).pop();
+                                }
+                                if (state is ButtonFailureState) {
+                                  // Show error message on failure
+                                  var snackBar = SnackBar(
+                                      content: Text(state.errorMessage));
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                }
+                              },
+                              child: AlertDialog(
+                                title: const Text(
+                                  "Changer l'accès",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                content: const Text(
+                                  "Confirmer pour changer l'accès à votre cagnotte.",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(dialogContext).pop();
+                                    },
+                                    child: const Text(
+                                      "Fermer",
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                  TextBaseButton(
+                                    onPressed: () async {
+                                      bool access = collect.access;
+                                      context.read<ButtonStateCubit>().excute(
+                                            usecase: sl<CollectAccessUseCase>(),
+                                            params: !access,
+                                          );
+                                      //Navigator.of(context).pop();
+                                    },
+                                    title: "Confirmer",
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(20)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.1),
+                                  spreadRadius: 2,
+                                  blurRadius: 7,
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Ionicons.warning_outline,
+                              size: 28,
+                              color: Color(0xFF2FA9A2),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            "Accès",
+                            style: TextStyle(
+                              color: Color(0xFF2FA9A2),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Ionicons.warning_outline,
-                    size: 28,
-                    color: Color(0xFF2FA9A2),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  "Accès",
-                  style: TextStyle(
-                    color: Color(0xFF2FA9A2),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => UpdateFundRaisingPage(
-                    id: collect.id,
-                    title: collect.title,
-                    amount: collect.targetAmount,
-                    categoryId: collect.categories[0]["_id"],
-                    description: collect.description,
-                    status: collect.status,
-                  ),
-                ),
-              );
-            },
-            child: Column(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 2,
-                        blurRadius: 7,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UpdateFundRaisingPage(
+                              id: collect.id,
+                              title: collect.title,
+                              amount: collect.targetAmount,
+                              categoryId: collect.categories[0]["_id"],
+                              description: collect.description,
+                              status: collect.status,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.1),
+                                  spreadRadius: 2,
+                                  blurRadius: 7,
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              Ionicons.open_outline,
+                              size: 28,
+                              color: Color(0xFF2FA9A2),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            "Modifier",
+                            style: TextStyle(
+                              color: Color(0xFF2FA9A2),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: Icon(
-                    Ionicons.open_outline,
-                    size: 28,
-                    color: Color(0xFF2FA9A2),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  "Modifier",
-                  style: TextStyle(
-                    color: Color(0xFF2FA9A2),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+                    ),
+                  ]);
+            } else {
+              return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => AddContributionPage(
+                              collectId: collect.id,
+                              title: collect.title,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.1),
+                                  spreadRadius: 2,
+                                  blurRadius: 7,
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              Ionicons.add_outline,
+                              size: 28,
+                              color: Color(0xFF2FA9A2),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            "Contribuer",
+                            style: TextStyle(
+                              color: Color(0xFF2FA9A2),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]);
+            }
+            return Container();
+          } else {
+            return Container();
+          }
+        },
       ),
     );
   }

@@ -9,6 +9,6 @@ abstract class CollectRepository {
   Future<Either> getCollects();
   Future<Either> getCollect(String collectId);
   Future<Either> addContributors(CollectsContributorsReqParams contributorsReq);
-  Future<Either> getContributors();
+  Future<Either> getContributors(String collectId);
   Future<Either> collectAccess(bool access);
 }

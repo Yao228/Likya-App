@@ -184,13 +184,11 @@ class _WalletsPageState extends State<WalletsPage> {
                   var wallet = state.items[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5.0),
-                    child: walletItem(
-                      context,
-                      wallet.balance,
-                      wallet.walletNumber,
-                      wallet.currency,
-                      wallet.status,
-                      false,
+                    child: WalletItem(
+                      balance: wallet.balance,
+                      walletNumber: wallet.walletNumber,
+                      currency: wallet.currency,
+                      status: wallet.status,
                     ),
                   );
                 },

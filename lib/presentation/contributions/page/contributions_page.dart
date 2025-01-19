@@ -38,31 +38,9 @@ class _ContributionsPageState extends State<ContributionsPage> {
             ),
             child: Column(
               children: [
-                searchForm(),
                 listContributions(),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Padding searchForm() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-      child: TextFormField(
-        style: const TextStyle(fontSize: 18, color: Color(0xFF575757)),
-        decoration: InputDecoration(
-          suffixIcon:
-              const Icon(Ionicons.search_outline, color: Color(0xFFCCCCCC)),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Color(0xFF575757), width: 1),
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 10,
-            horizontal: 8,
           ),
         ),
       ),

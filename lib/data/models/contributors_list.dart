@@ -1,19 +1,19 @@
 class ContributorsList {
-  final String id;
+  final List<String> items;
 
   ContributorsList({
-    required this.id,
+    required this.items,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
+      'items': items,
     };
   }
 
   factory ContributorsList.fromMap(Map<String, dynamic> map) {
     return ContributorsList(
-      id: map['_id'] as String,
+      items: List<String>.from(map['items'] ?? []),
     );
   }
 }

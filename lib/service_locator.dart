@@ -108,9 +108,9 @@ void setupServiceLocator() {
   sl.registerSingleton<AddCollectsContributorsUseCase>(
       AddCollectsContributorsUseCase());
 
-  sl.registerSingleton<GetContributionsUseCase>(GetContributionsUseCase());
-
   sl.registerSingleton<GetContributorsUseCase>(GetContributorsUseCase());
+
+  sl.registerSingleton<GetContributionsUseCase>(GetContributionsUseCase());
 
   sl.registerSingleton<CollectAccessUseCase>(CollectAccessUseCase());
 

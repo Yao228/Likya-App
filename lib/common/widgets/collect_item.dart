@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:likya_app/presentation/collects/page/detail_fund_raising_page.dart';
-import 'package:likya_app/utils/local_storage_service.dart';
 import 'package:likya_app/utils/utils.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
@@ -139,8 +138,6 @@ Widget collectItem(
             ),
             ElevatedButton(
               onPressed: () {
-                LocalStorageService.putString(
-                    LocalStorageService.collectId, collectID);
                 Navigator.push(
                   context,
                   MaterialPageRoute(

@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:likya_app/core/constants/api_urls.dart';
 import 'package:likya_app/utils/local_storage_service.dart';
@@ -145,5 +146,42 @@ class ApiService {
     double collectAmount = await fetchAndSumAmounts(collectId);
     double percent = (collectAmount * 100) / targetAmount;
     return percent;
+  }
+
+  Future<String?> listContributors(String contributorItem) async {
+    try {
+      var token =
+          await LocalStorageService.getString(LocalStorageService.token);
+      var role =
+          await LocalStorageService.getString(LocalStorageService.userRole);
+
+      Response response = await dio.get(
+        ApiUrls.users,
+        queryParameters: {
+          'active': true,
+          'sort': 'desc',
+        },
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        var data = response.data;
+
+        // Filtrage des données en fonction du `role` et du `contributorItem`
+        for (var user in data['items']) {
+          // Vérification du rôle et de la correspondance de l'ID ou du numéro de téléphone
+          if (user['role'] == role && (user['_id'] == contributorItem)) {
+            return '${user['fullname']}\n${user['phonenumber']}';
+          }
+        }
+      }
+      return null;
+    } catch (e) {
+      // ignore: avoid_print
+      print("Error fetching users: $e");
+    }
+    return null;
   }
 }

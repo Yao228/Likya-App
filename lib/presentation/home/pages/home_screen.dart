@@ -19,6 +19,7 @@ import 'package:likya_app/presentation/auth/pages/auth_screen.dart';
 import 'package:likya_app/presentation/collects/bloc/collects_display_cubit.dart';
 import 'package:likya_app/presentation/collects/bloc/collects_display_state.dart';
 import 'package:likya_app/presentation/collects/page/create_fund_raising_page.dart';
+import 'package:likya_app/presentation/collects/page/detail_fund_raising_page.dart';
 import 'package:likya_app/presentation/collects/page/list_fund_raising_page.dart';
 import 'package:likya_app/presentation/home/bloc/user_display_cubit.dart';
 import 'package:likya_app/presentation/home/bloc/user_display_state.dart';
@@ -577,13 +578,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       var wallet = state.items[index];
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5.0),
-                        child: walletItem(
-                          context,
-                          wallet.balance,
-                          wallet.walletNumber,
-                          wallet.currency,
-                          wallet.status,
-                          false,
+                        child: WalletItem(
+                          balance: wallet.balance,
+                          walletNumber: wallet.walletNumber,
+                          currency: wallet.currency,
+                          status: wallet.status,
                         ),
                       );
                     },
@@ -919,6 +918,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                       '${(snapshot.data! * 100)} % assistance',
                                       collect.targetAmount.toString(),
                                       collect.status,
+                                      () {
+                                        // Action à effectuer lors du clic
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                DetailFundRaisingPage(
+                                              collectID: collect.id,
+                                              title: collect.title,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     );
                                   } else {
                                     return Text('Pas de données disponibles');

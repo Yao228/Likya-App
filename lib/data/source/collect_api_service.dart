@@ -14,7 +14,7 @@ abstract class CollectApiService {
   Future<Either> getCollects();
   Future<Either> getCollect(String collectId);
   Future<Either> addContributors(CollectsContributorsReqParams contributorsReq);
-  Future<Either> getContributors();
+  Future<Either> getContributors(String collectId);
   Future<Either> collectAccess(bool access);
 }
 
@@ -121,12 +121,10 @@ class CollectApiServiceImpl extends CollectApiService {
   }
 
   @override
-  Future<Either> getContributors() async {
+  Future<Either> getContributors(String collectId) async {
     try {
       var token =
           await LocalStorageService.getString(LocalStorageService.token);
-      var collectId =
-          await LocalStorageService.getString(LocalStorageService.collectId);
 
       var response = await sl<DioClient>()
           .get('${ApiUrls.collects}/$collectId/contributors',

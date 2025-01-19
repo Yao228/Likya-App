@@ -90,18 +90,26 @@ class CollectRepositoryImpl extends CollectRepository {
   }
 
   @override
-  Future<Either> getContributors() async {
-    Either result = await sl<CollectApiService>().getContributors();
+  Future<Either> getContributors(String collectId) async {
+    Either result = await sl<CollectApiService>().getContributors(collectId);
     return result.fold(
       (error) {
         return Left(error);
       },
       (data) {
         Response response = data;
-        var contributorsLists = (response.data["items"] as List)
-            .map((item) =>
-                ContributorsList.fromMap(item as Map<String, dynamic>))
-            .toList();
+        Map<String, dynamic> responseData =
+            response.data as Map<String, dynamic>;
+
+        List<String> contributorsList =
+            List<String>.from(responseData['items'] ?? []);
+
+        var contributorsLists = contributorsList.map((item) {
+          return ContributorsList(
+            items: [item],
+          );
+        }).toList();
+
         return Right(contributorsLists);
       },
     );
