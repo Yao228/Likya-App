@@ -184,4 +184,23 @@ class ApiService {
     }
     return null;
   }
+
+  Future<bool> checkValidateAccessToken() async {
+    try {
+      var token =
+          await LocalStorageService.getString(LocalStorageService.token);
+      Response response = await dio.get(
+        ApiUrls.checkValidateAccessToken,
+        queryParameters: {
+          'token': token,
+        },
+      );
+      if (response.statusCode == 200) {
+        return true;
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+    return false;
+  }
 }

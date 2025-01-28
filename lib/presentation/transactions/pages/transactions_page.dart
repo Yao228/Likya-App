@@ -57,7 +57,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
         child: BlocBuilder<TransactionsDisplayCubit, TransactionsDisplayState>(
             builder: (context, state) {
           if (state is TransactionsLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: LinearProgressIndicator());
           }
           if (state is TransactionsLoaded) {
             return state.items.isEmpty

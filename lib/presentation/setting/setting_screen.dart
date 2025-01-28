@@ -36,7 +36,7 @@ class _SettingScreenState extends State<SettingScreen> {
         child: BlocBuilder<UserDisplayCubit, UserDisplayState>(
             builder: (context, state) {
           if (state is UserLoading) {
-            return const CircularProgressIndicator();
+            return const LinearProgressIndicator();
           }
           if (state is UserLoaded) {
             return SafeArea(

@@ -118,11 +118,14 @@ class _AddContributionPageState extends State<AddContributionPage> {
                 // ignore: use_build_context_synchronously
                 context.read<ButtonStateCubit>().excute(
                       usecase: sl<AddContributionUseCase>(),
-                      params: AddContributionReqParams(
-                        amount: int.parse(amount.text),
-                        comment: comment.text,
-                        keepAnonymous: keepAnonymous,
-                      ),
+                      params: AddContributionParams(
+                        contributionReq: AddContributionReqParams(
+                          amount: int.parse(amount.text),
+                          comment: comment.text,
+                          keepAnonymous: keepAnonymous,
+                        ),
+                        collectId: widget.collectId,)
+                      ,
                     );
               } else {
                 // ignore: use_build_context_synchronously

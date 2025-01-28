@@ -460,134 +460,141 @@ class _HomeScreenState extends State<HomeScreen> {
                 return const CircularProgressIndicator();
               }
               if (state is WalletsLoaded) {
-                if (state.items.isEmpty) {
-                  // Display a message when the list is empty
-                  return Container(
-                    //bool isPriceHidden = false,
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    width: 319,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.blueGrey,
-                    ),
-                    child: Center(
-                        child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Ajoutez votre premier wallet.',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                          ),
+                return state.items.isEmpty
+                    ? Container(
+                        //bool isPriceHidden = false,
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        width: 319,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.blueGrey,
                         ),
-                        InkWell(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext dialogContext) {
-                                return BlocListener<ButtonStateCubit,
-                                    ButtonState>(
-                                  listener: (context, state) {
-                                    if (state is ButtonSuccessState) {
-                                      // Close dialog on success
-                                      Navigator.of(dialogContext).pop();
-                                    }
-                                    if (state is ButtonFailureState) {
-                                      // Show error message on failure
-                                      var snackBar = SnackBar(
-                                          content: Text(state.errorMessage));
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(snackBar);
-                                    }
-                                  },
-                                  child: AlertDialog(
-                                    title: const Text(
-                                      "Ajouter un Wallet",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    content: const Text(
-                                      "Confirmer pour ajouter votre Wallet.",
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          // Close the dialog when "Fermer" is pressed
-                                          Navigator.of(dialogContext).pop();
-                                        },
-                                        child: const Text(
-                                          "Fermer",
+                        child: Center(
+                            child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Ajoutez votre premier wallet.',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext dialogContext) {
+                                    return BlocListener<ButtonStateCubit,
+                                        ButtonState>(
+                                      listener: (context, state) {
+                                        if (state is ButtonSuccessState) {
+                                          // Close dialog on success
+                                          Navigator.of(context).pushReplacement(
+                                            MaterialPageRoute(
+                                              builder: (_) => HomeScreen(),
+                                            ),
+                                          );
+                                        }
+                                        if (state is ButtonFailureState) {
+                                          // Show error message on failure
+                                          var snackBar = SnackBar(
+                                              content:
+                                                  Text(state.errorMessage));
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
+                                        }
+                                      },
+                                      child: AlertDialog(
+                                        title: const Text(
+                                          "Ajouter un Wallet",
                                           style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.grey,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
+                                        content: const Text(
+                                          "Confirmer pour ajouter votre Wallet.",
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              // Close the dialog when "Fermer" is pressed
+                                              Navigator.of(dialogContext).pop();
+                                            },
+                                            child: const Text(
+                                              "Fermer",
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ),
+                                          TextBaseButton(
+                                            onPressed: () async {
+                                              // Move context usage before async call
+                                              var userId =
+                                                  await LocalStorageService
+                                                      .getString(
+                                                          LocalStorageService
+                                                              .userId);
+                                              // ignore: use_build_context_synchronously
+                                              context
+                                                  .read<ButtonStateCubit>()
+                                                  .excute(
+                                                    usecase:
+                                                        sl<AddWalletUseCase>(),
+                                                    params: AddWalletReqParams(
+                                                      userId: userId.toString(),
+                                                    ),
+                                                  );
+                                            },
+                                            title: "Confirmer",
+                                          ),
+                                        ],
                                       ),
-                                      TextBaseButton(
-                                        onPressed: () async {
-                                          // Move context usage before async call
-                                          var userId = await LocalStorageService
-                                              .getString(
-                                                  LocalStorageService.userId);
-                                          // ignore: use_build_context_synchronously
-                                          context
-                                              .read<ButtonStateCubit>()
-                                              .excute(
-                                                usecase: sl<AddWalletUseCase>(),
-                                                params: AddWalletReqParams(
-                                                  userId: userId.toString(),
-                                                ),
-                                              );
-                                        },
-                                        title: "Confirmer",
-                                      ),
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 );
                               },
+                              child: Icon(
+                                Ionicons.add_circle_outline,
+                                color: Colors.white,
+                                size: 32,
+                              ),
+                            ),
+                          ],
+                        )),
+                      )
+                    : SizedBox(
+                        width: 319,
+                        height: 170,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: state.items.length,
+                          itemBuilder: (context, index) {
+                            var wallet = state.items[index];
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 5.0),
+                              child: WalletItem(
+                                balance: wallet.balance,
+                                walletNumber: wallet.walletNumber,
+                                currency: wallet.currency,
+                                status: wallet.status,
+                              ),
                             );
                           },
-                          child: Icon(
-                            Ionicons.add_circle_outline,
-                            color: Colors.white,
-                            size: 32,
-                          ),
-                        ),
-                      ],
-                    )),
-                  );
-                }
-                return SizedBox(
-                  width: 319,
-                  height: 170,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: state.items.length,
-                    itemBuilder: (context, index) {
-                      var wallet = state.items[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5.0),
-                        child: WalletItem(
-                          balance: wallet.balance,
-                          walletNumber: wallet.walletNumber,
-                          currency: wallet.currency,
-                          status: wallet.status,
                         ),
                       );
-                    },
-                  ),
-                );
               }
               if (state is LoadWalletsFailure) {
                 return Text(state.errorMessage);

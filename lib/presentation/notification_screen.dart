@@ -10,16 +10,28 @@ class NotificationScreen extends StatefulWidget {
 class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        "Notifications",
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Notifications',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ),
-        textAlign: TextAlign.start,
-      ),
-    );
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Text(
+            "Notifications",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+            ),
+            textAlign: TextAlign.start,
+          ),
+        ));
   }
 }

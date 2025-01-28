@@ -55,7 +55,7 @@ class _ContributionsPageState extends State<ContributionsPage> {
       ),
       child: BlocProvider(
         create: (context) =>
-            ContributionsDisplayCubit()..displayContributions(),
+            ContributionsDisplayCubit()..displayContributions(widget.collectId),
         child:
             BlocBuilder<ContributionsDisplayCubit, ContributionsDisplayState>(
                 builder: (context, state) {

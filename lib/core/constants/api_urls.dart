@@ -17,4 +17,6 @@ class ApiUrls {
   static const changePassword = '${baseURL}change-password';
   static const wallets = '${baseURL}wallets';
   static const transactions = '${baseURL}transactions';
+  static const checkValidateAccessToken =
+      '${baseURL}check-validate-access-token';
 }

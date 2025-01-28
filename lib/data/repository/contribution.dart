@@ -10,8 +10,8 @@ import 'package:likya_app/service_locator.dart';
 class ContributionRepositoryImpl extends ContributionRepository {
   @override
   Future<Either> addContribution(
-      AddContributionReqParams contributionReq) async {
-    return sl<ContributionApiService>().addContribution(contributionReq);
+      AddContributionReqParams contributionReq, String collectId) async {
+    return sl<ContributionApiService>().addContribution(contributionReq, collectId);
   }
 
   @override
@@ -31,8 +31,8 @@ class ContributionRepositoryImpl extends ContributionRepository {
   }
 
   @override
-  Future<Either> getContributions() async {
-    Either result = await sl<ContributionApiService>().getContributions();
+  Future<Either> getContributions(String collectId) async {
+    Either result = await sl<ContributionApiService>().getContributions(collectId);
     return result.fold(
       (error) {
         return Left(error);

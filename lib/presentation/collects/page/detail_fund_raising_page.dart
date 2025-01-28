@@ -212,7 +212,7 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
       ),
       child: BlocProvider(
         create: (context) =>
-            ContributionsDisplayCubit()..displayContributions(),
+            ContributionsDisplayCubit()..displayContributions(widget.collectID),
         child:
             BlocBuilder<ContributionsDisplayCubit, ContributionsDisplayState>(
                 builder: (context, state) {

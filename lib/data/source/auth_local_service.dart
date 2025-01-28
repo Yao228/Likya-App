@@ -8,7 +8,7 @@ class AuthLocalServiceImpl extends AuthLocalService {
   @override
   Future<bool> isLoggedIn() async {
     var token = await LocalStorageService.getString(LocalStorageService.token);
-    if (token == null) {
+    if (token == null || token.isEmpty) {
       return false;
     } else {
       return true;

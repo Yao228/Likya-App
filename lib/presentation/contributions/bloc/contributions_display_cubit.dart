@@ -7,8 +7,8 @@ import '../../../domain/usecases/get_contributions.dart';
 class ContributionsDisplayCubit extends Cubit<ContributionsDisplayState> {
   ContributionsDisplayCubit() : super(ContributionsLoading());
 
-  void displayContributions() async {
-    var result = await sl<GetContributionsUseCase>().call();
+  void displayContributions(String collectId) async {
+    var result = await sl<GetContributionsUseCase>().call(param: collectId);
     result.fold((error) {
       emit(LoadContributionsFailure(errorMessage: error));
     }, (data) {
