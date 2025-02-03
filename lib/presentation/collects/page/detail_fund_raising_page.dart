@@ -574,7 +574,6 @@ class _DetailFundRaisingPageState extends State<DetailFundRaisingPage> {
                     ),
                   ]);
             }
-            return Container();
           } else {
             return Container();
           }

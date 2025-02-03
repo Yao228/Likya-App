@@ -8,14 +8,15 @@ class WalletItem extends StatefulWidget {
   final String status;
 
   const WalletItem({
-    Key? key,
+    super.key,
     required this.balance,
     required this.walletNumber,
     required this.currency,
     required this.status,
-  }) : super(key: key);
+  });
 
   @override
+  // ignore: library_private_types_in_public_api
   _WalletItemState createState() => _WalletItemState();
 }
 

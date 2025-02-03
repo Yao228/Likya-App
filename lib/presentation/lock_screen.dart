@@ -15,10 +15,6 @@ class _LockScreenState extends State<LockScreen> {
       List.generate(4, (_) => TextEditingController());
   final List<FocusNode> focusNodes = List.generate(4, (_) => FocusNode());
 
-  bool _codeValidationFailed = false;
-  bool _validationProgress = false;
-  bool _validationSuccess = false;
-
   @override
   void dispose() {
     for (var controller in controllers) {
@@ -87,8 +83,6 @@ class _LockScreenState extends State<LockScreen> {
                 const SizedBox(height: 60),
                 cancel(),
                 const SizedBox(height: 15),
-                if (_validationProgress) validationProgress(),
-                if (_validationSuccess) validationSuccess(),
               ],
             ),
           ),

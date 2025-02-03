@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:likya_app/utils/utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'dart:convert';
 
 class InviteFriend extends StatefulWidget {
   const InviteFriend({super.key});
@@ -14,16 +13,6 @@ class InviteFriend extends StatefulWidget {
 
 class _InviteFriendState extends State<InviteFriend> {
   // Helper function to handle nulls and encoding correction
-  String _correctEncoding(String? input) {
-    if (input == null) return "";
-    try {
-      return utf8.decode(utf8.encode(input));
-    } catch (e) {
-      print("Encoding error: $e for input: $input");
-      return input.replaceAll(
-          RegExp(r'[^\x00-\x7F]+'), ''); // Fallback: Remove non-ASCII
-    }
-  }
 
   final _formKey = GlobalKey<FormState>();
 

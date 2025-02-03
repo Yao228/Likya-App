@@ -10,7 +10,6 @@ import 'package:likya_app/common/widgets/button/basic_app_button.dart';
 import 'package:likya_app/data/models/update_user_req.dart';
 import 'package:likya_app/domain/usecases/update_user.dart';
 import 'package:likya_app/presentation/home/pages/home_screen.dart';
-import 'package:likya_app/presentation/setting/profil_detail.dart';
 import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/utils.dart';
 import 'dart:io';
