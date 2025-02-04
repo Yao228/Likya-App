@@ -29,6 +29,7 @@ import 'package:likya_app/presentation/setting/password_update.dart';
 import 'package:likya_app/presentation/setting/profil_detail.dart';
 import 'package:likya_app/presentation/transactions/bloc/transactions_display_cubit.dart';
 import 'package:likya_app/presentation/transactions/bloc/transactions_display_state.dart';
+import 'package:likya_app/presentation/deposit/pages/gateway_page.dart';
 import 'package:likya_app/presentation/transactions/pages/transaction_page.dart';
 import 'package:likya_app/presentation/transactions/pages/transactions_page.dart';
 import 'package:likya_app/presentation/wallets/bloc/wallets_display_cubit.dart';
@@ -642,7 +643,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => TransactionPage(method: 'recharge'),
+                  builder: (context) => GatewayPage(),
                 ),
               );
             },
