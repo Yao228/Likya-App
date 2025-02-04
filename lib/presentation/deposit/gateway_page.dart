@@ -1,9 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:likya_app/presentation/deposit/pages/add_deposit_page.dart';
-import 'package:likya_app/presentation/transactions/pages/transaction_page.dart';
 
 class GatewayPage extends StatefulWidget {
   const GatewayPage({super.key});
@@ -68,16 +65,15 @@ class _GatewayPageState extends State<GatewayPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddDepositPage(gateway: 'orange-ci')),
+                builder: (context) =>
+                    AddDepositPage(gateway: 'orange-ci', percent: 1.5),
+              ),
             );
           },
           child: Row(
             children: [
               const SizedBox(width: 15),
-              Image.asset(
-                "assets/images/orange-ci.png",
-                //fit: BoxFit.cover,
-              ),
+              Image.asset("assets/images/orange-ci.png"),
               const SizedBox(width: 15),
               Expanded(
                 child: Column(
@@ -133,16 +129,15 @@ class _GatewayPageState extends State<GatewayPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddDepositPage(gateway: 'mtn-ci')),
+                builder: (context) =>
+                    AddDepositPage(gateway: 'mtn-ci', percent: 2),
+              ),
             );
           },
           child: Row(
             children: [
               const SizedBox(width: 15),
-              Image.asset(
-                "assets/images/mtn-ci.png",
-                //fit: BoxFit.cover,
-              ),
+              Image.asset("assets/images/mtn-ci.png"),
               const SizedBox(width: 15),
               Expanded(
                 child: Column(
@@ -198,16 +193,15 @@ class _GatewayPageState extends State<GatewayPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddDepositPage(gateway: 'moov-ci')),
+                builder: (context) =>
+                    AddDepositPage(gateway: 'moov-ci', percent: 2),
+              ),
             );
           },
           child: Row(
             children: [
               const SizedBox(width: 15),
-              Image.asset(
-                "assets/images/moov-ci.png",
-                //fit: BoxFit.cover,
-              ),
+              Image.asset("assets/images/moov-ci.png"),
               const SizedBox(width: 15),
               Expanded(
                 child: Column(
@@ -263,16 +257,15 @@ class _GatewayPageState extends State<GatewayPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddDepositPage(gateway: 'wave-ci')),
+                builder: (context) =>
+                    AddDepositPage(gateway: 'wave-ci', percent: 1),
+              ),
             );
           },
           child: Row(
             children: [
               const SizedBox(width: 15),
-              Image.asset(
-                "assets/images/wave-ci.png",
-                //fit: BoxFit.cover,
-              ),
+              Image.asset("assets/images/wave-ci.png"),
               const SizedBox(width: 15),
               Expanded(
                 child: Column(
@@ -328,16 +321,15 @@ class _GatewayPageState extends State<GatewayPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddDepositPage(gateway: 'visa-ci')),
+                builder: (context) =>
+                    AddDepositPage(gateway: 'visa-ci', percent: 1),
+              ),
             );
           },
           child: Row(
             children: [
               const SizedBox(width: 15),
-              Image.asset(
-                "assets/images/visa-ci.png",
-                //fit: BoxFit.cover,
-              ),
+              Image.asset("assets/images/visa-ci.png"),
               const SizedBox(width: 15),
               Expanded(
                 child: Column(

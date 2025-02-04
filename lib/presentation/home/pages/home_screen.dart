@@ -1090,6 +1090,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             child: ListView(
               children: [
+                const SizedBox(width: 15),
                 Text(
                   'Que voulez-vous faire ?',
                   style: TextStyle(
@@ -1118,12 +1119,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     child: Row(
                       children: [
+                        const SizedBox(width: 10),
                         Icon(
                           Ionicons.funnel_outline,
                           size: 40,
                           color: Color(0xFF2FA9A2),
                         ),
-                        const SizedBox(width: 15),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1133,7 +1135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 'Créer une cagnotte',
                                 style: TextStyle(
                                   color: Color(0xFF2FA9A2),
-                                  fontSize: 20,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -1175,12 +1177,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     child: Row(
                       children: [
+                        const SizedBox(width: 10),
                         Icon(
                           Ionicons.add_circle_outline,
                           size: 40,
                           color: Color(0xFF2FA9A2),
                         ),
-                        const SizedBox(width: 15),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1190,7 +1193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 'Ajouter',
                                 style: TextStyle(
                                   color: Color(0xFF2FA9A2),
-                                  fontSize: 20,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -1232,12 +1235,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     child: Row(
                       children: [
+                        const SizedBox(width: 10),
                         Icon(
                           Ionicons.arrow_redo_outline,
                           size: 40,
                           color: Color(0xFF2FA9A2),
                         ),
-                        const SizedBox(width: 15),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1247,7 +1251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 'Envoyer',
                                 style: TextStyle(
                                   color: Color(0xFF2FA9A2),
-                                  fontSize: 20,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),

@@ -202,4 +202,29 @@ class ApiService {
     }
     return false;
   }
+
+  Future<String> getWalletId() async {
+    try {
+      var token =
+          await LocalStorageService.getString(LocalStorageService.token);
+      Response response = await dio.get(
+        ApiUrls.wallets,
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data['items'] != null) {
+          final items = data['items'];
+          return items[0]['_id'];
+        } else {
+          throw Exception('Aucun élément trouvé dans la réponse.');
+        }
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+    return "";
+  }
 }

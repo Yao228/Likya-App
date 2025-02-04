@@ -108,3 +108,30 @@ Future<bool> checkCollectOwner(String collectId) {
     return userId == collectId;
   });
 }
+
+String gatewayName(String gateway) {
+  switch (gateway) {
+    case 'orange-ci':
+      return 'Orange Money';
+    case 'mtn-ci':
+      return 'MTN MoMo';
+    case 'moov-ci':
+      return 'Moov Money';
+    case 'wave-ci':
+      return 'Wave Money';
+    case 'visa-ci':
+      return 'Visa/Mastercard';
+    default:
+      return '';
+  }
+}
+
+double getFrais(double percent, int amount) {
+  if (amount == 0) return 0;
+  return (amount.toDouble() * percent) / 100;
+}
+
+double getTotal(double percent, int amount) {
+  if (amount == 0) return 0;
+  return amount + getFrais(percent, amount);
+}

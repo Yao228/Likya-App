@@ -4,6 +4,7 @@ import 'package:likya_app/common/bloc/button/button_state.dart';
 import 'package:likya_app/common/bloc/button/button_state_cubit.dart';
 import 'package:likya_app/common/widgets/button/basic_app_button.dart';
 import 'package:likya_app/data/models/transaction_req.dart';
+import 'package:likya_app/data/source/api_service.dart';
 import 'package:likya_app/domain/usecases/add_transaction.dart';
 import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/utils.dart';
@@ -103,13 +104,17 @@ class _TransactionPageState extends State<TransactionPage> {
             title: 'Valider',
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
+                String? walletId = await ApiService().getWalletId();
                 // ignore: use_build_context_synchronously
                 context.read<ButtonStateCubit>().excute(
                       usecase: sl<AddTransactionUseCase>(),
                       params: AddTransactionParams(
                         transactionReqParams: TransactionReqParams(
-                          amount: int.parse(amount.text),
-                          comment: comment.text,
+                          walletId: walletId,
+                          amount: 50000,
+                          reason: "Dépôt Likya",
+                          description: "Dépôt effectué par un patient",
+                          transactionReceiver: "aaaaaaaaaaaaaaaa",
                         ),
                         methodParam: widget.method,
                       ),
