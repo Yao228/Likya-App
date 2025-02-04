@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:likya_app/presentation/deposit/pages/add_deposit_page.dart';
+import 'package:likya_app/presentation/deposit/add_deposit_page.dart';
 
 class GatewayPage extends StatefulWidget {
   const GatewayPage({super.key});

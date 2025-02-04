@@ -7,7 +7,7 @@ import 'package:likya_app/common/widgets/button/basic_app_button.dart';
 import 'package:likya_app/data/models/deposit_req.dart';
 import 'package:likya_app/data/source/api_service.dart';
 import 'package:likya_app/domain/usecases/add_deposit.dart';
-import 'package:likya_app/presentation/deposit/pages/detail_deposit_page.dart';
+import 'package:likya_app/presentation/deposit/detail_deposit_page.dart';
 import 'package:likya_app/service_locator.dart';
 import 'package:likya_app/utils/utils.dart';
 
