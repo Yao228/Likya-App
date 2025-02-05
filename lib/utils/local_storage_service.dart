@@ -12,6 +12,8 @@ class LocalStorageService {
   static String contributionId = "CONTRIBUTION_ID";
   static String walletId = "WALLET_ID";
   static String transactionId = "TRANSACTION_ID";
+  static String payementUrl = "PAYMENT_URL";
+  static String depositAmount = "DEPOSITAMOUNT";
 
   static Future<void> putString(String key, String value) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();

@@ -15,7 +15,7 @@ class _GatewayPageState extends State<GatewayPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Moyen d'ajout",
+          "Chosir un moyen de paiement",
           style: TextStyle(
             color: Colors.black,
             fontSize: 18,

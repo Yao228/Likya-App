@@ -24,6 +24,7 @@ class DepositApiServiceImpl extends DepositApiService {
           options: Options(headers: {
             'Authorization': 'Bearer $token',
           }));
+
       return Right(response);
     } on DioException catch (e) {
       return Left(e.response!.data['message_error']);

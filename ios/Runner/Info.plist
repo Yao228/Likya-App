@@ -61,5 +61,11 @@
 	<true/>
 	<key>com.apple.developer.siri</key>
 	<true/>
+	<key>CFBundleURLName</key>
+    <string>likyaapp</string>
+    <key>CFBundleURLSchemes</key>
+    <array>
+        <string>likyaapp</string>
+    </array>
 </dict>
 </plist>

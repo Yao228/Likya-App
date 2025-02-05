@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:likya_app/common/bloc/button/button_state.dart';
 import 'package:likya_app/common/bloc/button/button_state_cubit.dart';
@@ -61,7 +62,7 @@ class _AddDepositPageState extends State<AddDepositPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Ajouter',
+          'Recharger votre compte',
           style: TextStyle(
             color: Colors.black,
             fontSize: 18,
@@ -85,9 +86,16 @@ class _AddDepositPageState extends State<AddDepositPage> {
                 _transactionSuccess = true;
                 _transactionLoading = false;
               });
+
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (context) => DetailDepositPage(),
+                  builder: (context) => DetailDepositPage(
+                    gateway: widget.gateway,
+                    percent: widget.percent,
+                    amount: int.tryParse(amount.text) ?? 0,
+                    charge: charge,
+                    totalAmount: totalAmount,
+                  ),
                 ),
               );
             }
@@ -122,7 +130,7 @@ class _AddDepositPageState extends State<AddDepositPage> {
                       const SizedBox(height: 10),
                       if (_transactionLoading) transactionLoading(),
                       if (_transactionSuccess) transactionSuccess(),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 50),
                       submit(context),
                     ],
                   ),
@@ -155,6 +163,7 @@ class _AddDepositPageState extends State<AddDepositPage> {
                           amount: totalAmount,
                           reason: "Dépôt Likya",
                           description: "Dépôt effectué par un patient",
+                          returnUrl: "likyaapp://payment-success",
                         ),
                         depositParam: widget.gateway,
                       ),
@@ -163,7 +172,7 @@ class _AddDepositPageState extends State<AddDepositPage> {
                 // ignore: use_build_context_synchronously
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text("Tous les champs sont recquis."),
+                    content: Text("Vérifiez le montant saisi."),
                   ),
                 );
               }
@@ -201,8 +210,12 @@ class _AddDepositPageState extends State<AddDepositPage> {
             calculateCharge();
           },
           validator: (value) {
-            if (value == null || value.isEmpty) {
+            if (value == null || value.isEmpty || int.tryParse(value) == 0) {
               return 'Vous devez saisir un montant';
+            }
+
+            if (int.tryParse(value) == null || int.tryParse(value)! <= 1000) {
+              return 'Le montant doit être supérieur à 1000';
             }
             return null;
           },
@@ -225,7 +238,7 @@ class _AddDepositPageState extends State<AddDepositPage> {
             ),
           ),
           Text(
-            "${charge.toString()} FCFA",
+            "+${NumberFormat.currency(locale: 'fr_FR', symbol: 'FCFA', decimalDigits: 0).format(charge)}",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -250,7 +263,9 @@ class _AddDepositPageState extends State<AddDepositPage> {
             ),
           ),
           Text(
-            "${totalAmount.toString()} FCFA",
+            NumberFormat.currency(
+                    locale: 'fr_FR', symbol: 'FCFA', decimalDigits: 0)
+                .format(totalAmount),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -339,9 +354,9 @@ class _AddDepositPageState extends State<AddDepositPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Continuer pour terminer la recharge de vontre compte',
+            'Continuer votre recharge',
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 16,
               color: Color(0xFF008000),
             ),
             textAlign: TextAlign.center,
@@ -362,9 +377,9 @@ class _AddDepositPageState extends State<AddDepositPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Le charge de votre de votre compte en cours!",
+            "Recharge en cours",
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 16,
               color: Color(0xFF008000),
             ),
             textAlign: TextAlign.center,
