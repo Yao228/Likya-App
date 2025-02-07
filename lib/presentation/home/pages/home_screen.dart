@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner_plus/flutter_barcode_scanner_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:likya_app/common/bloc/button/button_state.dart';
@@ -46,6 +48,31 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  Future<void> scanCode() async {
+    String scanResult;
+    try {
+      scanResult = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Annuler", true, ScanMode.QR
+      );
+    } on PlatformException {
+      scanResult = "";
+    }
+    
+    if (scanResult.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TransactionPage(method: "payment"),
+        ),
+      );
+    } else {
+      var snackBar = SnackBar(content: Text("Le scan du QR est vide"));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -605,25 +632,31 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Positioned(
             bottom: -25,
-            child: InkWell(
-              onTap: showModal,
-              borderRadius: BorderRadius.circular(5),
-              child: Container(
-                width: 55,
-                height: 55,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
-                    color: Colors.black,
-                    width: 1,
+            child: TextButton(
+              onPressed: () {scanCode();},
+              child: Column(
+                children: [
+                  Container(
+                    width: 55,
+                    height: 55,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Ionicons.qr_code_outline,
+                      size: 42,
+                      color: Colors.black,
+                    ),
                   ),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Icon(
-                  Ionicons.qr_code_outline,
-                  size: 50,
-                  color: Colors.black,
-                ),
+                ],
               ),
             ),
           ),
@@ -672,49 +705,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 10), // Space between image and text
                 const Text(
                   "Dépôt",
-                  style: TextStyle(
-                    color: Color(0xFF2FA9A2),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TransactionPage(method: 'payment'),
-                ),
-              );
-            },
-            child: Column(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Ionicons.share_outline,
-                    size: 32,
-                    color: Color(0xFF2FA9A2),
-                  ),
-                ),
-                const SizedBox(height: 10), // Space between image and text
-                const Text(
-                  "Paiement",
                   style: TextStyle(
                     color: Color(0xFF2FA9A2),
                     fontSize: 14,
@@ -793,7 +783,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   child: Icon(
-                    Ionicons.help_outline,
+                    Ionicons.wallet_outline,
                     size: 32,
                     color: Color(0xFF2FA9A2),
                   ),
@@ -801,6 +791,49 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 10), // Space between image and text
                 const Text(
                   "Likya me",
+                  style: TextStyle(
+                    color: Color(0xFF2FA9A2),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ListFundRaisingPage(),
+                ),
+              );
+            },
+            child: Column(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Ionicons.open_outline,
+                    size: 32,
+                    color: Color(0xFF2FA9A2),
+                  ),
+                ),
+                const SizedBox(height: 10), // Space between image and text
+                const Text(
+                  "Contribuer",
                   style: TextStyle(
                     color: Color(0xFF2FA9A2),
                     fontSize: 14,

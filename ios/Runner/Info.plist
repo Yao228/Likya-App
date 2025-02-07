@@ -61,11 +61,16 @@
 	<true/>
 	<key>com.apple.developer.siri</key>
 	<true/>
-	<key>CFBundleURLName</key>
-    <string>likyaapp</string>
-    <key>CFBundleURLSchemes</key>
-    <array>
-        <string>likyaapp</string>
-    </array>
+   <key>CFBundleURLTypes</key>
+   <array>
+     <dict>
+       <key>CFBundleURLSchemes</key>
+       <array>
+         <string>https</string>
+       </array>
+     </dict>
+   </array>
+    <key>NSCameraUsageDescription</key>
+    <string>Camera permission is required for barcode scanning.</string>
 </dict>
 </plist>

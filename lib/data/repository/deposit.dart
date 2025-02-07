@@ -10,16 +10,14 @@ class DepositRepositoryImpl extends DepositRepository {
   @override
   Future<Either> addDeposit(
       DepositReqParams depositReq, String depositParam) async {
-    Either result =
-        await sl<DepositApiService>().addDeposit(depositReq, depositParam);
+    Either result = await sl<DepositApiService>().addDeposit(depositReq, depositParam);
     return result.fold((error) {
       return Left(error);
     }, (data) {
       Response response = data;
-      LocalStorageService.putString(
-          LocalStorageService.payementUrl, response.data['payment_url']);
-      LocalStorageService.putString(LocalStorageService.depositAmount,
-          response.data['amount'].toString());
+      LocalStorageService.putString(LocalStorageService.payementUrl, response.data['payment_url']);
+      LocalStorageService.putString(LocalStorageService.depositAmount, response.data['amount'].toString());
+      LocalStorageService.putString(LocalStorageService.transactionId, response.data['transaction_id']);
       return Right(response);
     });
   }

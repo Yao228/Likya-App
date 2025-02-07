@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.example.likya_app",
+    "sha256_cert_fingerprints": [
+      "08:5B:83:44:64:1A:BD:2E:8F:1C:B9:F5:F5:F9:7C:84:8F:B0:3C:C6:AA:47:BB:59:FF:0B:42:EC:73:63:F6:38"
+    ]
+  }
+}]

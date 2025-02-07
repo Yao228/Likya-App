@@ -25,6 +25,13 @@ void main() async {
     LocalStorageService.putString(LocalStorageService.userRole, userRole);
   }
 
+  LocalStorageService.deleteKey(LocalStorageService.payementUrl);
+  LocalStorageService.deleteKey(LocalStorageService.depositAmount);
+  LocalStorageService.deleteKey(LocalStorageService.transactionId);
+
+  String? transactionID = await LocalStorageService.getString(LocalStorageService.transactionId);
+  print(transactionID);
+
   final prefs = await SharedPreferences.getInstance();
   final showAuthPage = prefs.getBool('showAuthPage') ?? false;
 
@@ -38,19 +45,16 @@ class MyApp extends StatefulWidget {
   @override
   State<MyApp> createState() => _MyAppState();
 }
-
 class _MyAppState extends State<MyApp> {
-  late final AppLinks _appLinks;
+  final AppLinks _appLinks = AppLinks();
 
   @override
   void initState() {
     super.initState();
-    _initDeepLinks();
+    _initDeepLinkListener();
   }
 
-  void _initDeepLinks() async {
-    _appLinks = AppLinks();
-
+  void _initDeepLinkListener() async {
     final Uri? initialLink = await _appLinks.getInitialAppLink();
     if (initialLink != null) {
       _handleDeepLink(initialLink);
@@ -58,22 +62,33 @@ class _MyAppState extends State<MyApp> {
 
     _appLinks.uriLinkStream.listen((Uri uri) {
       _handleDeepLink(uri);
+    }, onError: (err) {
+      print("Erreur de deep link: $err");
     });
   }
 
   void _handleDeepLink(Uri uri) async {
-    if (uri.host == "payment-success") {
-      String? depositAmount = await LocalStorageService.getString(
-          LocalStorageService.depositAmount);
-      Navigator.push(
+    String? paymentStatus = uri.queryParameters['payment_status'];
+    String? ref = uri.queryParameters['ref'];
+
+    if (paymentStatus != null && ref != null) {
+      print("Paiement $paymentStatus avec ref: $ref");
+      String? transactionId = await LocalStorageService.getString(LocalStorageService.transactionId);
+      bool verifyTransaction = await ApiService().verifyTransaction(transactionId!);
+      print(verifyTransaction);
+
+      if (verifyTransaction) {
         // ignore: use_build_context_synchronously
-        context,
-        MaterialPageRoute(
-          builder: (context) => SuccessDepositPage(
-            totalAmount: double.tryParse(depositAmount!) ?? 0,
+        String? depositAmount = await LocalStorageService.getString(LocalStorageService.depositAmount);
+        Navigator.push(
+          // ignore: use_build_context_synchronously
+          context,
+          MaterialPageRoute(
+            builder: (context) => SuccessDepositPage(totalAmount: double.tryParse(depositAmount!) ?? 0,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
   }
 

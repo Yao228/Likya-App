@@ -227,4 +227,21 @@ class ApiService {
     }
     return "";
   }
+
+  Future<bool>verifyTransaction(String transactionId) async {
+    try {
+      Response response = await dio.get(
+        ApiUrls.verifyTransaction,
+        queryParameters: {
+          'transaction_id': transactionId,
+        },
+      );
+      if (response.statusCode == 200) {
+        return true;
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+    return false;
+  }
 }
